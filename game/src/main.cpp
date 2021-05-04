@@ -1,24 +1,49 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
+#include <SFML/Network.hpp>
+#include <SFML/System.hpp>
 
-int main()
-{
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+#include <iostream>
 
-    while (window.isOpen())
-    {
+int main() {
+
+    // window
+    sf::Window window(sf::VideoMode(800, 600), "aerohockey-game", sf::Style::Default);
+
+    // game loop
+    while (window.isOpen()) {
+
+        // event polling
+
         sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
+        while (window.pollEvent(event)) {
+
+            switch(event.type) {
+
+                case sf::Event::Closed:
+                    std::cout << "Closing window." << std::endl;
+                    window.close();
+                    break;
+
+                case sf::Event::KeyPressed:
+                    std::cout << "Key pressed." << std::endl;
+                    if (event.key.code == sf::Keyboard::Escape) {
+                        window.close();
+                    }
+                    break;
+            }
         }
 
-        window.clear();
-        window.draw(shape);
+        // Update
+
+        // Render
+
+        // Draw stuff
+
         window.display();
     }
+
 
     return 0;
 }
