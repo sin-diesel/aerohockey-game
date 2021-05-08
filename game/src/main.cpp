@@ -6,10 +6,14 @@
 
 #include <iostream>
 
+#include "../include/game.h"
+
 int main() {
 
     // window
     sf::Window window(sf::VideoMode(800, 600), "aerohockey-game", sf::Style::Default);
+
+    Game aerohockey;
 
     // game loop
     while (window.isOpen()) {
@@ -35,6 +39,7 @@ int main() {
             }
         }
 
+        aerohockey.play();
         // Update
 
         // Render
