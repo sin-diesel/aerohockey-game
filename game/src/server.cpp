@@ -1,4 +1,5 @@
 #include "server.h"
+#include "puck.h"
 #include <iostream>
 
 Server::Server() {
@@ -33,26 +34,26 @@ void Server::handle_connections() {
 void Server::get_updates() //receives data about strikers moving from clients
 {
     sf::Packet packet;
-    float posx, posy, speedx, speedy;
+    sf::Vector2f pos;
     client_sockets[0].receive(packet, adresses[0], ports[0]);
-    packet >> speedx >> speedy;
-    striker1.change_speed(speedx, speedy);
+    packet >> pos.x >> pos.y;
+    striker1.calculate_speed(pos);
     client_sockets[1].receive(packet, adresses[1], ports[1]);
-    packet >> speedx >> speedy;
-    striker2.change_speed(speedx, speedy);
+    packet >> pos.x >> pos.y;
+    striker2.calculate_speed(pos);
 }
 
  void Server::send_updates() //calculates new cooridinates of puck and strikers and sends to clients
 {
     sf::Packet packet;
-    float posx, posy;
-    this->puck.update(&posx, &posy);
-    packet << posx << posy;
-    this->striker1.update(&posx, &posy);
-    packet << posx << posy;
-    this->striker2.update(&posx, &posy);
-    packet << posx << posy;
-    client_sockets[2].send(packet, adresses[0], ports[0]);
+    sf::Vector2f pos, pos_striker1, pos_striker2;
+    pos_striker1 = striker1.get_coord();
+    packet << pos_striker1.x << pos_striker2.y;
+    pos_striker2 = striker2.get_coord();
+    packet << pos_striker2.x << pos_striker2.y;
+    pos = puck.update(pos_striker1, pos_striker2);
+    packet << pos.x << pos.y;
+    client_sockets[0].send(packet, adresses[0], ports[0]);
     client_sockets[1].send(packet, adresses[1], ports[1]);
 }
 

@@ -6,6 +6,6 @@ class Puck {
     sf::Vector2f position;
     sf::Vector2f speed;
     public:
-    void update(float* posx, float* posy);
-    void change_speed(float speedx, float speedy);
+    sf::Vector2f update();
+    void change_speed(sf::Vector2f pos);
 };

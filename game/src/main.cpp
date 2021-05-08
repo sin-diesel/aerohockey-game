@@ -10,7 +10,7 @@ int main() {
 
     // window
     sf::Window window(sf::VideoMode(800, 600), "aerohockey-game", sf::Style::Default);
-
+    sf::Vector2i mouse_pos;
     // game loop
     while (window.isOpen()) {
 
@@ -34,7 +34,7 @@ int main() {
                     break;
             }
         }
-
+        mouse_pos = sf::Mouse::getPosition(window);
         // Update
 
         // Render

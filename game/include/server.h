@@ -8,7 +8,8 @@
 class Server {
 private:
     int number_of_clients = 0;
-    Puck puck, striker1, striker2;
+    Puck puck;
+    Striker striker1, striker2;
 
     unsigned short port = 0;
     sf::UdpSocket socket;
