@@ -1,5 +1,6 @@
 #pragma once
 #include "game.h"
+#include "puck.h"
 #include <vector>
 
 #define PORT 54000
@@ -7,6 +8,7 @@
 class Server {
 private:
     int number_of_clients = 0;
+    Puck puck, striker1, striker2;
 
     unsigned short port = 0;
     sf::UdpSocket socket;
@@ -15,8 +17,8 @@ private:
     sf::Packet connection_info;
     // sockets for each client
     std::vector<sf::UdpSocket> client_sockets;
-    // packets for each client
-    std::vector<sf::Packet> packets;
+    std::vector<sf::IpAddress> adresses;
+    std::vector<short unsigned> ports;
 public:
     Server();
     ~Server();

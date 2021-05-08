@@ -22,14 +22,38 @@ void Server::handle_connections() {
     std::cout << "Waiting for incoming connection from client..." << std::endl; 
 
     socket.receive(connection_info, client_addr, client_port);
+    adresses.push_back(client_addr); //save client's adress
+    ports.push_back(client_port);    //save client's port
 
     std::cout << "Packet from client received " << std::endl;
     std::cout << "Client addr: " << client_addr << std::endl;
     std::cout << "Client port: " << client_port << std::endl;
 }
 
-void Server::get_updates() {
+void Server::get_updates() //receives data about strikers moving from clients
+{
+    sf::Packet packet;
+    float posx, posy, speedx, speedy;
+    client_sockets[0].receive(packet, adresses[0], ports[0]);
+    packet >> speedx >> speedy;
+    striker1.change_speed(speedx, speedy);
+    client_sockets[1].receive(packet, adresses[1], ports[1]);
+    packet >> speedx >> speedy;
+    striker2.change_speed(speedx, speedy);
+}
 
+ void Server::send_updates() //calculates new cooridinates of puck and strikers and sends to clients
+{
+    sf::Packet packet;
+    float posx, posy;
+    this->puck.update(&posx, &posy);
+    packet << posx << posy;
+    this->striker1.update(&posx, &posy);
+    packet << posx << posy;
+    this->striker2.update(&posx, &posy);
+    packet << posx << posy;
+    client_sockets[2].send(packet, adresses[0], ports[0]);
+    client_sockets[1].send(packet, adresses[1], ports[1]);
 }
 
 void Server::run() {
