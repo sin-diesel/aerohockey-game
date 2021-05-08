@@ -7,8 +7,7 @@
 
 class Game {
     private:
-
-
+    
     public:
         Game();
         // virtual destructor in case we are going to use inheritance
