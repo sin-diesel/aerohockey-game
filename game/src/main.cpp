@@ -6,12 +6,17 @@
 
 #include <iostream>
 
+#include "../include/game.h"
+
 int main() {
 
     // window
-    sf::Window window(sf::VideoMode(800, 600), "aerohockey-game", sf::Style::Default);
-    sf::Vector2i mouse_pos;
+    sf::RenderWindow window(sf::VideoMode(800, 600), "aerohockey-game", sf::Style::Default);
+
+    Game aerohockey;
+
     // game loop
+    sf::Vector2i mouse_pos;
     while (window.isOpen()) {
 
         // event polling
@@ -39,7 +44,9 @@ int main() {
 
         // Render
 
-        // Draw stuff
+        aerohockey.play();
+
+        aerohockey.draw_objects(window);
 
         window.display();
     }

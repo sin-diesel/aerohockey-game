@@ -9,9 +9,12 @@ class Puck {
     protected:
     sf::Vector2f position;
     sf::Vector2f speed;
+    sf::Sprite sprite;
+
     public:
     sf::Vector2f update(sf::Vector2f, sf::Vector2f);
     sf::Vector2f get_coord();
+    sf::Sprite* get_sprite();
 };
 
 class Striker : public Puck {
