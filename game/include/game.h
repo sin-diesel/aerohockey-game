@@ -6,15 +6,13 @@
 #include <SFML/System.hpp>
 
 #include "../include/puck.h"
-#include "../include/putter.h"
 #include "../include/scoreboard.h"
 
 class Game {
     private:
 
         Puck puck;
-        Putter leftputter;
-        Putter rightputter;
+        Striker striker1, striker2;
         Scoreboard scoreboard;
 
     public:

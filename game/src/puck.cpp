@@ -28,8 +28,6 @@ sf::Vector2f Puck::get_coord()
 void Striker::calculate_speed(sf::Vector2f pos) 
 {
     speed = pos - position;
-    this->speed.x = speedx;
-    this->speed.y = speedy;
 }
 
 sf::Sprite* Puck::get_sprite()
