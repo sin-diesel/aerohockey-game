@@ -15,6 +15,8 @@ int main() {
 
     Game aerohockey;
 
+    Game aerohockey;
+
     // game loop
     while (window.isOpen()) {
 
@@ -40,6 +42,7 @@ int main() {
         }
 
         aerohockey.play();
+
         aerohockey.draw_objects(window);
 
         window.display();

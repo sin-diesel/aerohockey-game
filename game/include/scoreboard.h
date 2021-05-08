@@ -4,6 +4,7 @@
 class Scoreboard {
     private:
 
+
     sf::Sprite sprite;
     bool scored;
 

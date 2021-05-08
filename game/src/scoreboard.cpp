@@ -4,7 +4,6 @@ Scoreboard::Scoreboard()
 {
     
 }
-
 void Scoreboard::update()
 {
     
@@ -20,8 +19,8 @@ void Scoreboard::unscored()
     scored = false;
 }
 
+
 sf::Sprite* Puck::get_sprite()
 {
     return sprite;
 }
-

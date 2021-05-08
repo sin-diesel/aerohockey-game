@@ -5,6 +5,7 @@ class Putter {
     private:
     sf::Vector2f position;
     sf::Vector2f speed;
+
     sf::Sprite sprite;
 
     public:
