@@ -1,19 +1,11 @@
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Audio.hpp>
-#include <SFML/Network.hpp>
-#include <SFML/System.hpp>
-
-#include <iostream>
-
+#include "../include/library.h"
 #include "../include/game.h"
 
 int main() {
 
     // window
     sf::RenderWindow window(sf::VideoMode(800, 600), "aerohockey-game", sf::Style::Default);
-
-    Game aerohockey;
+    Game aerohockey = Game();
 
     // game loop
     sf::Vector2i mouse_pos;

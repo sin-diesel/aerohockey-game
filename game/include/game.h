@@ -1,18 +1,14 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Audio.hpp>
-#include <SFML/Network.hpp>
-#include <SFML/System.hpp>
-
-#include "../include/puck.h"
-#include "../include/scoreboard.h"
+#include "library.h"
+#include "puck.h"
+#include "scoreboard.h"
 
 class Game {
     private:
 
         Puck puck;
-        Striker striker1, striker2;
+        Striker striker1;
+        Striker striker2;
         Scoreboard scoreboard;
 
     public:
@@ -30,5 +26,5 @@ class Game {
 
         void play();
 
-        void draw_objects(sf::RenderWindow window);
+        void draw_objects(sf::RenderWindow& window);
 };

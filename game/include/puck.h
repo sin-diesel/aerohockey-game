@@ -1,5 +1,6 @@
 #pragma once
-#include "game.h"
+#include "library.h"
+
 #define MAX_POS_X 200
 #define MAX_POS_Y 200
 #define MIN_POS_X 0
@@ -12,12 +13,14 @@ class Puck {
     sf::Sprite sprite;
 
     public:
+    Puck();
     sf::Vector2f update(sf::Vector2f, sf::Vector2f);
     sf::Vector2f get_coord();
-    sf::Sprite* get_sprite();
+    void draw(sf::RenderWindow& window);
 };
 
 class Striker : public Puck {
     public:
+    Striker();
     void calculate_speed(sf::Vector2f);
 };

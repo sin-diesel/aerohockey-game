@@ -1,5 +1,15 @@
 #include "../include/puck.h"
 
+Puck::Puck()
+{
+
+}
+
+Striker::Striker()
+{
+    
+}
+
 sf::Vector2f Puck::update(sf::Vector2f pos_striker1, sf::Vector2f pos_striker2)
 {
     sf::Vector2f pos = position += speed;
@@ -18,7 +28,7 @@ sf::Vector2f Puck::update(sf::Vector2f pos_striker1, sf::Vector2f pos_striker2)
         speed.y = speed.y * -1;
     }
     return pos;
-
+}
 
 sf::Vector2f Puck::get_coord()
 {
@@ -30,7 +40,8 @@ void Striker::calculate_speed(sf::Vector2f pos)
     speed = pos - position;
 }
 
-sf::Sprite* Puck::get_sprite()
+void Puck::draw(sf::RenderWindow& window)
 {
-    return sprite;
+    window.draw(sprite);
 }
+

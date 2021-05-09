@@ -19,8 +19,7 @@ void Scoreboard::unscored()
     scored = false;
 }
 
-
-sf::Sprite* Puck::get_sprite()
+void Scoreboard::draw(sf::RenderWindow& window)
 {
-    return sprite;
+    //window.draw(sprite);
 }

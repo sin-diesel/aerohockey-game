@@ -1,9 +1,8 @@
 #pragma once
-#include "game.h"
+#include "library.h"
 
 class Scoreboard {
     private:
-
 
     sf::Sprite sprite;
     bool scored;
@@ -13,5 +12,5 @@ class Scoreboard {
     void update();
     bool goalscored();
     void unscored();
-    sf::Sprite* get_sprite();
+    void draw(sf::RenderWindow& window);
 };

@@ -1,13 +1,11 @@
 #include "../include/game.h"
-#include "../include/puck.h"
 
 Game::Game() {
-    leftputter();
-    rightputter();
-    puck();
-    scoreboard();
+    striker1 = Striker();
+    striker2 = Striker();
+    puck = Puck();
+    scoreboard = Scoreboard();
 }
-
 void Game::start_position() {
     scoreboard.unscored();
 }
@@ -16,45 +14,20 @@ void Game::play() {
 
     //get structure of coordinates and score from socket
 
-    leftputter.update(50, 100);
-    rightputter.update(100, 100);
-    puck.update(150, 100);
-    scoreboard.update();
+    //striker1.update({50, 50}, {0, 0});
+    //striker2.update({100, 50}, {0, 0});
+    //puck.update({150, 50}, {0, 0});
+    //scoreboard.update();
 
-    if (scoreboard.goalscored())
-        start_position();
-
-    leftputter.vizualize();
-    //rightputter.vizualize()
-    //puck.vizualize();
-    //scoreboard.vizualize();
+    //if (scoreboard.goalscored())
+    //    start_position();
 }
 
-void Game::draw_objects(sf::RenderWindow window) {
-    window.draw(puck.get_sprite())
-    window.draw(leftputter.get_sprite());
-    window.draw(rightputter.get_sprite());
-    window.draw(scoreboard.get_sprite());
-}
-
-void Game::start_position() {
-    scoreboard.unscored();
-}
-
-void Game::play() {
-
-    //get structure of coordinates and score from socket
-    
-    leftputter.update(50, 100);
-    rightputter.update(100, 100);
-    puck.update(150, 100);
-    scoreboard.update();
-
-    if (scoreboard.goalscored())
-        start_position();
-
-    //leftputter.vizualise();
-    //rightputter.vizualise()
+void Game::draw_objects(sf::RenderWindow& window) {
+    striker1.draw(window);
+    //striker2.draw(window);
+    //puck.draw(window);
+    //scoreboard.draw(window);
 }
 
 Game::~Game() {
