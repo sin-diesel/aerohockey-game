@@ -1,5 +1,4 @@
 #include "server.h"
-#include "puck.h"
 #include <iostream>
 
 Server::Server() {

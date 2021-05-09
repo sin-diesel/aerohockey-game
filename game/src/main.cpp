@@ -4,8 +4,13 @@
 int main() {
 
     // window
-    sf::RenderWindow window(sf::VideoMode(1024, 780), "aerohockey-game", sf::Style::Default);
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "aerohockey-game", sf::Style::Default);
     Game aerohockey;
+
+    sf::Texture background_image;
+    sf::Sprite background;
+    background_image.loadFromFile("/home/sergey/aerohockey-game/game/images/background.png");
+    background.setTexture(background_image);
 
     // game loop
     sf::Vector2i mouse_pos;
@@ -37,6 +42,7 @@ int main() {
         aerohockey.play();
 
         window.clear();
+        window.draw(background);
         aerohockey.draw_objects(window);
         window.display();
     }
