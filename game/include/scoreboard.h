@@ -11,7 +11,7 @@ class Scoreboard {
 
     public:
     Scoreboard() = default;
-    Scoreboard(std::string imagepath);
+    Scoreboard(std::string imagepath, sf::Vector2f position);
     void update();
     bool goalscored();
     void unscored();

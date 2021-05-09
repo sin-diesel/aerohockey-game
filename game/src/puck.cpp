@@ -1,13 +1,16 @@
 #include "../include/puck.h"
 
-Puck::Puck()
+Puck::Puck(std::string imagepath)
 {
-
+    this->imagepath = imagepath;
+    image.loadFromFile(imagepath);
+    sprite.setTexture(image);
+    sprite.setPosition(0, 0);
 }
 
 Striker::Striker()
 {
-    
+
 }
 
 sf::Vector2f Puck::update(sf::Vector2f pos_striker1, sf::Vector2f pos_striker2)

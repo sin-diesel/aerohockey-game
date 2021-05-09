@@ -8,8 +8,10 @@
 #define RADIUS 10
 class Puck {
     protected:
+    std::string imagepath;
     sf::Vector2f position;
     sf::Vector2f speed;
+    sf::Texture image;
     sf::Sprite sprite;
 
     public:

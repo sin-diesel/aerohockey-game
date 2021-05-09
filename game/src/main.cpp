@@ -4,7 +4,7 @@
 int main() {
 
     // window
-    sf::RenderWindow window(sf::VideoMode(800, 600), "aerohockey-game", sf::Style::Default);
+    sf::RenderWindow window(sf::VideoMode(1024, 780), "aerohockey-game", sf::Style::Default);
     Game aerohockey = Game();
 
     // game loop
@@ -38,8 +38,8 @@ int main() {
 
         aerohockey.play();
 
+        window.clear();
         aerohockey.draw_objects(window);
-
         window.display();
     }
 
