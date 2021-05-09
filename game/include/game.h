@@ -1,14 +1,13 @@
 #pragma once
 #include "library.h"
-#include "puck.h"
+#include "dynamic.h"
 #include "scoreboard.h"
 
 class Game {
     private:
 
-        Puck puck;
-        Striker striker1;
-        Striker striker2;
+        DynamicObject puck;
+        DynamicObject striker1, striker2;
         Scoreboard scoreboard;
 
     public:

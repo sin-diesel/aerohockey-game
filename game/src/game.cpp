@@ -1,11 +1,12 @@
 #include "../include/game.h"
 
 Game::Game() {
-    striker1 = Striker();
-    striker2 = Striker();
-    puck = Puck("/home/sergey/aerohockey-game/game/images/puck.jpeg");
+    striker1 = DynamicObject("/home/sergey/aerohockey-game/game/images/circle.jpg");
+    striker2 = DynamicObject("/home/sergey/aerohockey-game/game/images/circle.jpg");
+    puck = DynamicObject("/home/sergey/aerohockey-game/game/images/puck.jpeg");
     scoreboard = Scoreboard("/home/sergey/aerohockey-game/game/images/scoreboard.png", {300, 0});
 }
+
 void Game::start_position() {
     scoreboard.unscored();
 }
@@ -24,8 +25,8 @@ void Game::play() {
 }
 
 void Game::draw_objects(sf::RenderWindow& window) {
-    //striker1.draw(window);
-    //striker2.draw(window);
+    striker1.draw(window);
+    striker2.draw(window);
     puck.draw(window);
     scoreboard.draw(window);
 }
