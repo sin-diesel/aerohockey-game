@@ -1,9 +1,13 @@
 #include "../include/scoreboard.h"
 
-Scoreboard::Scoreboard()
+Scoreboard::Scoreboard(std::string imagepath)
 {
-    
+    this->imagepath = imagepath;
+    image.loadFromFile(imagepath);
+    sprite.setTexture(image);
+    sprite.setPosition(50, 50);
 }
+
 void Scoreboard::update()
 {
     

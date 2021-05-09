@@ -4,7 +4,7 @@ Game::Game() {
     striker1 = Striker();
     striker2 = Striker();
     puck = Puck();
-    scoreboard = Scoreboard();
+    scoreboard = Scoreboard("/home/aerohockey-game/game/images/scoreboard.png");
 }
 void Game::start_position() {
     scoreboard.unscored();

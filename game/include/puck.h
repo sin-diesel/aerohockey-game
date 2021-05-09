@@ -13,7 +13,8 @@ class Puck {
     sf::Sprite sprite;
 
     public:
-    Puck();
+    Puck() = default;
+    Puck(std::string imagepath);
     sf::Vector2f update(sf::Vector2f, sf::Vector2f);
     sf::Vector2f get_coord();
     void draw(sf::RenderWindow& window);
