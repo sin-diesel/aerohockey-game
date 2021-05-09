@@ -10,5 +10,6 @@ public:
     Client();
     ~Client();
     void connect(sf::IpAddress server_addr);
+    bool send(sf::Packet& packet, sf::IpAddress server_addr);
 };
 

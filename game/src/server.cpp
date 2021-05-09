@@ -25,6 +25,7 @@ void Server::handle_connections() {
     socket.receive(connection_info, client_addr, client_port);
     adresses.push_back(client_addr); //save client's adress
     ports.push_back(client_port);    //save client's port
+    //sf::UdpSocket client_socket;
 
     std::cout << "Packet from client received " << std::endl;
     std::cout << "Client addr: " << client_addr << std::endl;
@@ -35,12 +36,17 @@ void Server::get_updates() //receives data about strikers moving from clients
 {
     sf::Packet packet;
     sf::Vector2f pos;
-    client_sockets[0].receive(packet, adresses[0], ports[0]);
+    // sf::IpAddress client_addr;
+    // unsigned short client_port;
+    socket.receive(packet, adresses[0], ports[0]);
     packet >> pos.x >> pos.y;
-    striker1.calculate_speed(pos);
-    client_sockets[1].receive(packet, adresses[1], ports[1]);
-    packet >> pos.x >> pos.y;
-    striker2.calculate_speed(pos);
+    std::cout << "Packet from client received: " << std::endl;
+    std::cout << "pos.x: " << pos.x << std::endl;
+    std::cout << "pos.y: " << pos.y << std:endl;
+    //striker1.calculate_speed(pos);
+    //client_sockets[1].receive(packet, adresses[1], ports[1]);
+    //packet >> pos.x >> pos.y;
+    //striker2.calculate_speed(pos);
 }
 
  void Server::send_updates() //calculates new cooridinates of puck and strikers and sends to clients
@@ -58,7 +64,7 @@ void Server::get_updates() //receives data about strikers moving from clients
 }
 
 void Server::run() {
-    while (1) {
-        handle_connections();
-    }
+    // handle 2 clients
+    get_updates();
+    //send_updates();
 }

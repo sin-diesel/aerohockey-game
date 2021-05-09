@@ -15,6 +15,13 @@ Client::~Client() {
     socket.unbind();
 }
 
+bool Client::send(sf::Packet& packet, sf::IpAddress server_addr) {
+    if (socket.send(packet, server_addr, PORT) != sf::Socket::Done) {
+        return false;
+    }
+    return true;
+}
+
 void Client::connect(sf::IpAddress server_addr) {
     sf::Packet connection_info;
     if (socket.send(connection_info, server_addr, PORT) != sf::Socket::Done) {
