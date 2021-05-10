@@ -13,13 +13,15 @@ int main() {
     
     // connect to server
     client.connect(server_addr);
+    unsigned short server_port = client.get_port();
+    std::cout << "Port received from server: " << server_port << std::endl;
+    
+    sf::Clock clock;
+    sf::Time elapsed;
+
     sf::Vector2f pos;
     pos.x = 0.0f;
     pos.y = 0.0f;
-    
-
-    sf::Clock clock;
-    sf::Time elapsed;
 
     while (1) {
         //packet = client.process_input();
@@ -27,12 +29,10 @@ int main() {
         if (elapsed > client.get_update_time(game)) {
             
             sf::Packet packet;
-            pos.x += 1.0f;
-            pos.y += 2.0f;
             packet << pos.x << pos.y;
             std::cout << "Time elapsed: " << elapsed.asMilliseconds() << std::endl;
 
-            if (!client.send_updates(packet, server_addr)) {
+            if (!client.send_updates(packet, server_addr, server_port)) {
                 std::cerr << "Error sending updates to server. " << std::endl;
                 std::cerr << std::endl;
             }
@@ -45,6 +45,10 @@ int main() {
                 std::cerr << "Error receiving updates from server. " << std::endl;
                 std::cerr << std::endl;
             }
+
+            packet >> pos.x >> pos.y;
+
+            std::cout << "Updated data: " << pos.x << " "  << pos.y << std::endl;
 
             std::cout << "Received from: " << server_addr << std::endl;
             std::cout << "Port: " << server_port << std::endl;

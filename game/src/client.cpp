@@ -17,8 +17,8 @@ Client::~Client() {
     socket.unbind();
 }
 
-bool Client::send_updates(sf::Packet& packet, sf::IpAddress server_addr) {
-    if (socket.send(packet, server_addr, PORT) != sf::Socket::Done) {
+bool Client::send_updates(sf::Packet& packet, sf::IpAddress server_addr, unsigned short server_port) {
+    if (socket.send(packet, server_addr, server_port) != sf::Socket::Done) {
         return false;
     }
     return true;
@@ -35,6 +35,24 @@ void Client::connect(sf::IpAddress server_addr) {
     sf::Packet connection_info;
     if (socket.send(connection_info, server_addr, PORT) != sf::Socket::Done) {
         std::cerr << "Error establishing connection to server." << std::endl;
+    }
+}
+
+unsigned short Client::get_port() {
+    sf::Packet packet;
+    sf::IpAddress server_addr;
+    unsigned short port;
+
+    socket.setBlocking(true);
+
+    if (socket.receive(packet, server_addr, port) != sf::Socket::Done) {
+        std::cerr << "Error receiving port from server. " << std::endl;
+        socket.setBlocking(false);
+        return 0;
+    } else {
+        packet >> port;
+        socket.setBlocking(false);
+        return port;
     }
 }
 

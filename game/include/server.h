@@ -4,6 +4,8 @@
 #include <vector>
 
 #define PORT 54000
+#define CLIENT_1_PORT 54001
+#define CLIENT_2_PORT 54002
 
 class Server {
 private:
@@ -18,19 +20,20 @@ private:
     
     sf::Packet connection_info;
     // sockets for each client
-    std::vector<sf::UdpSocket> client_sockets;
+    std::vector<sf::UdpSocket*> client_sockets;
     std::vector<sf::IpAddress> adresses;
     std::vector<short unsigned> ports;
+    //std::vector<short unsigned> available_ports;
 public:
     Server();
     ~Server();
     void run(Game& game);
     // accept incoming connections in blocking mode
-    void handle_connections();
+    void handle_connections(int client_number);
     // get updates from all clients
-    void get_updates();
+    void get_updates(sf::Packet& packet);
     // send updated info for rendering to all clients
-    void send_updates();
+    void send_updates(sf::Packet& packet);
     // calculate all information that is going to be sent back to client
     void calculate_changes();
 };
