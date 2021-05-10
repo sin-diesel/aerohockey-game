@@ -8,6 +8,7 @@
 class Server {
 private:
     int number_of_clients = 0;
+    // time interval used to exchange data packets between server and client
     Puck puck;
     Striker striker1, striker2;
 
@@ -23,7 +24,7 @@ private:
 public:
     Server();
     ~Server();
-    void run();
+    void run(Game& game);
     // accept incoming connections in blocking mode
     void handle_connections();
     // get updates from all clients

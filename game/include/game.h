@@ -10,6 +10,7 @@ class Game {
         Striker striker1;
         Striker striker2;
         Scoreboard scoreboard;
+        sf::Time network_update_time = sf::milliseconds(1000);
 
     public:
 
@@ -27,4 +28,20 @@ class Game {
         void play();
 
         void draw_objects(sf::RenderWindow& window);
+
+        sf::Time get_update_time() {
+            return network_update_time;
+        }
+};
+
+
+struct NetworkPacket {
+    float pos1_x;
+    float pos2_x;
+    
+    float pos1_y;
+    float pos2_y;
+
+    float puck_x;
+    float puck_y;
 };
