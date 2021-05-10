@@ -8,9 +8,11 @@ class Game {
 
         DynamicObject puck;
         DynamicObject striker1, striker2;
+    
+    public:
+
         Scoreboard scoreboard;
 
-    public:
         Game() = default;
         Game(sf::Vector2u windowsize);
         // virtual destructor in case we are going to use inheritance

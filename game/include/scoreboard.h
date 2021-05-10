@@ -7,7 +7,8 @@ class Scoreboard {
     std::string imagepath;
     std::string fontpath;
     sf::Vector2f position;
-    sf::Texture image;
+    sf::Image image;
+    sf::Texture texture;
     sf::Sprite sprite;
     sf::Font font;
     std::pair<int, int> score;
@@ -18,4 +19,5 @@ class Scoreboard {
     Scoreboard(std::string imagepath, sf::Vector2f position_);
     void update();
     void draw(sf::RenderWindow& window);
+    sf::Vector2u getSize();
 };

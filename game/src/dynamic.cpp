@@ -4,7 +4,6 @@ DynamicObject::DynamicObject(std::string imagepath)
 {
     this->imagepath = imagepath;
     image.loadFromFile(imagepath);
-    //sprite.setTexture(image);
     sprite.setOrigin(image.getSize().x / 2, image.getSize().y / 2);
     //sprite.setPosition();
 }
