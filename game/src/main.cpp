@@ -44,7 +44,7 @@ int main() {
         mouse_pos = sf::Mouse::getPosition(window);
         
 
-        aerohockey.play();
+        aerohockey.play(window);
 
         window.clear(sf::Color(0, 49, 83, 0));
         window.draw(background);

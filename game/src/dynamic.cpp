@@ -4,15 +4,22 @@ DynamicObject::DynamicObject(std::string imagepath)
 {
     this->imagepath = imagepath;
     image.loadFromFile(imagepath);
-    sprite.setOrigin(image.getSize().x / 2, image.getSize().y / 2);
-    //sprite.setPosition();
+    image.createMaskFromColor(sf::Color::White);
+    texture.loadFromImage(image);
+    sprite.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
 }
 
 void DynamicObject::draw(sf::RenderWindow& window)
 {
-    sprite.setTexture(image);
+    sprite.setTexture(texture);
+    sprite.setPosition(position);
     window.draw(sprite);
 }
+
+void DynamicObject::set_coord(sf::Vector2f new_pos)
+{
+    position = new_pos;
+}  
 
 sf::Vector2f DynamicObject::update(sf::Vector2f pos_striker1, sf::Vector2f pos_striker2)
 {

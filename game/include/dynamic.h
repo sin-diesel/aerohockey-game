@@ -11,7 +11,8 @@ class DynamicObject {
     std::string imagepath;
     sf::Vector2f position;
     sf::Vector2f speed;
-    sf::Texture image;
+    sf::Image image;
+    sf::Texture texture;
     sf::Sprite sprite;
 
     public:
@@ -19,6 +20,7 @@ class DynamicObject {
     DynamicObject(std::string imagepath);
     sf::Vector2f update(sf::Vector2f, sf::Vector2f);
     sf::Vector2f get_coord();
+    void set_coord(sf::Vector2f new_pos);
     void draw(sf::RenderWindow& window);
     void calculate_speed(sf::Vector2f);
 };

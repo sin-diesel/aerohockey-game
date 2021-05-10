@@ -23,7 +23,7 @@ class Game {
         // this is to be used by client to draw stuff
         void render();
 
-        void play();
+        void play(sf::RenderWindow& window);
 
         void draw_objects(sf::RenderWindow& window);
 };
