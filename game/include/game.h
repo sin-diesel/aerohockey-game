@@ -1,19 +1,20 @@
 #pragma once
 #include "library.h"
-#include "puck.h"
+#include "dynamic.h"
 #include "scoreboard.h"
 
 class Game {
     private:
 
-        Puck puck;
-        Striker striker1;
-        Striker striker2;
-        Scoreboard scoreboard;
-
+        DynamicObject puck;
+        DynamicObject striker1, striker2;
+    
     public:
 
-        Game();
+        Scoreboard scoreboard;
+
+        Game() = default;
+        Game(sf::Vector2u windowsize);
         // virtual destructor in case we are going to use inheritance
         virtual ~Game();
 
@@ -22,9 +23,7 @@ class Game {
         // this is to be used by client to draw stuff
         void render();
 
-        void start_position();
-
-        void play();
+        void play(sf::RenderWindow& window);
 
         void draw_objects(sf::RenderWindow& window);
 };

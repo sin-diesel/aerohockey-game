@@ -1,19 +1,27 @@
-#include "../include/puck.h"
+#include "../include/dynamic.h"
 
-Puck::Puck(std::string imagepath)
+DynamicObject::DynamicObject(std::string imagepath)
 {
     this->imagepath = imagepath;
     image.loadFromFile(imagepath);
-    sprite.setTexture(image);
-    sprite.setPosition(0, 0);
+    image.createMaskFromColor(sf::Color::White);
+    texture.loadFromImage(image);
+    sprite.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
 }
 
-Striker::Striker()
+void DynamicObject::draw(sf::RenderWindow& window)
 {
-
+    sprite.setTexture(texture);
+    sprite.setPosition(position);
+    window.draw(sprite);
 }
 
-sf::Vector2f Puck::update(sf::Vector2f pos_striker1, sf::Vector2f pos_striker2)
+void DynamicObject::set_coord(sf::Vector2f new_pos)
+{
+    position = new_pos;
+}  
+
+sf::Vector2f DynamicObject::update(sf::Vector2f pos_striker1, sf::Vector2f pos_striker2)
 {
     sf::Vector2f pos = position += speed;
     sf::Vector2f diff1 = pos - pos_striker1;
@@ -33,18 +41,15 @@ sf::Vector2f Puck::update(sf::Vector2f pos_striker1, sf::Vector2f pos_striker2)
     return pos;
 }
 
-sf::Vector2f Puck::get_coord()
+sf::Vector2f DynamicObject::get_coord()
 {
     return position;
 }
         
-void Striker::calculate_speed(sf::Vector2f pos) 
+void DynamicObject::calculate_speed(sf::Vector2f pos) 
 {
     speed = pos - position;
 }
 
-void Puck::draw(sf::RenderWindow& window)
-{
-    window.draw(sprite);
-}
+
 

@@ -6,24 +6,21 @@
 #define MIN_POS_X 0
 #define MIN_POS_Y 0
 #define RADIUS 10
-class Puck {
+class DynamicObject {
     protected:
     std::string imagepath;
     sf::Vector2f position;
     sf::Vector2f speed;
-    sf::Texture image;
+    sf::Image image;
+    sf::Texture texture;
     sf::Sprite sprite;
 
     public:
-    Puck() = default;
-    Puck(std::string imagepath);
+    DynamicObject() = default;
+    DynamicObject(std::string imagepath);
     sf::Vector2f update(sf::Vector2f, sf::Vector2f);
     sf::Vector2f get_coord();
+    void set_coord(sf::Vector2f new_pos);
     void draw(sf::RenderWindow& window);
-};
-
-class Striker : public Puck {
-    public:
-    Striker();
     void calculate_speed(sf::Vector2f);
 };
