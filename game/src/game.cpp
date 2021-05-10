@@ -1,14 +1,12 @@
 #include "../include/game.h"
 
-Game::Game() {
+Game::Game(sf::Vector2u windowsize_) {
+    sf::Vector2f windowsize = sf::Vector2f(windowsize_);
+    scoreboard = Scoreboard("/home/sergey/aerohockey-game/game/images/scoreboard.png", {windowsize.x/2, 0});  
     striker1 = DynamicObject("/home/sergey/aerohockey-game/game/images/circle.jpg");
     striker2 = DynamicObject("/home/sergey/aerohockey-game/game/images/circle.jpg");
     puck = DynamicObject("/home/sergey/aerohockey-game/game/images/puck.jpeg");
-    scoreboard = Scoreboard("/home/sergey/aerohockey-game/game/images/scoreboard.png", {300, 0});
-}
-
-void Game::start_position() {
-    scoreboard.unscored();
+   
 }
 
 void Game::play() {

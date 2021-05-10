@@ -5,7 +5,7 @@ int main() {
 
     // window
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "aerohockey-game", sf::Style::Default);
-    Game aerohockey;
+    Game aerohockey = Game(window.getSize());
 
     sf::Texture background_image;
     sf::Sprite background;

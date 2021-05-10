@@ -11,8 +11,8 @@ class Game {
         Scoreboard scoreboard;
 
     public:
-
-        Game();
+        Game() = default;
+        Game(sf::Vector2u windowsize);
         // virtual destructor in case we are going to use inheritance
         virtual ~Game();
 
@@ -20,8 +20,6 @@ class Game {
         void update();
         // this is to be used by client to draw stuff
         void render();
-
-        void start_position();
 
         void play();
 
