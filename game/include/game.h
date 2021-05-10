@@ -10,7 +10,7 @@ class Game {
         Striker striker1;
         Striker striker2;
         Scoreboard scoreboard;
-        sf::Time network_update_time = sf::milliseconds(1000);
+        sf::Time network_update_time = sf::milliseconds(100);
 
     public:
 

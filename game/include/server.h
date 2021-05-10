@@ -30,10 +30,11 @@ public:
     void run(Game& game);
     // accept incoming connections in blocking mode
     void handle_connections(int client_number);
+    void init_sockets();
     // get updates from all clients
-    void get_updates(sf::Packet& packet);
+    bool get_updates(std::vector<sf::Packet>& data);
     // send updated info for rendering to all clients
-    void send_updates(sf::Packet& packet);
+    bool send_updates(std::vector<sf::Packet>& data);
     // calculate all information that is going to be sent back to client
     void calculate_changes();
 };
