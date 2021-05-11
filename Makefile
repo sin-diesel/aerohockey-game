@@ -1,9 +1,9 @@
 
 CXX = g++
 CXXFLAGS = -std=c++11 -g -I $(INCLUDE)
-SRC_PATH = ~/aerohockey-game/game/src
-OBJ_PATH = ~/aerohockey-game/game/obj
-INCLUDE = ~/aerohockey-game/game/include
+SRC_PATH = game/src
+OBJ_PATH = game/obj
+INCLUDE = game/include
 
 define OBJ
 
@@ -24,7 +24,7 @@ $(SRC_PATH)/main.cpp $(SRC_PATH)/game.cpp $(SRC_PATH)/dynamic.cpp $(SRC_PATH)/sc
 	$(SRC_PATH)/server.cpp $(SRC_PATH)/main_server.cpp $(SRC_PATH)/main_client.cpp
 endef
 
-DLIB = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
+DLIB = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network  -lstdc++fs
 
 $(OBJ_PATH)/main.o: $(SRC_PATH)/main.cpp
 	$(CXX) $(CXXFLAGS) $^ -c -o $(OBJ_PATH)/main.o
@@ -37,9 +37,6 @@ $(OBJ_PATH)/server.o: $(SRC_PATH)/server.cpp
 
 $(OBJ_PATH)/dynamic.o: $(SRC_PATH)/dynamic.cpp
 	$(CXX) $(CXXFLAGS) $^ -c -o $(OBJ_PATH)/dynamic.o
-
-$(OBJ_PATH)/scoreboard.o: $(SRC_PATH)/scoreboard.cpp
-	$(CXX) $(CXXFLAGS) $^ -c -o $(OBJ_PATH)/scoreboard.o
 
 $(OBJ_PATH)/scoreboard.o: $(SRC_PATH)/scoreboard.cpp
 	$(CXX) $(CXXFLAGS) $^ -c -o $(OBJ_PATH)/scoreboard.o
@@ -63,7 +60,5 @@ client: $(CLIENT_OBJ)
 	g++ $^ -o client.out $(DLIB)
 
 clean:
-	-rm game.out
-	-rm server.out
-	-rm client.out
+	rm *.out
 	rm $(OBJ_PATH)/*.o

@@ -16,7 +16,7 @@ class Scoreboard {
 
     public:
     Scoreboard() = default;
-    Scoreboard(std::string imagepath, sf::Vector2f position_);
+    Scoreboard(std::string imagepath, sf::Vector2f position_, const std::string);
     void update();
     void draw(sf::RenderWindow& window);
     sf::Vector2u getSize();

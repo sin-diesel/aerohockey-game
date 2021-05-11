@@ -1,6 +1,6 @@
 #include "../include/scoreboard.h"
 
-Scoreboard::Scoreboard(std::string imagepath, sf::Vector2f position_)
+Scoreboard::Scoreboard(std::string imagepath, sf::Vector2f position_, const std::string path)
 {
     this->imagepath = imagepath;
     position = sf::Vector2f(position_);
@@ -12,7 +12,7 @@ Scoreboard::Scoreboard(std::string imagepath, sf::Vector2f position_)
 
     score.first = 0;
     score.second = 0;
-    fontpath = "/home/sergey/aerohockey-game/game/images/arial.ttf";
+    fontpath = path + "/game/images/arial.ttf";
     font.loadFromFile(fontpath);
     numbers.first.setFillColor(sf::Color::Black);
     numbers.second.setFillColor(sf::Color::Black);

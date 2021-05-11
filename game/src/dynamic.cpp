@@ -19,19 +19,19 @@ void DynamicObject::draw(sf::RenderWindow& window)
 void DynamicObject::set_coord(sf::Vector2f new_pos)
 {
     position = new_pos;
-}  
+}
 
-sf::Vector2f DynamicObject::update(sf::Vector2f pos_striker1, sf::Vector2f pos_striker2)
+sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDynamicObject& striker2)
 {
     sf::Vector2f pos = position += speed;
-    sf::Vector2f diff1 = pos - pos_striker1;
-    sf::Vector2f diff2 = pos - pos_striker2;
-    /*if (abs(diff1.x)*abs(diff1.x)+abs(diff1.y)*abs(diff1.y) < RADIUS*RADIUS) {
-        // speed changes
+    sf::Vector2f diff1 = pos - striker1.position;
+    sf::Vector2f diff2 = pos - striker2.position;
+    if (abs(diff1.x)*abs(diff1.x)+abs(diff1.y)*abs(diff1.y) < RADIUS*RADIUS) {
+        speed = ((mass-striker1.mass)*speed+2*striker1.mass*striker1.calculate_speed())/(mass+striker1.mass);
     }
     if (abs(diff2.x)*abs(diff2.x)+abs(diff2.y)*abs(diff2.y) < RADIUS*RADIUS) {
-        // speed changes
-    }*/
+        speed = ((mass-striker2.mass)*speed+2*striker2.mass*striker2.calculate_speed())/(mass+striker2.mass);
+    }
     if (pos.x == MAX_POS_X || pos.x == MIN_POS_X) {
         speed.x = speed.x * -1;
     }
@@ -41,15 +41,20 @@ sf::Vector2f DynamicObject::update(sf::Vector2f pos_striker1, sf::Vector2f pos_s
     return pos;
 }
 
-sf::Vector2f DynamicObject::get_coord()
+sf::Vector2f ServerDynamicObject::get_coord()
 {
     return position;
 }
         
-void DynamicObject::calculate_speed(sf::Vector2f pos) 
+sf::Vector2f ServerDynamicObject::calculate_speed(sf::Vector2f pos) 
 {
-    speed = pos - position;
+    return speed = pos - position;
+}
+sf::Vector2f ServerDynamicObject::calculate_speed() 
+{
+    return speed;
 }
 
-
+ServerDynamicObject::ServerDynamicObject(): mass(10) {}
+ServerDynamicObject::ServerDynamicObject(float mass): mass(mass) {}
 

@@ -2,7 +2,8 @@
 #include "library.h"
 #include "dynamic.h"
 #include "scoreboard.h"
-
+#include <unistd.h>
+#include <experimental/filesystem>
 class Game {
     private:
 
@@ -10,7 +11,7 @@ class Game {
         DynamicObject striker1, striker2;
     
     public:
-
+    const std::string path;
         Scoreboard scoreboard;
 
         Game() = default;

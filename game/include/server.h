@@ -7,8 +7,8 @@
 class Server {
 private:
     int number_of_clients = 0;
-    DynamicObject puck;
-    DynamicObject striker1, striker2;
+    ServerDynamicObject puck;
+    ServerDynamicObject striker1, striker2;
 
     unsigned short port = 0;
     sf::UdpSocket socket;

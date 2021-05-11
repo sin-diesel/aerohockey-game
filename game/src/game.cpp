@@ -1,11 +1,11 @@
 #include "../include/game.h"
 
-Game::Game(sf::Vector2u windowsize_) {
+Game::Game(sf::Vector2u windowsize_): path(std::experimental::filesystem::current_path().string()) {
     sf::Vector2f windowsize = sf::Vector2f(windowsize_);
-    scoreboard = Scoreboard("/home/sergey/aerohockey-game/game/images/scoreboard.png", {windowsize.x/2, 0});  
-    striker1 = DynamicObject("/home/sergey/aerohockey-game/game/images/striker.png");
-    striker2 = DynamicObject("/home/sergey/aerohockey-game/game/images/striker.png");
-    puck = DynamicObject("/home/sergey/aerohockey-game/game/images/puck.png");
+    scoreboard = Scoreboard(path + "/game/images/scoreboard.png", {windowsize.x/2, 0}, path);  
+    striker1 = DynamicObject(path + "/game/images/striker.png");
+    striker2 = DynamicObject(path + "/game/images/striker.png");
+    puck = DynamicObject(path + "/game/images/puck.png");
    
     puck.set_coord({windowsize.x / 2, windowsize.y / 2});  //temporary, just to look vizualization
     striker2.set_coord({windowsize.x * 3 / 4, windowsize.y / 2});  //temporary, just to look vizualization
