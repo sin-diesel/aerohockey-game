@@ -69,7 +69,7 @@ bool Server::get_updates(std::vector<sf::Packet>& data) //receives data about st
 
     // here we receive not from the main server socket, but instead from client socket
     //client_selector.wait()
-    if (client_selector.wait(sf::microseconds(100))) {
+    if (client_selector.wait(sf::milliseconds(1))) {
         for (int i = 0; i < 2; ++i) {
             if (client_selector.isReady(*(client_sockets[i]))) {
                 client_sockets[i]->receive(data[i], client_address, client_port);
@@ -80,6 +80,8 @@ bool Server::get_updates(std::vector<sf::Packet>& data) //receives data about st
                 std::cerr << std::endl;
             }
         }
+    } else {
+        return false;
     }
         // if (client_sockets[i]->receive(data[i], client_address, client_port) != sf::Socket::Done) {
         //     std::cerr << "Error receiving packet from client. " << std::endl;
@@ -132,13 +134,18 @@ void Server::run(Game& game) {
 
             std::cout << "Packet from client received: " << std::endl;
 
-            if (received) {
+            //if (received) {
                 for (int i = 0; i < 2; ++i) {
-                    data[i] >> client_direction.x >> client_direction.y;
-                    std::cout << "Client  " << i << " direction: " << client_direction.x << " " 
-                                                << client_direction.y << std::endl;
-                    client_direction.x += 1.0f;
-                    client_direction.y += 1.0f;
+                    if (received) {
+                        data[i] >> client_direction.x >> client_direction.y;
+                        std::cout << "Client  " << i << " direction: " << client_direction.x << " " 
+                                                    << client_direction.y << std::endl;
+                    }
+
+                    if (received) {
+                        client_direction.x += 1.0f;
+                        client_direction.y += 1.0f;
+                    }
 
                     data[i].clear();
                     response[i].clear();
@@ -149,7 +156,7 @@ void Server::run(Game& game) {
                                                 << client_direction.y << std::endl;
                 }
                 send_updates(response);
-            }
+           // }
 
             clock.restart();
         }
