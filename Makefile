@@ -61,4 +61,4 @@ clean:
 	-rm game.out
 	-rm server.out
 	-rm client.out
-	rm $(OBJ_PATH)/*.o
+	-rm $(OBJ_PATH)/*.o

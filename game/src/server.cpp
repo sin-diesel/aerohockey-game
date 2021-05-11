@@ -9,10 +9,6 @@ Server::Server() {
     }
     socket.setBlocking(true);
 
-    addr = sf::IpAddress::LocalHost;
-}
-
-void Server::init_sockets() {
     // create sockets for clients
     for (int i = 0; i < 2; ++i) { 
         //client_sockets.push_back(*client_socket);
@@ -23,9 +19,12 @@ void Server::init_sockets() {
             std::cerr << "Error binding client socket on server. " << std::endl;
         }
 
-        client_sockets[i]->setBlocking(false);
+        client_sockets[i]->setBlocking(true);
+        client_selector.add(*(client_sockets[i]));
 
     }
+
+    addr = sf::IpAddress::LocalHost;
 }
 
 Server::~Server() {
@@ -46,7 +45,6 @@ void Server::handle_connections(int client_number) {
     unsigned short client_port;
     
     std::cout << "Waiting for incoming connection from client..." << std::endl; 
-
     socket.receive(connection_info, client_addr, client_port);
     
     adresses.push_back(client_addr); //save client's adress
@@ -70,16 +68,27 @@ bool Server::get_updates(std::vector<sf::Packet>& data) //receives data about st
     unsigned short client_port;
 
     // here we receive not from the main server socket, but instead from client socket
-    for (int i = 0; i < 2; ++i) {
-        if (client_sockets[i]->receive(data[i], client_address, client_port) != sf::Socket::Done) {
-            std::cerr << "Error receiving packet from client. " << std::endl;
-            std::cerr << std::endl;
-            return false;
+    //client_selector.wait()
+    if (client_selector.wait(sf::microseconds(100))) {
+        for (int i = 0; i < 2; ++i) {
+            if (client_selector.isReady(*(client_sockets[i]))) {
+                client_sockets[i]->receive(data[i], client_address, client_port);
+                std::cout << "Received from: " << std::endl;
+                std::cout << client_address << std::endl << client_port << std::endl;
+            } else {
+                std::cerr << "Error receiving packet from client. " << std::endl;
+                std::cerr << std::endl;
+            }
         }
-
-        std::cout << "Received from: " << std::endl;
-        std::cout << client_address << std::endl << client_port << std::endl;
     }
+        // if (client_sockets[i]->receive(data[i], client_address, client_port) != sf::Socket::Done) {
+        //     std::cerr << "Error receiving packet from client. " << std::endl;
+        //     std::cerr << std::endl;
+        //     return false;
+        // }
+
+        // std::cout << "Received from: " << std::endl;
+        // std::cout << client_address << std::endl << client_port << std::endl;
 
     return true;
 }
@@ -106,6 +115,11 @@ void Server::run(Game& game) {
     for (int i = 0; i < 2; ++i) {
         data.push_back(sf::Packet());
     }
+    
+    std::vector<sf::Packet> response;
+    for (int i = 0; i < 2; ++i) {
+        response.push_back(sf::Packet());
+    }
 
     sf::Vector2f client_direction;
 
@@ -119,30 +133,22 @@ void Server::run(Game& game) {
             std::cout << "Packet from client received: " << std::endl;
 
             if (received) {
-
                 for (int i = 0; i < 2; ++i) {
                     data[i] >> client_direction.x >> client_direction.y;
                     std::cout << "Client  " << i << " direction: " << client_direction.x << " " 
                                                 << client_direction.y << std::endl;
                     client_direction.x += 1.0f;
                     client_direction.y += 1.0f;
+
                     data[i].clear();
-
-                    data[i] << client_direction.x << client_direction.y;
-                }
-
-                for (int i = 0; i < 2; ++i) {
+                    response[i].clear();
+                    
+                    // data[i] << client_direction.x << client_direction.y;
+                    response[i] << client_direction.x << client_direction.y;
                     std::cout << "Client  " << i << " direction updated: " << client_direction.x << " " \
                                                 << client_direction.y << std::endl;
                 }
-            }
-            
-            if (received) { 
-                float pos1;
-                float pos2;
-                data[0] >> pos1 >> pos2;
-                std::cout << "Data sent: " << pos1 << " " << pos2;
-                send_updates(data);
+                send_updates(response);
             }
 
             clock.restart();

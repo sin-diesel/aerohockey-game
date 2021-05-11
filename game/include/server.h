@@ -23,6 +23,9 @@ private:
     std::vector<sf::UdpSocket*> client_sockets;
     std::vector<sf::IpAddress> adresses;
     std::vector<short unsigned> ports;
+
+    sf::SocketSelector client_selector;
+    sf::SocketSelector server_selector;
     //std::vector<short unsigned> available_ports;
 public:
     Server();

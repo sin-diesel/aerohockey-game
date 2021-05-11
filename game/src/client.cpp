@@ -8,8 +8,7 @@ Client::Client() {
     if (socket.bind(port) != sf::Socket::Done) {
         std::cerr << "Error binding client socket." << std::endl;
     }
-    // do not block socket
-    socket.setBlocking(false);
+    socket.setBlocking(true);
     std::cout << "Initializing client." << std::endl;
 }
 
@@ -47,11 +46,11 @@ unsigned short Client::get_port() {
 
     if (socket.receive(packet, server_addr, port) != sf::Socket::Done) {
         std::cerr << "Error receiving port from server. " << std::endl;
-        socket.setBlocking(false);
+        //socket.setBlocking(false);
         return 0;
     } else {
         packet >> port;
-        socket.setBlocking(false);
+        //socket.setBlocking(false);
         return port;
     }
 }

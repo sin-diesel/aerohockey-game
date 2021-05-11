@@ -16,8 +16,6 @@ int main() {
     unsigned short server_port = client.get_port();
     std::cout << "Port received from server: " << server_port << std::endl;
 
-    
-    
     sf::Clock clock;
     sf::Time elapsed;
 
@@ -34,7 +32,6 @@ int main() {
             //std::cout << "Time elapsed: " << elapsed.asMilliseconds() << std::endl;
 
             sf::Packet packet;
-            packet.clear();
             packet << mouse_direction.x << mouse_direction.y;
             std::cout << "Sent data: " << mouse_direction.x << " "  << mouse_direction.y << std::endl;
 
@@ -44,9 +41,11 @@ int main() {
             }
 
             std::cout << "Updates sent to server." << std::endl;
+            packet.clear();
 
             sf::IpAddress server_addr;
             unsigned short server_port;
+
             if (!client.receive_updates(packet, server_addr, server_port)) {
                 std::cerr << "Error receiving updates from server. " << std::endl;
                 std::cerr << std::endl;
@@ -65,15 +64,6 @@ int main() {
             clock.restart();
         }
 
-
-        // sf::Packet packet;
-        // pos.x += 1.0f;
-        // pos.y += 2.0f;
-        // packet << pos.x << pos.y;
-        // std::cerr << "Pos sent to server: " << pos.x << " " << pos.y << std::endl;
-        // if (!client.send(packet, server_addr)) {
-        //     std::cerr << "Failure in sending packet to server. " << std::endl;
-        // }
     }
 
     return 0;
