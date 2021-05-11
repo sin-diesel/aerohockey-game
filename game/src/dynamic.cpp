@@ -1,6 +1,6 @@
 #include "../include/dynamic.h"
 
-DynamicObject::DynamicObject(std::string imagepath)
+ClientDynamicObject::ClientDynamicObject(std::string imagepath)
 {
     this->imagepath = imagepath;
     image.loadFromFile(imagepath);
@@ -9,7 +9,7 @@ DynamicObject::DynamicObject(std::string imagepath)
     sprite.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
 }
 
-void DynamicObject::draw(sf::RenderWindow& window)
+void ClientDynamicObject::draw(sf::RenderWindow& window)
 {
     sprite.setTexture(texture);
     sprite.setPosition(position);
@@ -26,10 +26,10 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
     sf::Vector2f pos = position += speed;
     sf::Vector2f diff1 = pos - striker1.position;
     sf::Vector2f diff2 = pos - striker2.position;
-    if (abs(diff1.x)*abs(diff1.x)+abs(diff1.y)*abs(diff1.y) < RADIUS*RADIUS) {
+    if ((diff1.x)*(diff1.x)+(diff1.y)*(diff1.y) <= RADIUS*RADIUS) {
         speed = ((mass-striker1.mass)*speed+2*striker1.mass*striker1.calculate_speed())/(mass+striker1.mass);
     }
-    if (abs(diff2.x)*abs(diff2.x)+abs(diff2.y)*abs(diff2.y) < RADIUS*RADIUS) {
+    if ((diff2.x)*(diff2.x)+(diff2.y)*(diff2.y) <= RADIUS*RADIUS) {
         speed = ((mass-striker2.mass)*speed+2*striker2.mass*striker2.calculate_speed())/(mass+striker2.mass);
     }
     if (pos.x == MAX_POS_X || pos.x == MIN_POS_X) {
@@ -48,13 +48,25 @@ sf::Vector2f ServerDynamicObject::get_coord()
         
 sf::Vector2f ServerDynamicObject::calculate_speed(sf::Vector2f pos) 
 {
-    return speed = pos - position;
+    speed = pos - position;
+    if (position.x <= MAX_POS_X - RADIUS && speed.x > 0)
+        speed.x = 0;
+    if (position.y <= MAX_POS_Y - RADIUS && speed.y > 0)
+        speed.y = 0;
+    if (position.x >= MIN_POS_X + RADIUS && speed.x < 0)
+        speed.x = 0;
+    if (position.y >= MIN_POS_Y + RADIUS && speed.y < 0)
+        speed.y = 0;
+    pos.x = (speed.x == 0) ? 0 : pos.x, pos.y = (speed.y == 0) ? 0 : pos.y;
+    set_coord(pos);
+    return speed;
 }
+
 sf::Vector2f ServerDynamicObject::calculate_speed() 
 {
     return speed;
 }
 
-ServerDynamicObject::ServerDynamicObject(): mass(10) {}
+ServerDynamicObject::ServerDynamicObject(): mass(DEFAULT_MASS) {}
 ServerDynamicObject::ServerDynamicObject(float mass): mass(mass) {}
 

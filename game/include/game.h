@@ -7,8 +7,8 @@
 class Game {
     private:
 
-        DynamicObject puck;
-        DynamicObject striker1, striker2;
+        ClientDynamicObject puck;
+        ClientDynamicObject striker1, striker2;
     
     public:
     const std::string path;

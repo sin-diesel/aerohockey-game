@@ -31,4 +31,5 @@ public:
     void send_updates();
     // calculate all information that is going to be sent back to client
     void calculate_changes();
+    void update_strikers(sf::Vector2f, sf::Vector2f);
 };

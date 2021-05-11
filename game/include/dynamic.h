@@ -6,25 +6,32 @@
 #define MIN_POS_X 0
 #define MIN_POS_Y 0
 #define RADIUS 10
+#define DEFAULT_MASS 10
 
 class DynamicObject {
     protected:
-    std::string imagepath;
     sf::Vector2f position;
+
+    public:
+    void set_coord(sf::Vector2f new_pos);
+
+};
+
+class ClientDynamicObject : public DynamicObject {
+    private:
     sf::Image image;
     sf::Texture texture;
     sf::Sprite sprite;
+    std::string imagepath;
 
     public:
-    DynamicObject() = default;
-    DynamicObject(std::string imagepath);
-    void set_coord(sf::Vector2f new_pos);
+    ClientDynamicObject() = default;
+    ClientDynamicObject(std::string imagepath);
     void draw(sf::RenderWindow& window);
 };
 
-class ServerDynamicObject {
-    protected:
-    sf::Vector2f position;
+class ServerDynamicObject : public DynamicObject {
+    private:
     sf::Vector2f speed;
 
     public:
