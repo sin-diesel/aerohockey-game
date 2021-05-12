@@ -7,7 +7,8 @@ private:
     sf::IpAddress addr;
     unsigned short port;
     sf::UdpSocket socket;
-
+    int number;
+    
 public:
 
     Client();

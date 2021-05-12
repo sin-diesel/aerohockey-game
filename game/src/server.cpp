@@ -188,7 +188,7 @@ void Server::run(Game& game) {
                     }
                     response[i] << pos;
                     std::cout << "Client  " << i << " pos updated: " << pos1[i].x << " " \
-                                                << pos1[i].y << std::endl;
+                                                << pos1[i].y << " pos: " << pos.x << " " << pos.y << std::endl;
                 }
                 send_updates(response);
            // }

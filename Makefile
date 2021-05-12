@@ -5,6 +5,9 @@ SRC_PATH = game/src
 OBJ_PATH = game/obj
 INCLUDE = game/include
 
+.PHONY: all
+all: server client
+
 define OBJ
 
 $(OBJ_PATH)/main.o $(OBJ_PATH)/game.o $(OBJ_PATH)/dynamic.o $(OBJ_PATH)/scoreboard.o $(OBJ_PATH)/server.o
@@ -58,8 +61,7 @@ else
 DLIB = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network -lstdc++fs
 endif
 
-all: $(OBJ)
-	g++ $^ -o game.out $(DLIB)
+
 	
 server: $(SERVER_OBJ)
 	g++ $^ -o server.out $(DLIB)
@@ -67,6 +69,7 @@ server: $(SERVER_OBJ)
 client: $(CLIENT_OBJ)
 	g++ $^ -o client.out $(DLIB)
 
+.PHONY: clean
 clean:
 	-rm *.out
 	-rm $(OBJ_PATH)/*.o

@@ -4,21 +4,19 @@
 #include "scoreboard.h"
 #include <unistd.h>
 #include <experimental/filesystem>
-
+#include <vector>
 
 class Game {
     private:
-
-        
-        ClientDynamicObject striker1, striker2;
         sf::Time network_update_time = sf::milliseconds(100);
 
     public:
-    std::string path;
-        ClientDynamicObject puck;
+        int number;
+        std::string path;
+        ClientDynamicObject puck, striker1, striker2;
         Scoreboard scoreboard;
         Game() = default;
-        Game(sf::Vector2u windowsize);
+        Game(sf::Vector2u windowsize, int number);
         // virtual destructor in case we are going to use inheritance
         virtual ~Game();
 

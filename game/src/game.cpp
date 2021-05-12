@@ -4,7 +4,7 @@
 
 //const char path[] = "/Users/stassidelnikov/aerohockey-game";
 
-Game::Game(sf::Vector2u windowsize_) {
+Game::Game(sf::Vector2u windowsize_, int number_) {
 
     struct utsname details;
     int ret = uname(&details);
@@ -19,7 +19,7 @@ Game::Game(sf::Vector2u windowsize_) {
     #else
         path = std::experimental::filesystem::current_path().string();
     #endif
-
+    this->number = number;
     sf::Vector2f windowsize = sf::Vector2f(windowsize_);
     scoreboard = Scoreboard(path + "/game/images/scoreboard.png", {windowsize.x/2, 0}, path);  
     striker1 = ClientDynamicObject(path + "/game/images/striker.png");
@@ -39,7 +39,10 @@ void Game::play(sf::RenderWindow& window) {
     //puck.update({150, 50}, {0, 0});
     //scoreboard.update();
     sf::Vector2f mouse_pos = sf::Vector2f(sf::Mouse::getPosition(window));
-    striker1.set_coord(mouse_pos); //temporary, just to look vizualization
+    if (number == 1)
+        striker1.set_coord(mouse_pos); //temporary, just to look vizualization
+    else
+        striker2.set_coord(mouse_pos);
 }
 
 void Game::draw_objects(sf::RenderWindow& window) {

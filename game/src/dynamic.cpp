@@ -23,22 +23,21 @@ void DynamicObject::set_coord(sf::Vector2f new_pos)
 
 sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDynamicObject& striker2)
 {
-    sf::Vector2f pos = position += speed;
-    sf::Vector2f diff1 = pos - striker1.position;
-    sf::Vector2f diff2 = pos - striker2.position;
+    sf::Vector2f diff1 = position - striker1.position;
+    sf::Vector2f diff2 = position - striker2.position;
     if ((diff1.x)*(diff1.x)+(diff1.y)*(diff1.y) <= RADIUS*RADIUS) {
         speed = ((mass-striker1.mass)*speed+2*striker1.mass*striker1.calculate_speed())/(mass+striker1.mass);
     }
     if ((diff2.x)*(diff2.x)+(diff2.y)*(diff2.y) <= RADIUS*RADIUS) {
         speed = ((mass-striker2.mass)*speed+2*striker2.mass*striker2.calculate_speed())/(mass+striker2.mass);
     }
-    if (pos.x == MAX_POS_X || pos.x == MIN_POS_X) {
+    if (position.x == MAX_POS_X || position.x == MIN_POS_X) {
         speed.x = speed.x * -1;
     }
-    if (pos.y == MAX_POS_Y || pos.y == MIN_POS_Y) {
+    if (position.y == MAX_POS_Y || position.y == MIN_POS_Y) {
         speed.y = speed.y * -1;
     }
-    return pos;
+    return position += speed;
 }
 
 sf::Vector2f ServerDynamicObject::get_coord()

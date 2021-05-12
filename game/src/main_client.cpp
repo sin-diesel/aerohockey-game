@@ -2,10 +2,12 @@
 #include "game.h"
 #include "server.h"
 #include <iostream>
+#include <stdio.h>
+#include <sys/utsname.h>
 
 int main() {
     Client client;
-
+    int pause_flag = 0;
     // connect to local machine
     sf::IpAddress server_addr(sf::IpAddress::LocalHost);
     std::cout << "Address of server is: " << server_addr << std::endl;
@@ -20,12 +22,17 @@ int main() {
 
     // window
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "aerohockey-game", sf::Style::Default);
-    Game aerohockey = Game(window.getSize());
+    Game aerohockey = Game(window.getSize(), aerohockey.number);
 
     sf::Image background_image;
     sf::Texture background_texture;
     sf::Sprite background;
-    background_image.loadFromFile("/Users/stassidelnikov/aerohockey-game/game/images/background.png");
+    #ifdef __MACH__
+        std::string path = "/Users/stassidelnikov/aerohockey-game";
+    #else
+        std::string path = std::experimental::filesystem::current_path().string();
+    #endif
+    background_image.loadFromFile(path + "/game/images/background.png");
     background_image.createMaskFromColor(sf::Color::White);
     background_texture.loadFromImage(background_image);
     background.setTexture(background_texture);
@@ -60,6 +67,10 @@ int main() {
                     if (event.key.code == sf::Keyboard::Escape) {
                         window.close();
                     }
+                    if (event.key.code == sf::Keyboard::Space) {
+                        pause_flag = (pause_flag == 0) ? 1 : 0;
+                        //pause_flag = 1;
+                    }
                     break;
             }
         }
@@ -78,15 +89,16 @@ int main() {
         if (elapsed > client.get_update_time(aerohockey)) {
             sf::Vector2f float_mouse_pos(mouse_pos);
             packet << float_mouse_pos;
+            std::cout << "PAUSE " << pause_flag << std::endl;
+            if (!pause_flag) {
+                if (!client.send_updates(packet, server_addr, server_port)) {
+                    std::cerr << "Error sending updates to server. " << std::endl;
+                    std::cerr << std::endl;
+                }
 
-            if (!client.send_updates(packet, server_addr, server_port)) {
-                std::cerr << "Error sending updates to server. " << std::endl;
-                std::cerr << std::endl;
+                std::cout << "Updates sent to server: " << mouse_pos.x << " " << mouse_pos.y << std::endl;
+                packet.clear();
             }
-
-            std::cout << "Updates sent to server: " << mouse_pos.x << " " << mouse_pos.y << std::endl;
-            packet.clear();
-
             sf::IpAddress server_addr;
             unsigned short server_port;
 
@@ -100,7 +112,12 @@ int main() {
             if (received) {
                 packet >> float_mouse_pos >> pos;
             }
+            std::cout << "PUCK CORD " << pos.x << " " << pos.y << std::endl;
             aerohockey.puck.set_coord(pos);
+            if (aerohockey.number == 1)
+                aerohockey.striker2.set_coord(static_cast<sf::Vector2<float>>(mouse_pos));
+            else
+                aerohockey.striker1.set_coord(static_cast<sf::Vector2<float>>(mouse_pos));
             std::cout << "Updated data: " << mouse_pos.x << " " << mouse_pos.y;
 
             std::cout << "Received from: " << server_addr << std::endl;

@@ -1,11 +1,10 @@
 #pragma once
 #include "library.h"
-
-#define MAX_POS_X 200
-#define MAX_POS_Y 200
+#define MAX_POS_X 1080
+#define MAX_POS_Y 1920
 #define MIN_POS_X 0
 #define MIN_POS_Y 0
-#define RADIUS 10
+#define RADIUS 50
 #define DEFAULT_MASS 10
 
 class DynamicObject {

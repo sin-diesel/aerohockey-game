@@ -5,6 +5,7 @@
 Client::Client() {
     addr = sf::IpAddress::Any;
     port = sf::Socket::AnyPort;
+    number = 0;
     if (socket.bind(port) != sf::Socket::Done) {
         std::cerr << "Error binding client socket." << std::endl;
     }
