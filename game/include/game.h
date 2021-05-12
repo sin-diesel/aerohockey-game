@@ -14,7 +14,7 @@ class Game {
         sf::Time network_update_time = sf::milliseconds(100);
 
     public:
-    const std::string path = std::string("/Users/stassidelnikov/aerohockey-game");
+    std::string path;
         Scoreboard scoreboard;
 
         Game() = default;

@@ -24,8 +24,6 @@ $(SRC_PATH)/main.cpp $(SRC_PATH)/game.cpp $(SRC_PATH)/dynamic.cpp $(SRC_PATH)/sc
 	$(SRC_PATH)/server.cpp $(SRC_PATH)/main_server.cpp $(SRC_PATH)/main_client.cpp
 endef
 
-DLIB = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
-
 $(OBJ_PATH)/main.o: $(SRC_PATH)/main.cpp
 	$(CXX) $(CXXFLAGS) $^ -c -o $(OBJ_PATH)/main.o
 
@@ -50,8 +48,19 @@ $(OBJ_PATH)/main_server.o: $(SRC_PATH)/main_server.cpp
 $(OBJ_PATH)/main_client.o: $(SRC_PATH)/main_client.cpp
 	$(CXX) $(CXXFLAGS) $^ -c -o $(OBJ_PATH)/main_client.o
 
+# OS-dependency variables
+OS=$(shell uname)
+export OS
+ifeq ($(OS), Darwin)
+# set variables for Darwin
+DLIB = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
+else
+DLIB = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network -lstdc++fs
+endif
+
 all: $(OBJ)
 	g++ $^ -o game.out $(DLIB)
+	
 
 server: $(SERVER_OBJ)
 	g++ $^ -o server.out $(DLIB)

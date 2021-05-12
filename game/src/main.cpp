@@ -1,7 +1,25 @@
 #include "../include/library.h"
 #include "../include/game.h"
+#include <sys/utsname.h>
 
 int main() {
+
+    // make compilable using os dependencies
+
+    struct utsname details;
+    int ret = uname(&details);
+    bool darwin = 0;
+
+    if (ret == 0)
+    {
+        printf("Sysname: %s\n", details.sysname);
+    }
+
+    if (strcmp(details.sysname, "Darwin") == 0) {
+        darwin = true;
+    } else {
+        darwin = false;
+    }
 
     // window
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "aerohockey-game", sf::Style::Default);
@@ -10,7 +28,13 @@ int main() {
     sf::Image background_image;
     sf::Texture background_texture;
     sf::Sprite background;
+
+    #ifdef __MACH__
     background_image.loadFromFile("/Users/stassidelnikov/aerohockey-game/game/images/background.png");
+    #else
+    background_image.loadFromFile(std::experimental::filesystem::current_path().string() + "/game/images/background.png");
+    #endif
+
     background_image.createMaskFromColor(sf::Color::White);
     background_texture.loadFromImage(background_image);
     background.setTexture(background_texture);
