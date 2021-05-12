@@ -64,10 +64,10 @@ int main() {
 
                 case sf::Event::KeyPressed:
                     std::cout << "Key pressed." << std::endl;
-                    if (event.key.code == sf::Keyboard::Escape) {
+                    if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::Q) {
                         window.close();
                     }
-                    if (event.key.code == sf::Keyboard::Space) {
+                    if (event.key.code == sf::Keyboard::Space || event.key.code == sf::Keyboard::P) {
                         pause_flag = (pause_flag == 0) ? 1 : 0;
                         //pause_flag = 1;
                     }
@@ -89,14 +89,14 @@ int main() {
         if (elapsed > client.get_update_time(aerohockey)) {
             sf::Vector2f float_mouse_pos(mouse_pos);
             packet << float_mouse_pos;
-            std::cout << "PAUSE " << pause_flag << std::endl;
+            //std::cout << "PAUSE " << pause_flag << std::endl;
             if (!pause_flag) {
                 if (!client.send_updates(packet, server_addr, server_port)) {
                     std::cerr << "Error sending updates to server. " << std::endl;
                     std::cerr << std::endl;
                 }
 
-                std::cout << "Updates sent to server: " << mouse_pos.x << " " << mouse_pos.y << std::endl;
+                //std::cout << "Updates sent to server: " << mouse_pos.x << " " << mouse_pos.y << std::endl;
                 packet.clear();
             }
             sf::IpAddress server_addr;
@@ -115,16 +115,16 @@ int main() {
             //std::cout << "PUCK CORD " << pos.x << " " << pos.y << std::endl;
             aerohockey.puck.set_coord(pos);
             if (aerohockey.number == 1)
-                aerohockey.striker2.set_coord(static_cast<sf::Vector2<float>>(mouse_pos));
+                aerohockey.striker2.set_coord(float_mouse_pos);
             else
-                aerohockey.striker1.set_coord(static_cast<sf::Vector2<float>>(mouse_pos));
+                aerohockey.striker1.set_coord(float_mouse_pos);
             //std::cout << "Updated data: " << mouse_pos.x << " " << mouse_pos.y;
             pos = aerohockey.puck.get_coord();
-            std:: cout << "puck: " << pos.x << " " << pos.y << std::endl;
+            //std:: cout << "puck: " << pos.x << " " << pos.y << std::endl;
             pos = aerohockey.striker1.get_coord();
-            std:: cout << "striker1: " << pos.x << " " << pos.y << std::endl; 
+            //std:: cout << "striker1: " << pos.x << " " << pos.y << std::endl; 
             pos = aerohockey.striker2.get_coord();
-            std:: cout << "striker2: " << pos.x << " " << pos.y << std::endl; 
+            //std:: cout << "striker2: " << pos.x << " " << pos.y << std::endl; 
             //std::cout << "Received from: " << server_addr << std::endl;
             //std::cout << "Port: " << server_port << std::endl;
 
