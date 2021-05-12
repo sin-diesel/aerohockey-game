@@ -1,8 +1,25 @@
 #include "../include/game.h"
+#include <stdio.h>
+#include <sys/utsname.h>
 
-const char path[] = "/Users/stassidelnikov/aerohockey-game";
+//const char path[] = "/Users/stassidelnikov/aerohockey-game";
 
 Game::Game(sf::Vector2u windowsize_) {
+
+    struct utsname details;
+    int ret = uname(&details);
+
+    if (ret == 0)
+    {
+        printf("Sysname: %s\n", details.sysname);
+    }
+
+    #ifdef __MACH__
+        path = std::string("/Users/stassidelnikov/aerohockey-game");
+    #else
+        path = std::experimental::filesystem::current_path().string();
+    #endif
+
     sf::Vector2f windowsize = sf::Vector2f(windowsize_);
     scoreboard = Scoreboard(path + "/game/images/scoreboard.png", {windowsize.x/2, 0}, path);  
     striker1 = ClientDynamicObject(path + "/game/images/striker.png");
