@@ -19,11 +19,11 @@ int main() {
 
     sf::Clock clock;
     sf::Time elapsed;
-
+    std::cout << "client number is " << client.number << std::endl;
     // window
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "aerohockey-game", sf::Style::Default);
-    Game aerohockey = Game(window.getSize(), aerohockey.number);
-
+    Game aerohockey = Game(window.getSize(), client.number + 1);
+    std::cout << "aerohockey number is " << aerohockey.number << std::endl;
     sf::Image background_image;
     sf::Texture background_texture;
     sf::Sprite background;
@@ -112,16 +112,21 @@ int main() {
             if (received) {
                 packet >> float_mouse_pos >> pos;
             }
-            std::cout << "PUCK CORD " << pos.x << " " << pos.y << std::endl;
+            //std::cout << "PUCK CORD " << pos.x << " " << pos.y << std::endl;
             aerohockey.puck.set_coord(pos);
             if (aerohockey.number == 1)
                 aerohockey.striker2.set_coord(static_cast<sf::Vector2<float>>(mouse_pos));
             else
                 aerohockey.striker1.set_coord(static_cast<sf::Vector2<float>>(mouse_pos));
-            std::cout << "Updated data: " << mouse_pos.x << " " << mouse_pos.y;
-
-            std::cout << "Received from: " << server_addr << std::endl;
-            std::cout << "Port: " << server_port << std::endl;
+            //std::cout << "Updated data: " << mouse_pos.x << " " << mouse_pos.y;
+            pos = aerohockey.puck.get_coord();
+            std:: cout << "puck: " << pos.x << " " << pos.y << std::endl;
+            pos = aerohockey.striker1.get_coord();
+            std:: cout << "striker1: " << pos.x << " " << pos.y << std::endl; 
+            pos = aerohockey.striker2.get_coord();
+            std:: cout << "striker2: " << pos.x << " " << pos.y << std::endl; 
+            //std::cout << "Received from: " << server_addr << std::endl;
+            //std::cout << "Port: " << server_port << std::endl;
 
             clock.restart();
         }

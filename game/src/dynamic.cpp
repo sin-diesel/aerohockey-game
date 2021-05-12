@@ -40,7 +40,7 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
     return position += speed;
 }
 
-sf::Vector2f ServerDynamicObject::get_coord()
+sf::Vector2f DynamicObject::get_coord()
 {
     return position;
 }

@@ -13,6 +13,7 @@ class DynamicObject {
 
     public:
     void set_coord(sf::Vector2f new_pos);
+    sf::Vector2f get_coord();
 
 };
 
@@ -37,7 +38,6 @@ class ServerDynamicObject : public DynamicObject {
     const float mass;
     ServerDynamicObject();
     ServerDynamicObject(float);
-    sf::Vector2f get_coord();
     sf::Vector2f update(ServerDynamicObject&, ServerDynamicObject&);
     sf::Vector2f calculate_speed(sf::Vector2f);
     sf::Vector2f calculate_speed();

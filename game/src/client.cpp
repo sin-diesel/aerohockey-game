@@ -50,7 +50,7 @@ unsigned short Client::get_port() {
         //socket.setBlocking(false);
         return 0;
     } else {
-        packet >> port;
+        packet >> port >> number;
         //socket.setBlocking(false);
         return port;
     }

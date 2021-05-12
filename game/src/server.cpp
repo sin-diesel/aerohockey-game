@@ -57,7 +57,7 @@ void Server::handle_connections(int client_number) {
     std::cout << "Port distrubuted for new client: " << new_port << std::endl;
     
     sf::Packet response;
-    response << new_port;
+    response << new_port << client_number;
     socket.send(response, client_addr, client_port);
 }
 
