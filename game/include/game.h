@@ -2,9 +2,7 @@
 #include "library.h"
 #include "dynamic.h"
 #include "scoreboard.h"
-#include <unistd.h>
-#include <experimental/filesystem>
-#include <vector>
+//#include "client.h"
 #define PING 100 //ms
 
 

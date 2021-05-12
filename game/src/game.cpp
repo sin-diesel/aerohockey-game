@@ -1,6 +1,4 @@
 #include "../include/game.h"
-#include <stdio.h>
-#include <sys/utsname.h>
 
 //const char path[] = "/Users/stassidelnikov/aerohockey-game";
 

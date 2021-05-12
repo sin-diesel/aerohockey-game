@@ -1,9 +1,6 @@
+#include "library.h"
 #include "client.h"
 #include "game.h"
-#include "server.h"
-#include <iostream>
-#include <stdio.h>
-#include <sys/utsname.h>
 
 int main() {
     Client client;
@@ -38,8 +35,6 @@ int main() {
     background.setTexture(background_texture);
     background.setOrigin(background_image.getSize().x / 2, 0);
     background.setPosition(window.getSize().x / 2, aerohockey.scoreboard.getSize().y);
-
-
 
     // game loop
     
@@ -132,8 +127,6 @@ int main() {
 
             clock.restart();
         }
-
-        // get updates and send to server
     }
 
     return 0;
