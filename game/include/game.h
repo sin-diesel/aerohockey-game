@@ -5,11 +5,12 @@
 #include <unistd.h>
 #include <experimental/filesystem>
 #include <vector>
+#define PING 1 //ms
+
 
 class Game {
     private:
-        sf::Time network_update_time = sf::milliseconds(100);
-
+        sf::Time network_update_time = sf::milliseconds(PING);
     public:
         int number;
         std::string path;

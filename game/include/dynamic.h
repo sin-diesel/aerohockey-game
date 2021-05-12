@@ -1,17 +1,17 @@
 #pragma once
 #include "library.h"
-#define MAX_POS_X 1080
-#define MAX_POS_Y 1920
-#define MIN_POS_X 0
-#define MIN_POS_Y 0
+#define MAX_POS_X 1750
+#define MAX_POS_Y 965
+#define MIN_POS_X 115
+#define MIN_POS_Y 175
 #define RADIUS 50
 #define DEFAULT_MASS 10
 
 class DynamicObject {
     protected:
-    sf::Vector2f position;
-
+    //POSITION
     public:
+    sf::Vector2f position;
     void set_coord(sf::Vector2f new_pos);
     sf::Vector2f get_coord();
 
@@ -26,7 +26,7 @@ class ClientDynamicObject : public DynamicObject {
 
     public:
     ClientDynamicObject() = default;
-    ClientDynamicObject(std::string imagepath);
+    ClientDynamicObject(std::string imagepath, sf::Vector2f);
     void draw(sf::RenderWindow& window);
 };
 
