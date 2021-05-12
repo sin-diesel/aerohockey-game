@@ -14,11 +14,11 @@ $(OBJ_PATH)/main.o $(OBJ_PATH)/game.o $(OBJ_PATH)/dynamic.o $(OBJ_PATH)/scoreboa
 endef
 
 define SERVER_OBJ
-$(OBJ_PATH)/game.o $(OBJ_PATH)/dynamic.o $(OBJ_PATH)/scoreboard.o $(OBJ_PATH)/server.o $(OBJ_PATH)/main_server.o
+$(OBJ_PATH)/dynamic.o $(OBJ_PATH)/server.o $(OBJ_PATH)/main_server.o
 endef
 
 define CLIENT_OBJ
-$(OBJ_PATH)/game.o $(OBJ_PATH)/dynamic.o $(OBJ_PATH)/scoreboard.o $(OBJ_PATH)/client.o $(OBJ_PATH)/main_client.o
+$(OBJ_PATH)/dynamic.o $(OBJ_PATH)/scoreboard.o $(OBJ_PATH)/client.o $(OBJ_PATH)/game.o $(OBJ_PATH)/main_client.o
 endef
 
 define SRC

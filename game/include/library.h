@@ -10,3 +10,4 @@
 #include <sys/utsname.h>
 
 #define PORT 54000
+#define PING 100 //ms

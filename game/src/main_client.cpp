@@ -1,25 +1,14 @@
-#include "library.h"
-#include "client.h"
-#include "game.h"
+#include "../include/library.h"
+#include "../include/game.h"
 
 int main() {
-    Client client;
-    int pause_flag = 0;
-    // connect to local machine
-    sf::IpAddress server_addr(sf::IpAddress::LocalHost);
-    std::cout << "Address of server is: " << server_addr << std::endl;
-    
-    // connect to server
-    client.connect(server_addr);
-    unsigned short server_port = client.get_port();
-    std::cout << "Port received from server: " << server_port << std::endl;
-
     sf::Clock clock;
     sf::Time elapsed;
-    std::cout << "client number is " << client.number << std::endl;
+    int pause_flag = 0;
+
     // window
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "aerohockey-game", sf::Style::Default);
-    Game aerohockey = Game(window.getSize(), client.number + 1);
+    Game aerohockey(window.getSize());
     std::cout << "aerohockey number is " << aerohockey.number << std::endl;
     sf::Image background_image;
     sf::Texture background_texture;
@@ -37,16 +26,9 @@ int main() {
     background.setPosition(window.getSize().x / 2, aerohockey.scoreboard.getSize().y);
 
     // game loop
-    
-    sf::Vector2i mouse_pos;
+
     while (window.isOpen()) {
-
-        bool received = true;
-        bool updated = false;
-        sf::Packet packet;
-
-        // event polling
-
+        
         sf::Event event;
         while (window.pollEvent(event)) {
 
@@ -69,62 +51,14 @@ int main() {
                     break;
             }
         }
-        mouse_pos = sf::Mouse::getPosition(window);
-        
-
-        aerohockey.play(window);
-
-        window.clear(sf::Color(0, 49, 83, 0));
-        window.draw(background);
-        aerohockey.draw_objects(window);
-        window.display();
 
         elapsed = clock.getElapsedTime();
-
-        if (elapsed > client.get_update_time(aerohockey)) {
-            sf::Vector2f float_mouse_pos(mouse_pos);
-            packet << float_mouse_pos;
-            //std::cout << "PAUSE " << pause_flag << std::endl;
-            if (!pause_flag) {
-                if (!client.send_updates(packet, server_addr, server_port)) {
-                    std::cerr << "Error sending updates to server. " << std::endl;
-                    std::cerr << std::endl;
-                }
-
-                //std::cout << "Updates sent to server: " << mouse_pos.x << " " << mouse_pos.y << std::endl;
-                packet.clear();
-            }
-            sf::IpAddress server_addr;
-            unsigned short server_port;
-
-            if (!client.receive_updates(packet, server_addr, server_port)) {
-                std::cerr << "Error receiving updates from server. " << std::endl;
-                std::cerr << std::endl;
-                received = false;
-            }
-
-            sf::Vector2f pos, pos_st1, pos_st2;
-            if (received) {
-                packet >> pos_st1 >> pos_st2 >> pos;
-            }
-            //std::cout << "PUCK CORD " << pos.x << " " << pos.y << std::endl;
-            aerohockey.puck.set_coord(pos);
-            /*if (aerohockey.number == 1) {
-                aerohockey.striker2.set_coord(float_mouse_pos);
-            else
-                aerohockey.striker1.set_coord(float_mouse_pos);*/
-            aerohockey.striker1.set_coord(pos_st1);
-            aerohockey.striker2.set_coord(pos_st2);
-            //std::cout << "Updated data: " << mouse_pos.x << " " << mouse_pos.y;
-            pos = aerohockey.puck.get_coord();
-            //std:: cout << "puck: " << pos.x << " " << pos.y << std::endl;
-            pos = aerohockey.striker1.get_coord();
-            //std:: cout << "striker1: " << pos.x << " " << pos.y << std::endl; 
-            pos = aerohockey.striker2.get_coord();
-            //std:: cout << "striker2: " << pos.x << " " << pos.y << std::endl; 
-            //std::cout << "Received from: " << server_addr << std::endl;
-            //std::cout << "Port: " << server_port << std::endl;
-
+        if ((elapsed > aerohockey.get_update_time()) && (!pause_flag)){
+            aerohockey.play(window);
+            window.clear(sf::Color(0, 49, 83, 0));
+            window.draw(background);
+            aerohockey.draw_objects(window);
+            window.display();
             clock.restart();
         }
     }

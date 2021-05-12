@@ -1,5 +1,4 @@
 #include "server.h"
-#include <iostream>
 
 Server::Server() {
     port = PORT;
@@ -142,8 +141,8 @@ bool Server::send_updates(std::vector<sf::Packet>& data) // calculates new coori
 //>>>>>>> client-server-comm
 }
 
-void Server::run(Game& game) {
-    // handle 2 clients
+void Server::run() {
+    sf::Time network_update_time = sf::milliseconds(PING);
     sf::Clock clock;
     sf::Time elapsed;
 
@@ -162,7 +161,7 @@ void Server::run(Game& game) {
     while (1) {
         bool received = true;
         elapsed = clock.getElapsedTime();
-        if (elapsed > game.get_update_time()) {
+        if (elapsed > network_update_time) {
 
             received = get_updates(data);
 
@@ -198,4 +197,25 @@ void Server::run(Game& game) {
             clock.restart();
         }
     }
+}
+
+
+sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2f& pos)
+{
+    return packet << pos.x << pos.y;
+}
+
+sf::Packet& operator >>(sf::Packet& packet, sf::Vector2f& pos)
+{
+    return packet >> pos.x >> pos.y;
+}
+
+sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2i& pos)
+{
+    return packet << pos.x << pos.y;
+}
+
+sf::Packet& operator >>(sf::Packet& packet, sf::Vector2i& pos)
+{
+    return packet >> pos.x >> pos.y;
 }
