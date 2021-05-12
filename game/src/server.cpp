@@ -173,7 +173,7 @@ void Server::run(Game& game) {
                     }
 
                     update_strikers(pos1[0], pos1[1]);
-
+                    sf::Vector2f pos = puck.update(striker1, striker2);
                     // if (received) {
                     //     client_direction.x += 1.0f;
                     //     client_direction.y += 1.0f;
@@ -183,7 +183,10 @@ void Server::run(Game& game) {
                     response[i].clear();
                     
                     // data[i] << client_direction.x << client_direction.y;
-                    response[i] << pos1[i];
+                    for (int j = 0; j < 2 && j!=i; ++j) {
+                        response[i] << pos1[i];
+                    }
+                    response[i] << pos;
                     std::cout << "Client  " << i << " pos updated: " << pos1[i].x << " " \
                                                 << pos1[i].y << std::endl;
                 }

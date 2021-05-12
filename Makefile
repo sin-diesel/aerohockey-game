@@ -61,7 +61,6 @@ endif
 all: $(OBJ)
 	g++ $^ -o game.out $(DLIB)
 	
-
 server: $(SERVER_OBJ)
 	g++ $^ -o server.out $(DLIB)
 

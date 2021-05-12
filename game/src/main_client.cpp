@@ -96,10 +96,11 @@ int main() {
                 received = false;
             }
 
+            sf::Vector2f pos;
             if (received) {
-                packet >> float_mouse_pos;
+                packet >> float_mouse_pos >> pos;
             }
-
+            aerohockey.puck.set_coord(pos);
             std::cout << "Updated data: " << mouse_pos.x << " " << mouse_pos.y;
 
             std::cout << "Received from: " << server_addr << std::endl;

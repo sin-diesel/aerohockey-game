@@ -9,14 +9,14 @@
 class Game {
     private:
 
-        ClientDynamicObject puck;
+        
         ClientDynamicObject striker1, striker2;
         sf::Time network_update_time = sf::milliseconds(100);
 
     public:
     std::string path;
+        ClientDynamicObject puck;
         Scoreboard scoreboard;
-
         Game() = default;
         Game(sf::Vector2u windowsize);
         // virtual destructor in case we are going to use inheritance

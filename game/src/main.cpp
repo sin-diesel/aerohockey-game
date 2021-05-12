@@ -1,6 +1,7 @@
 #include "../include/library.h"
 #include "../include/game.h"
 #include <sys/utsname.h>
+#include <string.h>
 
 int main() {
 
