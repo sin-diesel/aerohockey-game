@@ -10,7 +10,7 @@ int main() {
     sf::Image background_image;
     sf::Texture background_texture;
     sf::Sprite background;
-    background_image.loadFromFile(std::experimental::filesystem::current_path().string() + "/game/images/background.png");
+    background_image.loadFromFile("/Users/stassidelnikov/aerohockey-game/game/images/background.png");
     background_image.createMaskFromColor(sf::Color::White);
     background_texture.loadFromImage(background_image);
     background.setTexture(background_texture);
@@ -42,6 +42,7 @@ int main() {
             }
         }
         mouse_pos = sf::Mouse::getPosition(window);
+        sf::Vector2f float_mouse_pos(mouse_pos);
         
 
         aerohockey.play(window);

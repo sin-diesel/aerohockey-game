@@ -3,10 +3,13 @@
 #include <vector>
 
 #define PORT 54000
+#define CLIENT_1_PORT 54001
+#define CLIENT_2_PORT 54002
 
 class Server {
 private:
     int number_of_clients = 0;
+
     ServerDynamicObject puck;
     ServerDynamicObject striker1, striker2;
 
@@ -16,19 +19,24 @@ private:
     
     sf::Packet connection_info;
     // sockets for each client
-    std::vector<sf::UdpSocket> client_sockets;
+    std::vector<sf::UdpSocket*> client_sockets;
     std::vector<sf::IpAddress> adresses;
     std::vector<short unsigned> ports;
+
+    sf::SocketSelector client_selector;
+    sf::SocketSelector server_selector;
+    //std::vector<short unsigned> available_ports;
 public:
     Server();
     ~Server();
-    void run();
+    void run(Game& game);
     // accept incoming connections in blocking mode
-    void handle_connections();
+    void handle_connections(int client_number);
+    void init_sockets();
     // get updates from all clients
-    void get_updates();
+    bool get_updates(std::vector<sf::Packet>& data);
     // send updated info for rendering to all clients
-    void send_updates();
+    bool send_updates(std::vector<sf::Packet>& data);
     // calculate all information that is going to be sent back to client
     void calculate_changes();
     void update_strikers(sf::Vector2f, sf::Vector2f);

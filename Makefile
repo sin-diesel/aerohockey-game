@@ -24,7 +24,7 @@ $(SRC_PATH)/main.cpp $(SRC_PATH)/game.cpp $(SRC_PATH)/dynamic.cpp $(SRC_PATH)/sc
 	$(SRC_PATH)/server.cpp $(SRC_PATH)/main_server.cpp $(SRC_PATH)/main_client.cpp
 endef
 
-DLIB = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network  -lstdc++fs
+DLIB = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
 
 $(OBJ_PATH)/main.o: $(SRC_PATH)/main.cpp
 	$(CXX) $(CXXFLAGS) $^ -c -o $(OBJ_PATH)/main.o
@@ -60,5 +60,5 @@ client: $(CLIENT_OBJ)
 	g++ $^ -o client.out $(DLIB)
 
 clean:
-	rm *.out
-	rm $(OBJ_PATH)/*.o
+	-rm *.out
+	-rm $(OBJ_PATH)/*.o

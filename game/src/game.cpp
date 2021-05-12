@@ -1,6 +1,8 @@
 #include "../include/game.h"
 
-Game::Game(sf::Vector2u windowsize_): path(std::experimental::filesystem::current_path().string()) {
+const char path[] = "/Users/stassidelnikov/aerohockey-game";
+
+Game::Game(sf::Vector2u windowsize_) {
     sf::Vector2f windowsize = sf::Vector2f(windowsize_);
     scoreboard = Scoreboard(path + "/game/images/scoreboard.png", {windowsize.x/2, 0}, path);  
     striker1 = ClientDynamicObject(path + "/game/images/striker.png");
@@ -40,4 +42,24 @@ void Game::render() {
 
 void Game::update() {
 
+}
+
+sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2f& pos)
+{
+    return packet << pos.x << pos.y;
+}
+
+sf::Packet& operator >>(sf::Packet& packet, sf::Vector2f& pos)
+{
+    return packet >> pos.x >> pos.y;
+}
+
+sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2i& pos)
+{
+    return packet << pos.x << pos.y;
+}
+
+sf::Packet& operator >>(sf::Packet& packet, sf::Vector2i& pos)
+{
+    return packet >> pos.x >> pos.y;
 }

@@ -4,14 +4,17 @@
 #include "scoreboard.h"
 #include <unistd.h>
 #include <experimental/filesystem>
+
+
 class Game {
     private:
 
         ClientDynamicObject puck;
         ClientDynamicObject striker1, striker2;
-    
+        sf::Time network_update_time = sf::milliseconds(100);
+
     public:
-    const std::string path;
+    const std::string path = std::string("/Users/stassidelnikov/aerohockey-game");
         Scoreboard scoreboard;
 
         Game() = default;
@@ -27,4 +30,28 @@ class Game {
         void play(sf::RenderWindow& window);
 
         void draw_objects(sf::RenderWindow& window);
+
+        sf::Time get_update_time() {
+            return network_update_time;
+        }
 };
+
+
+struct NetworkPacket {
+    float pos1_x;
+    float pos2_x;
+    
+    float pos1_y;
+    float pos2_y;
+
+    float puck_x;
+    float puck_y;
+};
+
+sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2f& pos);
+
+sf::Packet& operator >>(sf::Packet& packet, sf::Vector2f& pos);
+
+sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2i& pos);
+
+sf::Packet& operator >>(sf::Packet& packet, sf::Vector2i& pos);
