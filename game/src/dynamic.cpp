@@ -28,11 +28,17 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
     sf::Vector2f diff2 = position - striker2.position;
     //std::cout << "DIFF " << diff1.x << " " << diff1.y << " " << diff2.x << " " <<  diff2.y << std::endl;
     //std::cout << "striker position " << striker1.position.x << " " << striker1.position.y << " " << striker2.position.x << " " <<  striker2.position.y << std::endl;
-    if ((diff1.x)*(diff1.x)+(diff1.y)*(diff1.y) <= RADIUS*RADIUS*2) {
+    if ((diff1.x)*(diff1.x)+(diff1.y)*(diff1.y) <= RADIUS*RADIUS) {
+        std::cout << "BSPEED1 " << speed.x << " " << speed.y << " " << striker1.calculate_speed().x << " " << striker1.calculate_speed().y << std::endl;
         speed = (((mass-100)*speed+striker1.calculate_speed()*static_cast<float> (2*100))/(mass+100));
+        striker1.speed = ((striker1.calculate_speed()*(100-mass)+speed*static_cast<float> (2*mass))/(mass+100));
+        std::cout << "ASPEED1 " << speed.x << " " << speed.y << " " << striker1.calculate_speed().x << " " << striker1.calculate_speed().y << std::endl;
     }
     if ((diff2.x)*(diff2.x)+(diff2.y)*(diff2.y) <= RADIUS*RADIUS) {
+        std::cout << "BSPEED2 " << speed.x << " " << speed.y << " " << striker2.calculate_speed().x << " " << striker2.calculate_speed().y << std::endl;
         speed = (((mass-100)*speed+striker2.calculate_speed()*static_cast<float> (2*100))/(mass+100));
+        striker2.speed = ((striker2.calculate_speed()*(100-mass)+speed*static_cast<float> (2*mass))/(mass+100));
+        std::cout << "ASPEED2 " << speed.x << " " << speed.y << " " << striker2.calculate_speed().x << " " << striker2.calculate_speed().y << std::endl;
     }
     if (position.x >= MAX_POS_X - RADIUS/2 || position.x <= MIN_POS_X + RADIUS/2) {
         speed.x = speed.x * -1;

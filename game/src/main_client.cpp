@@ -108,16 +108,18 @@ int main() {
                 received = false;
             }
 
-            sf::Vector2f pos;
+            sf::Vector2f pos, pos_st1, pos_st2;
             if (received) {
-                packet >> float_mouse_pos >> pos;
+                packet >> pos_st1 >> pos_st2 >> pos;
             }
             //std::cout << "PUCK CORD " << pos.x << " " << pos.y << std::endl;
             aerohockey.puck.set_coord(pos);
-            if (aerohockey.number == 1)
+            /*if (aerohockey.number == 1) {
                 aerohockey.striker2.set_coord(float_mouse_pos);
             else
-                aerohockey.striker1.set_coord(float_mouse_pos);
+                aerohockey.striker1.set_coord(float_mouse_pos);*/
+            aerohockey.striker1.set_coord(pos_st1);
+            aerohockey.striker2.set_coord(pos_st2);
             //std::cout << "Updated data: " << mouse_pos.x << " " << mouse_pos.y;
             pos = aerohockey.puck.get_coord();
             //std:: cout << "puck: " << pos.x << " " << pos.y << std::endl;

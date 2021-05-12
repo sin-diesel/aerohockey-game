@@ -75,7 +75,7 @@ bool Server::get_updates(std::vector<sf::Packet>& data) //receives data about st
                 //std::cout << "Received from: " << std::endl;
                 //std::cout << client_address << std::endl << client_port << std::endl;
             } else {
-                std::cerr << "Error receiving packet from client. " << std::endl;
+                //!!!!! std::cerr << "Error receiving packet from client. " << std::endl;
                 std::cerr << std::endl;
             }
         }
@@ -186,9 +186,9 @@ void Server::run(Game& game) {
 
                     data[i].clear();
                     response[i].clear();
-                    int j = (i == 0) ? 1 : 0;
+                    //int j = (i == 0) ? 1 : 0;
                     // data[i] << client_direction.x << client_direction.y;
-                    response[i] << pos1[j] << pos;
+                    response[i] << pos1[0] << pos1[1] << pos;
                     //std::cout << "Client  " << i << " pos updated: " << pos1[j].x << " " \
                                                 << pos1[j].y << " pos: " << pos.x << " " << pos.y << std::endl;
                 }
