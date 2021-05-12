@@ -5,11 +5,25 @@
 #include <stdio.h>
 #include <sys/utsname.h>
 
-int main() {
+int main(int argc, char** argv) {
     Client client;
     int pause_flag = 0;
+
+    sf::IpAddress server_addr;
+    // IP address entered
+    if (argc == 2) {
+        char* ip_addr = argv[1];
+        if ((server_addr = sf::IpAddress(ip_addr)) == sf::IpAddress::None) {
+            std::cerr << "Error converting to valid IP address" << std::endl;
+            return -1;
+        }
+    } else if (argc == 1) {
+        server_addr = sf::IpAddress::LocalHost;
+    } else {
+        std::cout << "Usage: ./server.out [ip_addr]" << std::endl;
+        return -1;
+    }
     // connect to local machine
-    sf::IpAddress server_addr(sf::IpAddress::LocalHost);
     std::cout << "Address of server is: " << server_addr << std::endl;
     
     // connect to server
@@ -72,6 +86,9 @@ int main() {
                         //pause_flag = 1;
                     }
                     break;
+                // case sf::Event::GainedFocus:
+                //     mouse_pos = sf::Mouse::getPosition(window);
+                //     break;
             }
         }
         mouse_pos = sf::Mouse::getPosition(window);
