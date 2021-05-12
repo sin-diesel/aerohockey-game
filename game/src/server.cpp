@@ -138,20 +138,21 @@ void Server::run(Game& game) {
                 for (int i = 0; i < 2; ++i) {
                     if (received) {
                         data[i] >> client_direction.x >> client_direction.y;
+
                         std::cout << "Client  " << i << " direction: " << client_direction.x << " " 
                                                     << client_direction.y << std::endl;
                     }
 
-                    if (received) {
-                        client_direction.x += 1.0f;
-                        client_direction.y += 1.0f;
-                    }
+                    // if (received) {
+                    //     client_direction.x += 1.0f;
+                    //     client_direction.y += 1.0f;
+                    // }
 
                     data[i].clear();
                     response[i].clear();
                     
                     // data[i] << client_direction.x << client_direction.y;
-                    response[i] << client_direction.x << client_direction.y;
+                    //response[i] << client_direction.x << client_direction.y;
                     std::cout << "Client  " << i << " direction updated: " << client_direction.x << " " \
                                                 << client_direction.y << std::endl;
                 }
