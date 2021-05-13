@@ -138,7 +138,7 @@ bool Server::send_updates(std::vector<sf::Packet>& data) // calculates new coori
 }
 
 void Server::run() {
-    sf::Time network_update_time = sf::milliseconds(PING);
+    //sf::Time network_update_time = sf::milliseconds(PING);
     sf::Clock clock;
     sf::Time elapsed;
 
@@ -157,7 +157,7 @@ void Server::run() {
     while (1) {
         bool received = true;
         elapsed = clock.getElapsedTime();
-        if (elapsed > sf::milliseconds(10)) {
+        if (elapsed > sf::milliseconds(PINGSERVER)) {
 
             received = get_updates(data);
 
