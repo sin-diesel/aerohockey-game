@@ -1,6 +1,4 @@
-#include "client.h"
-#include "server.h"
-#include <iostream>
+#include "../include/client.h"
 
 Client::Client() {
     addr = sf::IpAddress::Any;
@@ -74,6 +72,7 @@ sf::Packet Client::process_input() {
 
     return packet;
 }
+
 
 sf::Time Client::get_update_time(Game& game) {
     return game.get_update_time();

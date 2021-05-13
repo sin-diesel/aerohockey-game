@@ -2,10 +2,15 @@
 #include "library.h"
 #include "dynamic.h"
 #include "scoreboard.h"
+<<<<<<< HEAD
 #include <unistd.h>
 #include <experimental/filesystem>
 #include <vector>
 #define PING 10 //ms
+=======
+//#include "client.h"
+#define PING 100 //ms
+>>>>>>> 7415948a5d93d002db07204183817cd75ca98b41
 
 
 class Game {

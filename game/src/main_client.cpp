@@ -1,9 +1,6 @@
+#include "library.h"
 #include "client.h"
 #include "game.h"
-#include "server.h"
-#include <iostream>
-#include <stdio.h>
-#include <sys/utsname.h>
 
 int main(int argc, char** argv) {
     Client client;
@@ -52,8 +49,6 @@ int main(int argc, char** argv) {
     background.setTexture(background_texture);
     background.setOrigin(background_image.getSize().x / 2, 0);
     background.setPosition(window.getSize().x / 2, aerohockey.scoreboard.getSize().y);
-
-
 
     // game loop
     
@@ -125,17 +120,24 @@ int main(int argc, char** argv) {
                 received = false;
             }
 
-            sf::Vector2f pos;
+            sf::Vector2f pos, pos_st1, pos_st2;
             if (received) {
-                packet >> float_mouse_pos >> pos;
+                packet >> pos_st1 >> pos_st2 >> pos;
             }
             std::cout << "PUCK CORD " << pos.x << " " << pos.y << std::endl;
             aerohockey.puck.set_coord(pos);
-            if (aerohockey.number == 1)
+            /*if (aerohockey.number == 1) {
                 aerohockey.striker2.set_coord(float_mouse_pos);
             else
+<<<<<<< HEAD
                 aerohockey.striker1.set_coord(float_mouse_pos);
             std::cout << "Updated data: " << mouse_pos.x << " " << mouse_pos.y;
+=======
+                aerohockey.striker1.set_coord(float_mouse_pos);*/
+            aerohockey.striker1.set_coord(pos_st1);
+            aerohockey.striker2.set_coord(pos_st2);
+            //std::cout << "Updated data: " << mouse_pos.x << " " << mouse_pos.y;
+>>>>>>> 7415948a5d93d002db07204183817cd75ca98b41
             pos = aerohockey.puck.get_coord();
             std:: cout << "puck: " << pos.x << " " << pos.y << std::endl;
             pos = aerohockey.striker1.get_coord();
@@ -147,8 +149,6 @@ int main(int argc, char** argv) {
 
             clock.restart();
         }
-
-        // get updates and send to server
     }
 
     return 0;

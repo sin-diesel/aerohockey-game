@@ -4,3 +4,9 @@
 #include <SFML/Network.hpp>
 #include <SFML/System.hpp>
 #include <iostream>
+#include <experimental/filesystem>
+#include <vector>
+#include <stdio.h>
+#include <sys/utsname.h>
+
+#define PORT 54000

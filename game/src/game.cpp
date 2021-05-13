@@ -1,6 +1,4 @@
 #include "../include/game.h"
-#include <stdio.h>
-#include <sys/utsname.h>
 
 //const char path[] = "/Users/stassidelnikov/aerohockey-game";
 
@@ -42,10 +40,10 @@ void Game::play(sf::RenderWindow& window) {
     //puck.update({150, 50}, {0, 0});
     //scoreboard.update();
     sf::Vector2f mouse_pos = sf::Vector2f(sf::Mouse::getPosition(window));
-    if (number == 1)
+    /*if (number == 1)
         striker1.set_coord(mouse_pos); //temporary, just to look vizualization
     else
-        striker2.set_coord(mouse_pos);
+        striker2.set_coord(mouse_pos);*/
 }
 
 void Game::draw_objects(sf::RenderWindow& window) {
