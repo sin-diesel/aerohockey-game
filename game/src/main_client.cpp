@@ -113,7 +113,7 @@ int main(int argc, char** argv) {
                     std::cerr << std::endl;
                 }
 
-                //std::cout << "Updates sent to server: " << mouse_pos.x << " " << mouse_pos.y << std::endl;
+                std::cout << "Updates sent to server: " << mouse_pos.x << " " << mouse_pos.y << std::endl;
                 packet.clear();
             }
             sf::IpAddress server_addr;
@@ -129,21 +129,21 @@ int main(int argc, char** argv) {
             if (received) {
                 packet >> float_mouse_pos >> pos;
             }
-            //std::cout << "PUCK CORD " << pos.x << " " << pos.y << std::endl;
+            std::cout << "PUCK CORD " << pos.x << " " << pos.y << std::endl;
             aerohockey.puck.set_coord(pos);
             if (aerohockey.number == 1)
                 aerohockey.striker2.set_coord(float_mouse_pos);
             else
                 aerohockey.striker1.set_coord(float_mouse_pos);
-            //std::cout << "Updated data: " << mouse_pos.x << " " << mouse_pos.y;
+            std::cout << "Updated data: " << mouse_pos.x << " " << mouse_pos.y;
             pos = aerohockey.puck.get_coord();
-            //std:: cout << "puck: " << pos.x << " " << pos.y << std::endl;
+            std:: cout << "puck: " << pos.x << " " << pos.y << std::endl;
             pos = aerohockey.striker1.get_coord();
-            //std:: cout << "striker1: " << pos.x << " " << pos.y << std::endl; 
+            std:: cout << "striker1: " << pos.x << " " << pos.y << std::endl; 
             pos = aerohockey.striker2.get_coord();
-            //std:: cout << "striker2: " << pos.x << " " << pos.y << std::endl; 
-            //std::cout << "Received from: " << server_addr << std::endl;
-            //std::cout << "Port: " << server_port << std::endl;
+            std:: cout << "striker2: " << pos.x << " " << pos.y << std::endl; 
+            std::cout << "Received from: " << server_addr << std::endl;
+            std::cout << "Port: " << server_port << std::endl;
 
             clock.restart();
         }

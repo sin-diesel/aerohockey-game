@@ -49,12 +49,12 @@ void Server::handle_connections(int client_number) {
     adresses.push_back(client_addr); //save client's adress
     ports.push_back(client_port);    //save client's port
 
-    //std::cout << "Packet from client received " << std::endl;
-    //std::cout << "Client addr: " << client_addr << std::endl;
-    //std::cout << "Client port: " << client_port << std::endl;
+    std::cout << "Packet from client received " << std::endl;
+    std::cout << "Client addr: " << client_addr << std::endl;
+    std::cout << "Client port: " << client_port << std::endl;
 
     unsigned short new_port = client_sockets[client_number]->getLocalPort();
-    //std::cout << "Port distrubuted for new client: " << new_port << std::endl;
+    std::cout << "Port distrubuted for new client: " << new_port << std::endl;
     
     sf::Packet response;
     response << new_port << client_number;
@@ -72,8 +72,8 @@ bool Server::get_updates(std::vector<sf::Packet>& data) //receives data about st
         for (int i = 0; i < 2; ++i) {
             if (client_selector.isReady(*(client_sockets[i]))) {
                 client_sockets[i]->receive(data[i], client_address, client_port);
-                //std::cout << "Received from: " << std::endl;
-                //std::cout << client_address << std::endl << client_port << std::endl;
+                std::cout << "Received from: " << std::endl;
+                std::cout << client_address << std::endl << client_port << std::endl;
             } else {
                 std::cerr << "Error receiving packet from client. " << std::endl;
                 std::cerr << std::endl;
@@ -173,11 +173,11 @@ void Server::run(Game& game) {
                     if (received) {
                         data[i] >> pos1[i];
 
-                        //std::cout << "Client  " << i << " pos: " << pos1[i].x << " " << pos1[i].y << " " << std::endl;
+                        std::cout << "Client  " << i << " pos: " << pos1[i].x << " " << pos1[i].y << " " << std::endl;
                     }
-                    //std::cout << "B striker position " << striker1.position.x << " " << striker1.position.y << " " << striker2.position.x << " " <<  striker2.position.y << std::endl;
+                    std::cout << "B striker position " << striker1.position.x << " " << striker1.position.y << " " << striker2.position.x << " " <<  striker2.position.y << std::endl;
                     update_strikers(pos1[0], pos1[1]);
-                    //std::cout << "A striker position " << striker1.position.x << " " << striker1.position.y << " " << striker2.position.x << " " <<  striker2.position.y << std::endl;
+                    std::cout << "A striker position " << striker1.position.x << " " << striker1.position.y << " " << striker2.position.x << " " <<  striker2.position.y << std::endl;
                     sf::Vector2f pos = puck.update(striker1, striker2);
                     // if (received) {
                     //     client_direction.x += 1.0f;
