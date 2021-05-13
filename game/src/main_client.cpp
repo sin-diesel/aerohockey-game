@@ -74,8 +74,11 @@ bool menu(sf::RenderWindow& window)
         std::string path = std::experimental::filesystem::current_path().string();
     #endif
 
+    sf::Image buttonImage;
+    buttonImage.loadFromFile(path + "/game/images/button.png");
+    buttonImage.createMaskFromColor(sf::Color::White);
     sf::Texture buttonTexture;
-    buttonTexture.loadFromFile(path + "/game/images/button.png");
+    buttonTexture.loadFromImage(buttonImage);
     sf::Sprite menubutton(buttonTexture), exitbutton(buttonTexture);
     bool isMenu = true;
     int menuNum = 0;
