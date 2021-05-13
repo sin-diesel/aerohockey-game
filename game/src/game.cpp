@@ -29,6 +29,7 @@ Game::Game(sf::Vector2u windowsize_) {
    
     puck.set_coord({windowsize.x / 2, windowsize.y / 2});  //temporary, just to look vizualization
     striker2.set_coord({windowsize.x * 3 / 4, windowsize.y / 2});  //temporary, just to look vizualization
+    number = client.get_number() + 1;
 }
 
 void Game::play(sf::RenderWindow& window) 

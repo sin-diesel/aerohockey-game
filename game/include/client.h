@@ -8,17 +8,16 @@ class Client {
         sf::UdpSocket socket;
         sf::IpAddress server_addr;
         unsigned short server_port;
-    
+        int number;
 
     public:
-        int number;
         Client();
         ~Client();
-
+        int get_number();
+        void set_number(int num);
         void connect(sf::IpAddress server_addr);
         unsigned short get_port();
         sf::Packet process_input();
-
         bool send_updates(sf::Packet& packet);
         bool receive_updates(sf::Packet& packet, sf::IpAddress& server_addr, unsigned short& server_port);
 };

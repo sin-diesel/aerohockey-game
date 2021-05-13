@@ -8,8 +8,8 @@
 class Game {
     private:
         sf::Time network_update_time = sf::milliseconds(PING);
-    public:
         int number;
+    public:
         std::string path;
         Client client;
         ClientDynamicObject puck, striker1, striker2;

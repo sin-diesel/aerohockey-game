@@ -53,7 +53,7 @@ unsigned short Client::get_port() {
     sf::Packet packet;
     sf::IpAddress server_addr;
     unsigned short port;
-
+    int num;
     socket.setBlocking(true);
 
     if (socket.receive(packet, server_addr, port) != sf::Socket::Done) {
@@ -61,7 +61,8 @@ unsigned short Client::get_port() {
         //socket.setBlocking(false);
         return 0;
     } else {
-        packet >> port >> number;
+        packet >> port >> num;
+        set_number(num);
         //socket.setBlocking(false);
         return port;
     }
@@ -84,6 +85,14 @@ sf::Packet Client::process_input() {
     packet << pos1_x << pos1_y;
 
     return packet;
+}
+
+int Client::get_number() {
+    return number;
+}
+
+void Client::set_number(int num) {
+    number = num;
 }
 
 sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2f& pos)
