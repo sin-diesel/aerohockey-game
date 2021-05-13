@@ -123,6 +123,8 @@ int main(int argc, char** argv) {
             sf::Vector2f pos, pos_st1, pos_st2;
             if (received) {
                 packet >> pos_st1 >> pos_st2 >> pos;
+                std:: cout << "striker1 not updated: " << pos_st1.x << " " << pos_st1.y << std::endl; 
+                std:: cout << "striker2 not updated: " << pos_st2.x << " " << pos_st2.y << std::endl; 
             }
             std::cout << "PUCK CORD " << pos.x << " " << pos.y << std::endl;
             aerohockey.puck.set_coord(pos);

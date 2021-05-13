@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <experimental/filesystem>
 #include <vector>
-#define PING 10 //ms
+#define PING 1 // ms
 
 class Game {
     private:

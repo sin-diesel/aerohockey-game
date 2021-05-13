@@ -68,7 +68,7 @@ bool Server::get_updates(std::vector<sf::Packet>& data) //receives data about st
 
     // here we receive not from the main server socket, but instead from client socket
     //client_selector.wait()
-    if (client_selector.wait(sf::milliseconds(1))) {
+    if (client_selector.wait(sf::milliseconds(100))) {
         for (int i = 0; i < 2; ++i) {
             if (client_selector.isReady(*(client_sockets[i]))) {
                 client_sockets[i]->receive(data[i], client_address, client_port);
@@ -162,7 +162,7 @@ void Server::run(Game& game) {
     while (1) {
         bool received = true;
         elapsed = clock.getElapsedTime();
-        if (elapsed > game.get_update_time()) {
+        if (elapsed > sf::milliseconds(10)) {
 
             received = get_updates(data);
 
@@ -175,9 +175,9 @@ void Server::run(Game& game) {
 
                         std::cout << "Client  " << i << " pos: " << pos1[i].x << " " << pos1[i].y << " " << std::endl;
                     }
-                    std::cout << "B striker position " << striker1.position.x << " " << striker1.position.y << " " << striker2.position.x << " " <<  striker2.position.y << std::endl;
+                    //std::cout << "B striker position " << striker1.position.x << " " << striker1.position.y << " " << striker2.position.x << " " <<  striker2.position.y << std::endl;
                     update_strikers(pos1[0], pos1[1]);
-                    std::cout << "A striker position " << striker1.position.x << " " << striker1.position.y << " " << striker2.position.x << " " <<  striker2.position.y << std::endl;
+                    //std::cout << "A striker position " << striker1.position.x << " " << striker1.position.y << " " << striker2.position.x << " " <<  striker2.position.y << std::endl;
                     sf::Vector2f pos = puck.update(striker1, striker2);
                     // if (received) {
                     //     client_direction.x += 1.0f;
@@ -189,8 +189,8 @@ void Server::run(Game& game) {
                     //int j = (i == 0) ? 1 : 0;
                     // data[i] << client_direction.x << client_direction.y;
                     response[i] << pos1[0] << pos1[1] << pos;
-                    //std::cout << "Client  " << i << " pos updated: " << pos1[j].x << " " \
-                                                << pos1[j].y << " pos: " << pos.x << " " << pos.y << std::endl;
+                    //std::cout << "Client  " << i << " pos updated: " << pos1[i].x << " " \
+                                                //<< pos1[i].y << " pos: " << pos.x << " " << pos.y << std::endl;
                 }
                 send_updates(response);
            // }
