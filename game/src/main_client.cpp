@@ -48,6 +48,9 @@ int main() {
                         pause_flag = (pause_flag == 0) ? 1 : 0;
                     }
                     break;
+                // case sf::Event::GainedFocus:
+                //     mouse_pos = sf::Mouse::getPosition(window);
+                //     break;
             }
         }
 

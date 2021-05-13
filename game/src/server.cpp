@@ -48,12 +48,12 @@ void Server::handle_connections(int client_number) {
     adresses.push_back(client_addr); //save client's adress
     ports.push_back(client_port);    //save client's port
 
-    //std::cout << "Packet from client received " << std::endl;
-    //std::cout << "Client addr: " << client_addr << std::endl;
-    //std::cout << "Client port: " << client_port << std::endl;
+    std::cout << "Packet from client received " << std::endl;
+    std::cout << "Client addr: " << client_addr << std::endl;
+    std::cout << "Client port: " << client_port << std::endl;
 
     unsigned short new_port = client_sockets[client_number]->getLocalPort();
-    //std::cout << "Port distrubuted for new client: " << new_port << std::endl;
+    std::cout << "Port distrubuted for new client: " << new_port << std::endl;
     
     sf::Packet response;
     response << new_port << client_number;
@@ -67,12 +67,12 @@ bool Server::get_updates(std::vector<sf::Packet>& data) //receives data about st
 
     // here we receive not from the main server socket, but instead from client socket
     //client_selector.wait()
-    if (client_selector.wait(sf::milliseconds(1))) {
+    if (client_selector.wait(sf::milliseconds(100))) {
         for (int i = 0; i < 2; ++i) {
             if (client_selector.isReady(*(client_sockets[i]))) {
                 client_sockets[i]->receive(data[i], client_address, client_port);
-                //std::cout << "Received from: " << std::endl;
-                //std::cout << client_address << std::endl << client_port << std::endl;
+                std::cout << "Received from: " << std::endl;
+                std::cout << client_address << std::endl << client_port << std::endl;
             } else {
                 //!!!!! std::cerr << "Error receiving packet from client. " << std::endl;
                 std::cerr << std::endl;
@@ -113,11 +113,9 @@ void Server::update_strikers(sf::Vector2f pos1, sf::Vector2f pos2)
     striker1.set_coord(pos1);
     striker2.set_coord(pos2);
 }
-//=======
 
 bool Server::send_updates(std::vector<sf::Packet>& data) // calculates new cooridinates of puck and strikers and sends to clients
 {
-// <<<<<<< HEAD
 //     sf::Packet packet;
 //     sf::Vector2f pos;
 //     packet << pos.x << pos.y;
@@ -128,7 +126,6 @@ bool Server::send_updates(std::vector<sf::Packet>& data) // calculates new coori
 //     packet << pos.x << pos.y;
 //     client_sockets[0].send(packet, adresses[0], ports[0]);
 //     client_sockets[1].send(packet, adresses[1], ports[1]);
-//=======
     for (int i = 0; i < 2; ++i) {
         if (client_sockets[i]->send(data[i], adresses[i], ports[i]) != sf::Socket::Done) {
             std::cerr << "Error sending data to client. " << std::endl;
@@ -138,7 +135,6 @@ bool Server::send_updates(std::vector<sf::Packet>& data) // calculates new coori
     }
 
     return true;
-//>>>>>>> client-server-comm
 }
 
 void Server::run() {
@@ -161,7 +157,7 @@ void Server::run() {
     while (1) {
         bool received = true;
         elapsed = clock.getElapsedTime();
-        if (elapsed > network_update_time) {
+        if (elapsed > sf::milliseconds(10)) {
 
             received = get_updates(data);
 
@@ -172,7 +168,7 @@ void Server::run() {
                     if (received) {
                         data[i] >> pos1[i];
 
-                        //std::cout << "Client  " << i << " pos: " << pos1[i].x << " " << pos1[i].y << " " << std::endl;
+                        std::cout << "Client  " << i << " pos: " << pos1[i].x << " " << pos1[i].y << " " << std::endl;
                     }
                     //std::cout << "B striker position " << striker1.position.x << " " << striker1.position.y << " " << striker2.position.x << " " <<  striker2.position.y << std::endl;
                     update_strikers(pos1[0], pos1[1]);
@@ -188,8 +184,8 @@ void Server::run() {
                     //int j = (i == 0) ? 1 : 0;
                     // data[i] << client_direction.x << client_direction.y;
                     response[i] << pos1[0] << pos1[1] << pos;
-                    //std::cout << "Client  " << i << " pos updated: " << pos1[j].x << " " \
-                                                << pos1[j].y << " pos: " << pos.x << " " << pos.y << std::endl;
+                    //std::cout << "Client  " << i << " pos updated: " << pos1[i].x << " " \
+                                                //<< pos1[i].y << " pos: " << pos.x << " " << pos.y << std::endl;
                 }
                 send_updates(response);
            // }
