@@ -1,39 +1,14 @@
-#include "library.h"
-#include "client.h"
-#include "game.h"
+#include "../include/library.h"
+#include "../include/game.h"
 
-int main(int argc, char** argv) {
-    Client client;
-    int pause_flag = 0;
-
-    sf::IpAddress server_addr;
-    // IP address entered
-    if (argc == 2) {
-        char* ip_addr = argv[1];
-        if ((server_addr = sf::IpAddress(ip_addr)) == sf::IpAddress::None) {
-            std::cerr << "Error converting to valid IP address" << std::endl;
-            return -1;
-        }
-    } else if (argc == 1) {
-        server_addr = sf::IpAddress::LocalHost;
-    } else {
-        std::cout << "Usage: ./server.out [ip_addr]" << std::endl;
-        return -1;
-    }
-    // connect to local machine
-    std::cout << "Address of server is: " << server_addr << std::endl;
-    
-    // connect to server
-    client.connect(server_addr);
-    unsigned short server_port = client.get_port();
-    std::cout << "Port received from server: " << server_port << std::endl;
-
+void game(sf::RenderWindow& window)
+{
     sf::Clock clock;
     sf::Time elapsed;
-    std::cout << "client number is " << client.number << std::endl;
-    // window
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "aerohockey-game", sf::Style::Default);
-    Game aerohockey = Game(window.getSize(), client.number + 1);
+    int pause_flag = 0;
+    bool isGame = true;
+
+    Game aerohockey(window.getSize());
     std::cout << "aerohockey number is " << aerohockey.number << std::endl;
     sf::Image background_image;
     sf::Texture background_texture;
@@ -51,16 +26,9 @@ int main(int argc, char** argv) {
     background.setPosition(window.getSize().x / 2, aerohockey.scoreboard.getSize().y);
 
     // game loop
-    
-    sf::Vector2i mouse_pos;
-    while (window.isOpen()) {
 
-        bool received = true;
-        bool updated = false;
-        sf::Packet packet;
-
-        // event polling
-
+    while (isGame) {
+        
         sf::Event event;
         while (window.pollEvent(event)) {
 
@@ -74,11 +42,10 @@ int main(int argc, char** argv) {
                 case sf::Event::KeyPressed:
                     std::cout << "Key pressed." << std::endl;
                     if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::Q) {
-                        window.close();
+                        isGame = false;
                     }
                     if (event.key.code == sf::Keyboard::Space || event.key.code == sf::Keyboard::P) {
                         pause_flag = (pause_flag == 0) ? 1 : 0;
-                        //pause_flag = 1;
                     }
                     break;
                 // case sf::Event::GainedFocus:
@@ -86,67 +53,82 @@ int main(int argc, char** argv) {
                 //     break;
             }
         }
-        mouse_pos = sf::Mouse::getPosition(window);
-        
-
-        aerohockey.play(window);
-
-        window.clear(sf::Color(0, 49, 83, 0));
-        window.draw(background);
-        aerohockey.draw_objects(window);
-        window.display();
 
         elapsed = clock.getElapsedTime();
-
-        if (elapsed > client.get_update_time(aerohockey)) {
-            sf::Vector2f float_mouse_pos(mouse_pos);
-            packet << float_mouse_pos;
-            //std::cout << "PAUSE " << pause_flag << std::endl;
-            if (!pause_flag) {
-                if (!client.send_updates(packet, server_addr, server_port)) {
-                    std::cerr << "Error sending updates to server. " << std::endl;
-                    std::cerr << std::endl;
-                }
-
-                std::cout << "Updates sent to server: " << mouse_pos.x << " " << mouse_pos.y << std::endl;
-                packet.clear();
-            }
-            sf::IpAddress server_addr;
-            unsigned short server_port;
-
-            if (!client.receive_updates(packet, server_addr, server_port)) {
-                std::cerr << "Error receiving updates from server. " << std::endl;
-                std::cerr << std::endl;
-                received = false;
-            }
-
-            sf::Vector2f pos, pos_st1, pos_st2;
-            if (received) {
-                packet >> pos_st1 >> pos_st2 >> pos;
-                std:: cout << "striker1 not updated: " << pos_st1.x << " " << pos_st1.y << std::endl; 
-                std:: cout << "striker2 not updated: " << pos_st2.x << " " << pos_st2.y << std::endl; 
-            }
-            std::cout << "PUCK CORD " << pos.x << " " << pos.y << std::endl;
-            aerohockey.puck.set_coord(pos);
-            /*if (aerohockey.number == 1) {
-                aerohockey.striker2.set_coord(float_mouse_pos);
-            else
-                aerohockey.striker1.set_coord(float_mouse_pos);*/
-            aerohockey.striker1.set_coord(pos_st1);
-            aerohockey.striker2.set_coord(pos_st2);
-            //std::cout << "Updated data: " << mouse_pos.x << " " << mouse_pos.y;
-            pos = aerohockey.puck.get_coord();
-            std:: cout << "puck: " << pos.x << " " << pos.y << std::endl;
-            pos = aerohockey.striker1.get_coord();
-            std:: cout << "striker1: " << pos.x << " " << pos.y << std::endl; 
-            pos = aerohockey.striker2.get_coord();
-            std:: cout << "striker2: " << pos.x << " " << pos.y << std::endl; 
-            std::cout << "Received from: " << server_addr << std::endl;
-            std::cout << "Port: " << server_port << std::endl;
-
+        if ((elapsed > aerohockey.get_update_time()) && (!pause_flag)){
             clock.restart();
+            aerohockey.play(window);
+            window.clear(sf::Color(0, 49, 83, 0));
+            window.draw(background);
+            aerohockey.draw_objects(window);
+            window.display();
         }
     }
+}
 
+bool menu(sf::RenderWindow& window)
+{
+    #ifdef __MACH__
+        std::string path = "/Users/stassidelnikov/aerohockey-game";
+    #else
+        std::string path = std::experimental::filesystem::current_path().string();
+    #endif
+
+    sf::Texture buttonTexture;
+    buttonTexture.loadFromFile(path + "/game/images/button.png");
+    sf::Sprite menubutton(buttonTexture), exitbutton(buttonTexture);
+    bool isMenu = true;
+    int menuNum = 0;
+	menubutton.setPosition(100, 30);
+    exitbutton.setPosition(100, 330);
+    sf::FloatRect menubutton_bounds = menubutton.getGlobalBounds();
+    sf::FloatRect exitbutton_bounds = exitbutton.getGlobalBounds();
+
+	while ((isMenu) && (window.isOpen()))
+	{
+        sf::Event event;
+        while (window.pollEvent(event)) {
+
+            switch(event.type) {
+                case sf::Event::Closed:
+                    std::cout << "Closing window." << std::endl;
+                    window.close();
+                    break;
+            }
+        }
+
+        //std::cout << "menu loop" << std::endl;
+        menubutton.setColor(sf::Color::White);
+        exitbutton.setColor(sf::Color::White);
+		
+		menuNum = 0;
+		if (menubutton_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { menubutton.setColor(sf::Color::Blue); menuNum = 1; }
+        if (exitbutton_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { exitbutton.setColor(sf::Color::Blue); menuNum = 2; }
+ 
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+            //std::cout << "button pressed " << menuNum << std::endl;
+			if (menuNum == 1) { 
+                game(window);
+            } 
+			if (menuNum == 2)  { 
+                isMenu = false; 
+                std::cout << "Closing menu" << std::endl;
+            }
+ 
+		}
+        
+        window.clear(sf::Color(129, 181, 221));
+		window.draw(menubutton);
+		window.draw(exitbutton);
+		window.display();
+	}
+    return true;
+}
+
+int main() {
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "aerohockey-game", sf::Style::Default);
+    menu(window);
+    window.close();
     return 0;
 }

@@ -1,8 +1,7 @@
 #pragma once
-#include "game.h"
-#include <vector>
+#include "../include/library.h"
+#include "../include/dynamic.h"
 
-#define PORT 54000
 #define CLIENT_1_PORT 54001
 #define CLIENT_2_PORT 54002
 
@@ -29,7 +28,7 @@ private:
 public:
     Server();
     ~Server();
-    void run(Game& game);
+    void run();
     // accept incoming connections in blocking mode
     void handle_connections(int client_number);
     void init_sockets();
@@ -41,3 +40,11 @@ public:
     void calculate_changes();
     void update_strikers(sf::Vector2f, sf::Vector2f);
 };
+
+sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2f& pos);
+
+sf::Packet& operator >>(sf::Packet& packet, sf::Vector2f& pos);
+
+sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2i& pos);
+
+sf::Packet& operator >>(sf::Packet& packet, sf::Vector2i& pos);

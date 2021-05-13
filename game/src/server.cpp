@@ -1,5 +1,4 @@
 #include "server.h"
-#include <iostream>
 
 Server::Server() {
     port = PORT;
@@ -114,11 +113,9 @@ void Server::update_strikers(sf::Vector2f pos1, sf::Vector2f pos2)
     striker1.set_coord(pos1);
     striker2.set_coord(pos2);
 }
-//=======
 
 bool Server::send_updates(std::vector<sf::Packet>& data) // calculates new cooridinates of puck and strikers and sends to clients
 {
-// <<<<<<< HEAD
 //     sf::Packet packet;
 //     sf::Vector2f pos;
 //     packet << pos.x << pos.y;
@@ -129,7 +126,6 @@ bool Server::send_updates(std::vector<sf::Packet>& data) // calculates new coori
 //     packet << pos.x << pos.y;
 //     client_sockets[0].send(packet, adresses[0], ports[0]);
 //     client_sockets[1].send(packet, adresses[1], ports[1]);
-//=======
     for (int i = 0; i < 2; ++i) {
         if (client_sockets[i]->send(data[i], adresses[i], ports[i]) != sf::Socket::Done) {
             std::cerr << "Error sending data to client. " << std::endl;
@@ -139,11 +135,10 @@ bool Server::send_updates(std::vector<sf::Packet>& data) // calculates new coori
     }
 
     return true;
-//>>>>>>> client-server-comm
 }
 
-void Server::run(Game& game) {
-    // handle 2 clients
+void Server::run() {
+    sf::Time network_update_time = sf::milliseconds(PING);
     sf::Clock clock;
     sf::Time elapsed;
 
@@ -198,4 +193,25 @@ void Server::run(Game& game) {
             clock.restart();
         }
     }
+}
+
+
+sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2f& pos)
+{
+    return packet << pos.x << pos.y;
+}
+
+sf::Packet& operator >>(sf::Packet& packet, sf::Vector2f& pos)
+{
+    return packet >> pos.x >> pos.y;
+}
+
+sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2i& pos)
+{
+    return packet << pos.x << pos.y;
+}
+
+sf::Packet& operator >>(sf::Packet& packet, sf::Vector2i& pos)
+{
+    return packet >> pos.x >> pos.y;
 }

@@ -2,7 +2,7 @@
 
 //const char path[] = "/Users/stassidelnikov/aerohockey-game";
 
-Game::Game(sf::Vector2u windowsize_, int num) {
+Game::Game(sf::Vector2u windowsize_) {
 
     struct utsname details;
     int ret = uname(&details);
@@ -17,7 +17,7 @@ Game::Game(sf::Vector2u windowsize_, int num) {
     #else
         path = std::experimental::filesystem::current_path().string();
     #endif
-    number = num;
+    number = 1;
     sf::Vector2f windowsize = sf::Vector2f(windowsize_);
     sf::Vector2f pos(600, 600);
     scoreboard = Scoreboard(path + "/game/images/scoreboard.png", {windowsize.x/2, 0}, path);  
@@ -31,19 +31,49 @@ Game::Game(sf::Vector2u windowsize_, int num) {
     striker2.set_coord({windowsize.x * 3 / 4, windowsize.y / 2});  //temporary, just to look vizualization
 }
 
-void Game::play(sf::RenderWindow& window) {
-
-    //get structure of coordinates and score from socket
-
-    //striker1.update({50, 50}, {0, 0});
-    //striker2.update({100, 50}, {0, 0});
-    //puck.update({150, 50}, {0, 0});
-    //scoreboard.update();
+void Game::play(sf::RenderWindow& window) 
+{
+    sf::Packet packet;
+    bool received;
     sf::Vector2f mouse_pos = sf::Vector2f(sf::Mouse::getPosition(window));
-    /*if (number == 1)
-        striker1.set_coord(mouse_pos); //temporary, just to look vizualization
+
+    packet << mouse_pos;
+    if (!client.send_updates(packet)) {
+        std::cerr << "Error sending updates to server. " << std::endl;
+        std::cerr << std::endl;
+    }
+    //std::cout << "Updates sent to server: " << mouse_pos.x << " " << mouse_pos.y << std::endl;
+    packet.clear();
+
+    sf::IpAddress server_addr;
+    unsigned short server_port;
+    if (!client.receive_updates(packet, server_addr, server_port)) {
+        std::cerr << "Error receiving updates from server. " << std::endl;
+        std::cerr << std::endl;
+        received = false;
+    }
+
+    sf::Vector2f pos, pos_st1, pos_st2;
+    if (received) {
+        packet >> pos_st1 >> pos_st2 >> pos;
+    }
+    //std::cout << "PUCK CORD " << pos.x << " " << pos.y << std::endl;
+    puck.set_coord(pos);
+    /*if (aerohockey.number == 1) {
+        aerohockey.striker2.set_coord(float_mouse_pos);
     else
-        striker2.set_coord(mouse_pos);*/
+        aerohockey.striker1.set_coord(float_mouse_pos);*/
+    striker1.set_coord(pos_st1);
+    striker2.set_coord(pos_st2);
+    //std::cout << "Updated data: " << mouse_pos.x << " " << mouse_pos.y;
+    pos = puck.get_coord();
+    //std:: cout << "puck: " << pos.x << " " << pos.y << std::endl;
+    pos = striker1.get_coord();
+    //std:: cout << "striker1: " << pos.x << " " << pos.y << std::endl; 
+    pos = striker2.get_coord();
+    //std:: cout << "striker2: " << pos.x << " " << pos.y << std::endl; 
+    //std::cout << "Received from: " << server_addr << std::endl;
+    //std::cout << "Port: " << server_port << std::endl;
 }
 
 void Game::draw_objects(sf::RenderWindow& window) {
@@ -53,34 +83,11 @@ void Game::draw_objects(sf::RenderWindow& window) {
     scoreboard.draw(window);
 }
 
-Game::~Game() {
-    
-}
+Game::~Game() {}
 
-void Game::render() {
+void Game::update() {}
 
-}
-
-void Game::update() {
-
-}
-
-sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2f& pos)
+sf::Time Game::get_update_time()
 {
-    return packet << pos.x << pos.y;
-}
-
-sf::Packet& operator >>(sf::Packet& packet, sf::Vector2f& pos)
-{
-    return packet >> pos.x >> pos.y;
-}
-
-sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2i& pos)
-{
-    return packet << pos.x << pos.y;
-}
-
-sf::Packet& operator >>(sf::Packet& packet, sf::Vector2i& pos)
-{
-    return packet >> pos.x >> pos.y;
+    return network_update_time;
 }

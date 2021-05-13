@@ -9,13 +9,26 @@ Client::Client() {
     }
     socket.setBlocking(true);
     std::cout << "Initializing client." << std::endl;
+
+    // connect to local machine
+    server_addr = sf::IpAddress((sf::IpAddress::LocalHost));
+    std::cout << "Address of server is: " << server_addr << std::endl;
+    
+    // connect to server
+    connect(server_addr);
+    server_port = get_port();
+    std::cout << "Port received from server: " << server_port << std::endl;
+
+    sf::Clock clock;
+    sf::Time elapsed;
+    std::cout << "client number is " << number << std::endl;
 }
 
 Client::~Client() {
     socket.unbind();
 }
 
-bool Client::send_updates(sf::Packet& packet, sf::IpAddress server_addr, unsigned short server_port) {
+bool Client::send_updates(sf::Packet& packet) {
     if (socket.send(packet, server_addr, server_port) != sf::Socket::Done) {
         return false;
     }
@@ -73,7 +86,22 @@ sf::Packet Client::process_input() {
     return packet;
 }
 
+sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2f& pos)
+{
+    return packet << pos.x << pos.y;
+}
 
-sf::Time Client::get_update_time(Game& game) {
-    return game.get_update_time();
+sf::Packet& operator >>(sf::Packet& packet, sf::Vector2f& pos)
+{
+    return packet >> pos.x >> pos.y;
+}
+
+sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2i& pos)
+{
+    return packet << pos.x << pos.y;
+}
+
+sf::Packet& operator >>(sf::Packet& packet, sf::Vector2i& pos)
+{
+    return packet >> pos.x >> pos.y;
 }

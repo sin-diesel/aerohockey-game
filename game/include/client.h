@@ -1,25 +1,33 @@
-#include "game.h"
 #include "library.h"
 
 class Client {
-private:
+    private:
 
-    sf::IpAddress addr;
-    unsigned short port;
-    sf::UdpSocket socket;
+        sf::IpAddress addr;
+        unsigned short port;
+        sf::UdpSocket socket;
+        sf::IpAddress server_addr;
+        unsigned short server_port;
     
 
-public:
-    int number;
-    Client();
-    ~Client();
+    public:
+        int number;
+        Client();
+        ~Client();
 
-    void connect(sf::IpAddress server_addr);
-    unsigned short get_port();
-    sf::Packet process_input();
-    sf::Time get_update_time(Game& game);
+        void connect(sf::IpAddress server_addr);
+        unsigned short get_port();
+        sf::Packet process_input();
 
-    bool send_updates(sf::Packet& packet, sf::IpAddress server_addr, unsigned short server_port);
-    bool receive_updates(sf::Packet& packet, sf::IpAddress& server_addr, unsigned short& server_port);
+        bool send_updates(sf::Packet& packet);
+        bool receive_updates(sf::Packet& packet, sf::IpAddress& server_addr, unsigned short& server_port);
 };
 
+
+sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2f& pos);
+
+sf::Packet& operator >>(sf::Packet& packet, sf::Vector2f& pos);
+
+sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2i& pos);
+
+sf::Packet& operator >>(sf::Packet& packet, sf::Vector2i& pos);

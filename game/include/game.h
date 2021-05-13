@@ -2,10 +2,8 @@
 #include "library.h"
 #include "dynamic.h"
 #include "scoreboard.h"
-#include <unistd.h>
-#include <experimental/filesystem>
-#include <vector>
-#define PING 1 // ms
+#include "client.h"
+
 
 class Game {
     private:
@@ -13,25 +11,19 @@ class Game {
     public:
         int number;
         std::string path;
+        Client client;
         ClientDynamicObject puck, striker1, striker2;
         Scoreboard scoreboard;
         Game() = default;
-        Game(sf::Vector2u windowsize, int num);
+        Game(sf::Vector2u windowsize);
         // virtual destructor in case we are going to use inheritance
         virtual ~Game();
 
         // this is to be server to compute changes in window
         void update();
-        // this is to be used by client to draw stuff
-        void render();
-
         void play(sf::RenderWindow& window);
-
         void draw_objects(sf::RenderWindow& window);
-
-        sf::Time get_update_time() {
-            return network_update_time;
-        }
+        sf::Time get_update_time();
 };
 
 
@@ -45,11 +37,3 @@ struct NetworkPacket {
     float puck_x;
     float puck_y;
 };
-
-sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2f& pos);
-
-sf::Packet& operator >>(sf::Packet& packet, sf::Vector2f& pos);
-
-sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2i& pos);
-
-sf::Packet& operator >>(sf::Packet& packet, sf::Vector2i& pos);
