@@ -129,15 +129,10 @@ int main(int argc, char** argv) {
             /*if (aerohockey.number == 1) {
                 aerohockey.striker2.set_coord(float_mouse_pos);
             else
-<<<<<<< HEAD
-                aerohockey.striker1.set_coord(float_mouse_pos);
-            std::cout << "Updated data: " << mouse_pos.x << " " << mouse_pos.y;
-=======
                 aerohockey.striker1.set_coord(float_mouse_pos);*/
             aerohockey.striker1.set_coord(pos_st1);
             aerohockey.striker2.set_coord(pos_st2);
             //std::cout << "Updated data: " << mouse_pos.x << " " << mouse_pos.y;
->>>>>>> 7415948a5d93d002db07204183817cd75ca98b41
             pos = aerohockey.puck.get_coord();
             std:: cout << "puck: " << pos.x << " " << pos.y << std::endl;
             pos = aerohockey.striker1.get_coord();
