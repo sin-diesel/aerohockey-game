@@ -10,5 +10,5 @@
 #include <sys/utsname.h>
 
 #define PORT 54000
-#define PING 1 //ms
-#define PINGSERVER 1
+#define PING 1000 //ms
+#define PINGSERVER 1000

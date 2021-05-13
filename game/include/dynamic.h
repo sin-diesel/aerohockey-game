@@ -33,7 +33,7 @@ class ClientDynamicObject : public DynamicObject {
 class ServerDynamicObject : public DynamicObject {
     private:
     sf::Vector2f speed;
-
+    int collision1, collision2;
     public:
     const float mass;
     ServerDynamicObject();
