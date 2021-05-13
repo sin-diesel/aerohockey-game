@@ -6,6 +6,7 @@ void game(sf::RenderWindow& window)
     sf::Clock clock;
     sf::Time elapsed;
     int pause_flag = 0;
+    bool isGame = true;
 
     Game aerohockey(window.getSize());
     std::cout << "aerohockey number is " << aerohockey.number << std::endl;
@@ -26,7 +27,7 @@ void game(sf::RenderWindow& window)
 
     // game loop
 
-    while (window.isOpen()) {
+    while (isGame) {
         
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -41,7 +42,7 @@ void game(sf::RenderWindow& window)
                 case sf::Event::KeyPressed:
                     std::cout << "Key pressed." << std::endl;
                     if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::Q) {
-                        window.close();
+                        isGame = false;
                     }
                     if (event.key.code == sf::Keyboard::Space || event.key.code == sf::Keyboard::P) {
                         pause_flag = (pause_flag == 0) ? 1 : 0;
@@ -80,32 +81,44 @@ bool menu(sf::RenderWindow& window)
     int menuNum = 0;
 	menubutton.setPosition(100, 30);
     exitbutton.setPosition(100, 330);
+    sf::FloatRect menubutton_bounds = menubutton.getGlobalBounds();
+    sf::FloatRect exitbutton_bounds = exitbutton.getGlobalBounds();
 
-	while (isMenu)
+	while ((isMenu) && (window.isOpen()))
 	{
-        std::cout << "menu loop" << std::endl;
-		menubutton.setColor(sf::Color::White);
+        sf::Event event;
+        while (window.pollEvent(event)) {
+
+            switch(event.type) {
+                case sf::Event::Closed:
+                    std::cout << "Closing window." << std::endl;
+                    window.close();
+                    break;
+            }
+        }
+
+        //std::cout << "menu loop" << std::endl;
+        menubutton.setColor(sf::Color::White);
         exitbutton.setColor(sf::Color::White);
+		
 		menuNum = 0;
-		window.clear(sf::Color(129, 181, 221));
- 
-		if (sf::IntRect(100, 30, 300, 50).contains(sf::Mouse::getPosition(window))) { menubutton.setColor(sf::Color::Blue); menuNum = 1; }
-        if (sf::IntRect(100, 330, 300, 450).contains(sf::Mouse::getPosition(window))) { exitbutton.setColor(sf::Color::Blue); menuNum = 2; }
+		if (menubutton_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { menubutton.setColor(sf::Color::Blue); menuNum = 1; }
+        if (exitbutton_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { exitbutton.setColor(sf::Color::Blue); menuNum = 2; }
  
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-            std::cout << "button pressed " << menuNum << std::endl;
+            //std::cout << "button pressed " << menuNum << std::endl;
 			if (menuNum == 1) { 
-                isMenu = false;//если нажали первую кнопку, то game
                 game(window);
-                return true;
             } 
 			if (menuNum == 2)  { 
                 isMenu = false; 
+                std::cout << "Closing menu" << std::endl;
             }
  
 		}
- 
+        
+        window.clear(sf::Color(129, 181, 221));
 		window.draw(menubutton);
 		window.draw(exitbutton);
 		window.display();
