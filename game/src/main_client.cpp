@@ -46,7 +46,6 @@ int main() {
                     }
                     if (event.key.code == sf::Keyboard::Space || event.key.code == sf::Keyboard::P) {
                         pause_flag = (pause_flag == 0) ? 1 : 0;
-                        //pause_flag = 1;
                     }
                     break;
             }
@@ -54,12 +53,12 @@ int main() {
 
         elapsed = clock.getElapsedTime();
         if ((elapsed > aerohockey.get_update_time()) && (!pause_flag)){
+            clock.restart();
             aerohockey.play(window);
             window.clear(sf::Color(0, 49, 83, 0));
             window.draw(background);
             aerohockey.draw_objects(window);
             window.display();
-            clock.restart();
         }
     }
 
