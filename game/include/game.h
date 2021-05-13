@@ -15,7 +15,7 @@ class Game {
         ClientDynamicObject puck, striker1, striker2;
         Scoreboard scoreboard;
         Game() = default;
-        Game(sf::Vector2u windowsize);
+        Game(sf::Vector2u windowsize, sf::IpAddress& server_addr);
         // virtual destructor in case we are going to use inheritance
         virtual ~Game();
 

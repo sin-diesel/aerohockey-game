@@ -11,7 +11,8 @@ class Client {
         int number;
 
     public:
-        Client();
+        Client() = default;
+        Client(sf::IpAddress& address);
         ~Client();
         int get_number();
         void set_number(int num);

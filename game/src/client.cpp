@@ -1,6 +1,6 @@
 #include "../include/client.h"
 
-Client::Client() {
+Client::Client(sf::IpAddress& address) {
     addr = sf::IpAddress::Any;
     port = sf::Socket::AnyPort;
     number = 0;
@@ -11,7 +11,7 @@ Client::Client() {
     std::cout << "Initializing client." << std::endl;
 
     // connect to local machine
-    server_addr = sf::IpAddress((sf::IpAddress::LocalHost));
+    server_addr = address;
     std::cout << "Address of server is: " << server_addr << std::endl;
     
     // connect to server
