@@ -1,6 +1,6 @@
 #include "../include/library.h"
 #include "../include/game.h"
-
+sf::IpAddress server_addr;
 void game(sf::RenderWindow& window)
 {
     sf::Clock clock;
@@ -126,7 +126,19 @@ bool menu(sf::RenderWindow& window)
     return true;
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+    if (argc == 2) {
+        char* ip_addr = argv[1];
+        if ((server_addr = sf::IpAddress(ip_addr)) == sf::IpAddress::None) {
+            std::cerr << "Error converting to valid IP address" << std::endl;
+            return -1;
+        }
+    } else if (argc == 1) {
+        server_addr = sf::IpAddress::LocalHost;
+    } else {
+        std::cout << "Usage: ./server.out [ip_addr]" << std::endl;
+        return -1;
+    }
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "aerohockey-game", sf::Style::Default);
     menu(window);
     window.close();
