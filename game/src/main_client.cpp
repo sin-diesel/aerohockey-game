@@ -9,7 +9,7 @@ void game(sf::RenderWindow& window)
     bool isGame = true;
 
     Game aerohockey(window.getSize());
-    std::cout << "aerohockey number is " << aerohockey.number << std::endl;
+    std::cout << "aerohockey number is " << aerohockey.get_number() << std::endl;
     sf::Image background_image;
     sf::Texture background_texture;
     sf::Sprite background;

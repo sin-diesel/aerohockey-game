@@ -84,6 +84,14 @@ void Game::draw_objects(sf::RenderWindow& window) {
     scoreboard.draw(window);
 }
 
+int Game::get_number() {
+    return number;
+}
+
+void Game::set_number(int num) {
+    number = num;
+}
+
 Game::~Game() {}
 
 void Game::update() {}

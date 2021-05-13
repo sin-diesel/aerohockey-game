@@ -20,6 +20,8 @@ class Game {
         virtual ~Game();
 
         // this is to be server to compute changes in window
+        int get_number();
+        void set_number(int num);
         void update();
         void play(sf::RenderWindow& window);
         void draw_objects(sf::RenderWindow& window);
