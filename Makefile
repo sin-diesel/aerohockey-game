@@ -10,7 +10,7 @@ all: server client
 
 define OBJ
 
-$(OBJ_PATH)/main.o $(OBJ_PATH)/game.o $(OBJ_PATH)/dynamic.o $(OBJ_PATH)/scoreboard.o $(OBJ_PATH)/textbox.o $(OBJ_PATH)/server.o
+$(OBJ_PATH)/main.o $(OBJ_PATH)/interface.o $(OBJ_PATH)/game.o $(OBJ_PATH)/dynamic.o $(OBJ_PATH)/scoreboard.o $(OBJ_PATH)/textbox.o $(OBJ_PATH)/server.o
 endef
 
 define SERVER_OBJ
@@ -18,7 +18,7 @@ $(OBJ_PATH)/dynamic.o $(OBJ_PATH)/server.o $(OBJ_PATH)/main_server.o
 endef
 
 define CLIENT_OBJ
-$(OBJ_PATH)/dynamic.o $(OBJ_PATH)/scoreboard.o $(OBJ_PATH)/client.o $(OBJ_PATH)/textbox.o $(OBJ_PATH)/game.o $(OBJ_PATH)/main_client.o
+$(OBJ_PATH)/dynamic.o $(OBJ_PATH)/scoreboard.o $(OBJ_PATH)/client.o $(OBJ_PATH)/textbox.o $(OBJ_PATH)/game.o $(OBJ_PATH)/interface.o $(OBJ_PATH)/main_client.o
 endef
 
 define SRC
@@ -53,6 +53,10 @@ $(OBJ_PATH)/main_client.o: $(SRC_PATH)/main_client.cpp
 
 $(OBJ_PATH)/textbox.o: $(SRC_PATH)/textbox.cpp
 	$(CXX) $(CXXFLAGS) $^ -c -o $(OBJ_PATH)/textbox.o
+
+$(OBJ_PATH)/interface.o: $(SRC_PATH)/interface.cpp
+	$(CXX) $(CXXFLAGS) $^ -c -o $(OBJ_PATH)/interface.o
+
 
 # OS-dependency variables
 OS=$(shell uname)
