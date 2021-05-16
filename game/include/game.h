@@ -4,7 +4,6 @@
 #include "scoreboard.h"
 #include "client.h"
 
-
 class Game {
     private:
         sf::Time network_update_time = sf::milliseconds(PING);

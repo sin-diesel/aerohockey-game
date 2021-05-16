@@ -1,8 +1,15 @@
 #include "../include/library.h"
 #include "../include/game.h"
-sf::IpAddress server_addr;
-void game(sf::RenderWindow& window)
+#include "../include/textbox.h"
+
+bool game(sf::RenderWindow& window, std::string ip_addr)
 {
+    sf::IpAddress server_addr;
+    if ((server_addr = sf::IpAddress(ip_addr)) == sf::IpAddress::None) {
+        std::cerr << "Error converting to valid IP address" << std::endl;
+        return -1;
+    }
+    //std::cout << ip << std::endl;
     sf::Clock clock;
     sf::Time elapsed;
     int pause_flag = 0;
@@ -41,10 +48,11 @@ void game(sf::RenderWindow& window)
 
                 case sf::Event::KeyPressed:
                     std::cout << "Key pressed." << std::endl;
-                    if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::Q) {
+                    if (event.key.code == sf::Keyboard::Escape)
                         isGame = false;
-                    }
-                    if (event.key.code == sf::Keyboard::Space || event.key.code == sf::Keyboard::P) {
+                    else if (event.key.code == sf::Keyboard::Q)
+                        window.close();
+                    else if (event.key.code == sf::Keyboard::Space || event.key.code == sf::Keyboard::P) {
                         pause_flag = (pause_flag == 0) ? 1 : 0;
                     }
                     break;
@@ -64,26 +72,98 @@ void game(sf::RenderWindow& window)
             window.display();
         }
     }
+    return true;
 }
 
-bool menu(sf::RenderWindow& window)
+bool enter_ip(sf::RenderWindow& window)
 {
+    sf::Vector2f windowsize = sf::Vector2f(window.getSize());
+    bool isEnter = true;
     #ifdef __MACH__
         std::string path = "/Users/stassidelnikov/aerohockey-game";
     #else
         std::string path = std::experimental::filesystem::current_path().string();
     #endif
 
+    sf::Font font;
+    std::string fontpath = path + "/game/images/arial.ttf";
+    font.loadFromFile(fontpath);
+    sf::Text suggestion;
+    suggestion.setFont(font);
+    suggestion.setFillColor(sf::Color::Black);
+    suggestion.setStyle(sf::Text::Bold);
+    suggestion.setCharacterSize(60);
+    suggestion.setString("Enter server ip");
+    suggestion.setOrigin(suggestion.getLocalBounds().width / 2, suggestion.getLocalBounds().height);
+    float v_padding  = suggestion.getLocalBounds().height;
+    //float h_padding = 0; 
+    suggestion.setPosition(windowsize.x / 2, windowsize.y / 2 - v_padding);
+    TextBox textbox(suggestion);
+
+    while ((window.isOpen()) && isEnter)
+    {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            switch(event.type) {
+                case sf::Event::Closed:
+                    std::cout << "Closing window." << std::endl;
+                    window.close();
+                    break;
+                case sf::Event::KeyPressed:
+                    if (event.key.code == sf::Keyboard::Escape)
+                        isEnter = false;
+                    break;
+                case sf::Event::TextEntered:
+                    switch ( event.text.unicode ) {
+                        case 0xD: //Return
+                        game(window, textbox.get_text());
+                        break ;
+                        default:
+                        textbox.update(event);
+                    }
+                    
+            }
+        }
+
+        window.clear(sf::Color(129, 181, 221));
+        window.draw(suggestion);
+        textbox.draw(window);
+		window.display();
+    }
+    return true;
+}
+
+bool menu(sf::RenderWindow& window)
+{
+    sf::Vector2f windowsize = sf::Vector2f(window.getSize());
+    #ifdef __MACH__
+        std::string path = "/Users/stassidelnikov/aerohockey-game";
+    #else
+        std::string path = std::experimental::filesystem::current_path().string();
+    #endif
+
+    int buttons_count = 2;
+    float padding = 100;
+    sf::Image buttonImage;
+    buttonImage.loadFromFile(path + "/game/images/buttons.png");
+    buttonImage.createMaskFromColor(sf::Color::White);
     sf::Texture buttonTexture;
-    buttonTexture.loadFromFile(path + "/game/images/button.png");
+    buttonTexture.loadFromImage(buttonImage);
     sf::Sprite menubutton(buttonTexture), exitbutton(buttonTexture);
-    bool isMenu = true;
-    int menuNum = 0;
-	menubutton.setPosition(100, 30);
-    exitbutton.setPosition(100, 330);
+
+    int height = static_cast<unsigned int>(buttonTexture.getSize().y / buttons_count);
+    int width = buttonTexture.getSize().x;
+    menubutton.setTextureRect({0, 0, width, height});
+    menubutton.setOrigin(width / 2, height / 2);
+    menubutton.setPosition({windowsize.x / 2, windowsize.y / 2 - padding});
+    exitbutton.setTextureRect({0, height * 1, width, height});
+    exitbutton.setOrigin(width / 2, height / 2);
+    exitbutton.setPosition({windowsize.x / 2, windowsize.y / 2 + padding});
     sf::FloatRect menubutton_bounds = menubutton.getGlobalBounds();
     sf::FloatRect exitbutton_bounds = exitbutton.getGlobalBounds();
 
+    bool isMenu = true;
+    int menuNum = 0;
 	while ((isMenu) && (window.isOpen()))
 	{
         sf::Event event;
@@ -94,6 +174,12 @@ bool menu(sf::RenderWindow& window)
                     std::cout << "Closing window." << std::endl;
                     window.close();
                     break;
+                case sf::Event::KeyPressed:
+                    std::cout << "Key pressed." << std::endl;
+                    if (event.key.code == sf::Keyboard::Escape)
+                        isMenu = false;
+                    else if (event.key.code == sf::Keyboard::Q)
+                        window.close();
             }
         }
 
@@ -107,9 +193,9 @@ bool menu(sf::RenderWindow& window)
  
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-            //std::cout << "button pressed " << menuNum << std::endl;
+            std::cout << "button pressed " << menuNum << std::endl;
 			if (menuNum == 1) { 
-                game(window);
+                enter_ip(window);
             } 
 			if (menuNum == 2)  { 
                 isMenu = false; 
@@ -126,19 +212,7 @@ bool menu(sf::RenderWindow& window)
     return true;
 }
 
-int main(int argc, char* argv[]) {
-    if (argc == 2) {
-        char* ip_addr = argv[1];
-        if ((server_addr = sf::IpAddress(ip_addr)) == sf::IpAddress::None) {
-            std::cerr << "Error converting to valid IP address" << std::endl;
-            return -1;
-        }
-    } else if (argc == 1) {
-        server_addr = sf::IpAddress::LocalHost;
-    } else {
-        std::cout << "Usage: ./server.out [ip_addr]" << std::endl;
-        return -1;
-    }
+int main() {
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "aerohockey-game", sf::Style::Default);
     menu(window);
     window.close();
