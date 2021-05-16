@@ -14,8 +14,9 @@ TextBox::TextBox(sf::Text& suggestion)
     text.setFillColor(sf::Color::Black);
     unsigned int default_char_size = static_cast<unsigned int>(suggestion.getCharacterSize() * 0.7);
     text.setCharacterSize(default_char_size);
-    text.setPosition(position);
-    text.setOrigin(origin);
+    text.setOrigin({0, origin.y});
+    text.setPosition({bounds.left, position.y});
+   
 }
 
 void TextBox::draw(sf::RenderWindow& window)
@@ -25,7 +26,7 @@ void TextBox::draw(sf::RenderWindow& window)
 
     float text_width = text.getLocalBounds().width;
     float box_width = box.getLocalBounds().width;
-    float factor = (text_width >= box_width) ? (box_width / text_width) : 1;
+    float factor = (text_width >= box_width) ? (0.94 * box_width / text_width) : 1;
     text.setScale(factor, factor);
     window.draw(box);
     window.draw(text);
