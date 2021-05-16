@@ -12,7 +12,8 @@ TextBox::TextBox(sf::Text& suggestion)
 
     font = suggestion.getFont();
     text.setFillColor(sf::Color::Black);
-    text.setCharacterSize(static_cast<unsigned int>(suggestion.getCharacterSize() * 0.7));
+    unsigned int default_char_size = static_cast<unsigned int>(suggestion.getCharacterSize() * 0.7);
+    text.setCharacterSize(default_char_size);
     text.setPosition(position);
     text.setOrigin(origin);
 }
@@ -21,8 +22,11 @@ void TextBox::draw(sf::RenderWindow& window)
 {
     text.setFont(*font);
     text.setString(text_s);
-    if ()
-    std::cout << text.getLocalBounds().width << " " << box.getLocalBounds().width << std::endl;
+
+    float text_width = text.getLocalBounds().width;
+    float box_width = box.getLocalBounds().width;
+    float factor = (text_width >= box_width) ? (box_width / text_width) : 1;
+    text.setScale(factor, factor);
     window.draw(box);
     window.draw(text);
 }
