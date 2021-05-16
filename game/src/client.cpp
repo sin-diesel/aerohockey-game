@@ -47,7 +47,6 @@ void Client::connect(sf::IpAddress server_addr) {
     if (socket.send(connection_info, server_addr, PORT) != sf::Socket::Done) {
         std::cerr << "Error establishing connection to server." << std::endl;
     }
-    std::cout << server_addr << std::endl;
 }
 
 unsigned short Client::get_port() {
