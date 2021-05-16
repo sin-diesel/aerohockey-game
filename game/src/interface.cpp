@@ -1,8 +1,7 @@
 #include "../include/interface.h"
 
-Interface::Interface()
+Interface::Interface() : window(sf::VideoMode(1920, 1080), "aerohockey-game", sf::Style::Default)
 {
-    window(sf::VideoMode(1920, 1080), "aerohockey-game", sf::Style::Default);
 }
 
 bool Interface::start_game(std::string ip_addr)
