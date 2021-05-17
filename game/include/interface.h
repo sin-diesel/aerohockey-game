@@ -11,10 +11,10 @@ class Interface {
     sf::Color game_color;
     sf::RenderWindow window;
     std::string path;
-    bool start_game(std::string ip_addr);
+    sf::Font font;
+    bool start_game(sf::IpAddress server_addr);
     bool enter_settings();
-    void game_loop(sf::IpAddress server_addr);
-    void settings_loop(sf::Text suggestion);
+    void settings_loop(sf::Text suggestion, sf::Text fail);
     void menu_loop(sf::Sprite menubutton, sf::Sprite exitbutton);
 
     public:

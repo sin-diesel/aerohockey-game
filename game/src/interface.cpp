@@ -10,9 +10,12 @@ Interface::Interface(unsigned int width_, unsigned int height_) :
         #else
         path = std::experimental::filesystem::current_path().string();
         #endif
+
+        std::string fontpath = path + "/game/images/arial.ttf";
+        font.loadFromFile(fontpath);
     }
 
-void Interface::game_loop(sf::IpAddress server_addr)
+bool Interface::start_game(sf::IpAddress server_addr)
 {
     Game aerohockey(window.getSize(), server_addr, path);
     std::cout << "aerohockey number is " << aerohockey.get_number() << std::endl;
@@ -56,23 +59,14 @@ void Interface::game_loop(sf::IpAddress server_addr)
             window.display();
         }
     }
-}
-
-bool Interface::start_game(std::string ip_addr)
-{
-    sf::IpAddress server_addr;
-    if ((server_addr = sf::IpAddress(ip_addr)) == sf::IpAddress::None) {
-        std::cerr << "Error converting to valid IP address" << std::endl;
-        return false;
-    }
-    game_loop(server_addr);
     return true;
 }
 
-void Interface::settings_loop(sf::Text suggestion)
+void Interface::settings_loop(sf::Text suggestion, sf::Text fail)
 {
+    sf::IpAddress server_addr;
     TextBox textbox(suggestion);
-    bool isEnter = true;
+    bool isEnter = true, correctIP = true;
     while ((window.isOpen()) && isEnter)
     {
         sf::Event event;
@@ -89,10 +83,16 @@ void Interface::settings_loop(sf::Text suggestion)
                 case sf::Event::TextEntered:
                     switch ( event.text.unicode ) {
                         case 0xD: //Return
-                        start_game(textbox.get_text());
+                        if ((server_addr = sf::IpAddress(textbox.get_text())) == sf::IpAddress::None) {
+                            std::cerr << "Error converting to valid IP address" << std::endl;
+                            correctIP = false;
+                            break;
+                        }
+                        start_game(server_addr);
                         break ;
                         default:
                         textbox.update(event);
+                        correctIP = true;
                     }
                     
             }
@@ -101,6 +101,8 @@ void Interface::settings_loop(sf::Text suggestion)
         window.clear(menu_color);
         window.draw(suggestion);
         textbox.draw(window);
+        if (!correctIP)
+            window.draw(fail);
 		window.display();
     }
 }
@@ -108,10 +110,6 @@ void Interface::settings_loop(sf::Text suggestion)
 bool Interface::enter_settings()
 {
     sf::Vector2f windowsize = sf::Vector2f(window.getSize());
-
-    sf::Font font;
-    std::string fontpath = path + "/game/images/arial.ttf";
-    font.loadFromFile(fontpath);
     sf::Text suggestion;
     suggestion.setFont(font);
     suggestion.setFillColor(sf::Color::Black);
@@ -120,10 +118,17 @@ bool Interface::enter_settings()
     suggestion.setString("Enter server ip");
     suggestion.setOrigin(suggestion.getLocalBounds().width / 2, suggestion.getLocalBounds().height);
     float v_padding  = suggestion.getLocalBounds().height;
-    //float h_padding = 0; 
     suggestion.setPosition(windowsize.x / 2, windowsize.y / 2 - v_padding);
  
-    settings_loop(suggestion);
+    sf::Text fail;
+    fail.setFont(font);
+    fail.setFillColor(sf::Color::Black);
+    fail.setStyle(sf::Text::Bold);
+    fail.setCharacterSize(60);
+    fail.setString("Invalid IP");
+    fail.setOrigin(0, fail.getLocalBounds().height);
+    fail.setPosition(suggestion.getGlobalBounds().left + suggestion.getGlobalBounds().width, windowsize.y / 2);
+    settings_loop(suggestion, fail);
     
     return true;
 }
@@ -152,7 +157,7 @@ void Interface::menu_loop(sf::Sprite menubutton, sf::Sprite exitbutton)
                         window.close();
             }
         }
-        
+
         menubutton.setColor(sf::Color::White);
         exitbutton.setColor(sf::Color::White);
 		
