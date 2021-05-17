@@ -15,8 +15,9 @@ Interface::Interface(unsigned int width_, unsigned int height_) :
         font.loadFromFile(fontpath);
     }
 
-bool Interface::start_game(sf::IpAddress server_addr)
+bool Interface::start_game(sf::IpAddress server_addr, int choice)
 {
+    //std::cout << "choice: " << choice << std::endl;
     Game aerohockey(window.getSize(), server_addr, path);
     std::cout << "aerohockey number is " << aerohockey.get_number() << std::endl;
     sf::Clock clock;
@@ -62,11 +63,14 @@ bool Interface::start_game(sf::IpAddress server_addr)
     return true;
 }
 
-void Interface::settings_loop(sf::Text suggestion, sf::Text fail)
+void Interface::settings_loop(sf::Text suggestion_ip, sf::Text fail, sf::Text suggestion_mode, sf::Sprite mouse_button, sf::Sprite keyboard_button, sf::Text fail_choice)
 {
     sf::IpAddress server_addr;
-    TextBox textbox(suggestion);
-    bool isEnter = true, correctIP = true;
+    TextBox textbox(suggestion_ip);
+    bool isEnter = true, correctIP = true, choiceDone = false, correctChoice = true;
+    sf::FloatRect mouse_bounds = mouse_button.getGlobalBounds();
+    sf::FloatRect keyboard_bounds = keyboard_button.getGlobalBounds();
+    int buttonnum = 0, choice = 0;
     while ((window.isOpen()) && isEnter)
     {
         sf::Event event;
@@ -88,21 +92,49 @@ void Interface::settings_loop(sf::Text suggestion, sf::Text fail)
                             correctIP = false;
                             break;
                         }
-                        start_game(server_addr);
+                        if (!choiceDone){
+                            std::cerr << "make a choice" << std::endl;
+                            correctChoice = false;
+                            break;
+                        }
+                        start_game(server_addr, choice);
                         break ;
                         default:
                         textbox.update(event);
                         correctIP = true;
                     }
                     
+            } 
+        }
+        mouse_button.setColor(sf::Color::White);
+        keyboard_button.setColor(sf::Color::White);
+        buttonnum = 0;
+        if (mouse_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { mouse_button.setColor(sf::Color::Blue); buttonnum  = 1; }
+        if (keyboard_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { keyboard_button.setColor(sf::Color::Blue); buttonnum  = 2; }
+
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+            //std::cout << "button pressed " << buttonnum << std::endl;
+			if (buttonnum == 1) { 
+                choice = 1;
+                choiceDone = true;
+            } 
+			if (buttonnum == 2)  { 
+                choice = 2;
+                choiceDone = true;
             }
         }
 
         window.clear(menu_color);
-        window.draw(suggestion);
+        window.draw(suggestion_ip);
         textbox.draw(window);
         if (!correctIP)
             window.draw(fail);
+        window.draw(suggestion_mode);
+        if (!correctChoice && !choiceDone)
+            window.draw(fail_choice);
+        window.draw(mouse_button);
+        window.draw(keyboard_button);
 		window.display();
     }
 }
@@ -110,25 +142,61 @@ void Interface::settings_loop(sf::Text suggestion, sf::Text fail)
 bool Interface::enter_settings()
 {
     sf::Vector2f windowsize = sf::Vector2f(window.getSize());
-    sf::Text suggestion;
-    suggestion.setFont(font);
-    suggestion.setFillColor(sf::Color::Black);
-    suggestion.setStyle(sf::Text::Bold);
-    suggestion.setCharacterSize(60);
-    suggestion.setString("Enter server ip");
-    suggestion.setOrigin(suggestion.getLocalBounds().width / 2, suggestion.getLocalBounds().height);
-    float v_padding  = suggestion.getLocalBounds().height;
-    suggestion.setPosition(windowsize.x / 2, windowsize.y / 2 - v_padding);
+    sf::Text suggestion_ip;
+    suggestion_ip.setFont(font);
+    suggestion_ip.setFillColor(sf::Color::Black);
+    suggestion_ip.setStyle(sf::Text::Bold);
+    suggestion_ip.setCharacterSize(60);
+    suggestion_ip.setString("Enter server ip");
+    suggestion_ip.setOrigin(suggestion_ip.getLocalBounds().width / 2, suggestion_ip.getLocalBounds().height);
+    float v_padding  = suggestion_ip.getLocalBounds().height * 3;
+    suggestion_ip.setPosition(windowsize.x / 2, windowsize.y / 2 - v_padding);
  
     sf::Text fail;
     fail.setFont(font);
     fail.setFillColor(sf::Color::Black);
     fail.setStyle(sf::Text::Bold);
     fail.setCharacterSize(60);
-    fail.setString("Invalid IP");
+    fail.setString("Error: Invalid IP");
     fail.setOrigin(0, fail.getLocalBounds().height);
-    fail.setPosition(suggestion.getGlobalBounds().left + suggestion.getGlobalBounds().width, windowsize.y / 2);
-    settings_loop(suggestion, fail);
+    fail.setPosition(suggestion_ip.getGlobalBounds().left + suggestion_ip.getGlobalBounds().width, suggestion_ip.getPosition().y + suggestion_ip.getLocalBounds().height);
+
+    sf::Text suggestion_mode;
+    suggestion_mode.setFont(font);
+    suggestion_mode.setFillColor(sf::Color::Black);
+    suggestion_mode.setStyle(sf::Text::Bold);
+    suggestion_mode.setCharacterSize(60);
+    suggestion_mode.setString("Gaming mode");
+    suggestion_mode.setOrigin(suggestion_mode.getLocalBounds().width / 2, suggestion_mode.getLocalBounds().height);
+    suggestion_mode.setPosition(windowsize.x / 2, fail.getPosition().y + fail.getLocalBounds().height * 2);
+
+    int buttons_count = 2;
+    sf::Image buttonImage;
+    buttonImage.loadFromFile(path + "/game/images/mouse_keyboard.png");
+    buttonImage.createMaskFromColor(sf::Color::White);
+    sf::Texture buttonTexture;
+    buttonTexture.loadFromImage(buttonImage);
+    sf::Sprite mouse_button(buttonTexture), keyboard_button(buttonTexture);
+    int height = static_cast<unsigned int>(buttonTexture.getSize().y / buttons_count);
+    int width = buttonTexture.getSize().x;
+    float h_padding = 1.2 * (width / 2); 
+    mouse_button.setTextureRect({0, 0, width, height});
+    mouse_button.setOrigin(width / 2, height / 2);
+    mouse_button.setPosition({suggestion_mode.getPosition().x - h_padding, suggestion_mode.getPosition().y + suggestion_mode.getLocalBounds().height});
+    keyboard_button.setTextureRect({0, height * 1, width, height});
+    keyboard_button.setOrigin(width / 2, height / 2);
+    keyboard_button.setPosition({suggestion_mode.getPosition().x + h_padding, suggestion_mode.getPosition().y + suggestion_mode.getLocalBounds().height});
+
+    sf::Text fail_choice;
+    fail_choice.setFont(font);
+    fail_choice.setFillColor(sf::Color::Black);
+    fail_choice.setStyle(sf::Text::Bold);
+    fail_choice.setCharacterSize(60);
+    fail_choice.setString("Error: make a choice");
+    fail_choice.setOrigin(0, fail_choice.getLocalBounds().height);
+    fail_choice.setPosition(keyboard_button.getGlobalBounds().left + keyboard_button.getGlobalBounds().width, suggestion_mode.getPosition().y + suggestion_mode.getLocalBounds().height);
+
+    settings_loop(suggestion_ip, fail, suggestion_mode, mouse_button, keyboard_button, fail_choice);
     
     return true;
 }
