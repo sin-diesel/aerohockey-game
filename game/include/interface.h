@@ -2,7 +2,7 @@
 #include "../include/library.h"
 #include "../include/game.h"
 #include "../include/textbox.h"
-
+#include <thread>
 class Interface {
 
     private:

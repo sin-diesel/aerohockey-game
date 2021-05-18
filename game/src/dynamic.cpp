@@ -70,7 +70,7 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
 
 int ServerDynamicObject::check_score()
 {
-    std::cout << "CHECK SCORE" << std::endl;
+    //std::cout << "CHECK SCORE" << std::endl;
     if (position.x < GATE_POS_X_LEFT && position.y < GATE_POS_Y_UPPER && position.y > GATE_POS_Y_DOWNER) {
         position.x = 600, position.y = 600, speed.x = 0, speed.y = 0;
         return 1;

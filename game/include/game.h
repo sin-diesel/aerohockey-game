@@ -19,6 +19,7 @@ class Game {
         
         Game() = default;
         Game(sf::Vector2u windowsize, sf::IpAddress& server_addr, std::string path_);
+        void sending_mouse_pos(sf::Window& window);
         int get_number();
         void set_number(int num);
         void play(sf::RenderWindow& window);

@@ -35,9 +35,9 @@ public:
     void handle_connections(int client_number);
     void init_sockets();
     // get updates from all clients
-    bool get_updates(std::vector<sf::Packet>& data);
+    std::vector<bool> get_updates(std::vector<sf::Packet>& data);
     // send updated info for rendering to all clients
-    bool send_updates(std::vector<sf::Packet>& data);
+    bool send_updates(sf::Packet& data, int i);
     // calculate all information that is going to be sent back to client
     void calculate_changes();
     void update_strikers(sf::Vector2f, sf::Vector2f);

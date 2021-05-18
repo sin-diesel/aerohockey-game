@@ -15,6 +15,7 @@ Interface::Interface(unsigned int width_, unsigned int height_) :
         font.loadFromFile(fontpath);
     }
 
+
 bool Interface::start_game(sf::IpAddress server_addr, int choice)
 {
     //std::cout << "choice: " << choice << std::endl;
