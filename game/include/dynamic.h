@@ -1,6 +1,6 @@
 #pragma once
 #include "library.h"
-#define MAX_POS_X 1786
+#define MAX_POS_X 1785
 #define MAX_POS_Y 1000
 #define MIN_POS_X 70
 #define MIN_POS_Y 145
@@ -10,6 +10,10 @@
 #define STRIKER_RADIUS 30
 #define PUCK_MASS 10
 #define STRIKER_MASS 100
+#define GATE_POS_X_LEFT 140
+#define GATE_POS_X_RIGHT 1715
+#define GATE_POS_Y_UPPER 800
+#define GATE_POS_Y_DOWNER 200
 
 class DynamicObject {
     protected:
@@ -47,6 +51,7 @@ class ServerDynamicObject : public DynamicObject {
     ServerDynamicObject(float mass, float radius);
     float get_mass();
     float get_radius();
+    int check_score();
     sf::Vector2f update(ServerDynamicObject&, ServerDynamicObject&);
     sf::Vector2f calculate_speed(sf::Vector2f);
     sf::Vector2f calculate_speed();

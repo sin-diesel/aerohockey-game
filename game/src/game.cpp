@@ -35,7 +35,8 @@ Game::Game(sf::Vector2u windowsize_, sf::IpAddress& addr, std::string path_):
 void Game::play(sf::RenderWindow& window) 
 {
     sf::Packet packet;
-    bool received;
+    packet.clear();
+    bool received = true;
     sf::Vector2f mouse_pos = sf::Vector2f(sf::Mouse::getPosition(window));
 
     packet << mouse_pos;
@@ -55,9 +56,14 @@ void Game::play(sf::RenderWindow& window)
     }
 
     sf::Vector2f pos, pos_st1, pos_st2;
+    sf::Vector2i score;
     if (received) {
-        packet >> pos_st1 >> pos_st2 >> pos;
-    }
+        packet >> pos_st1 >> pos_st2 >> pos >> score;
+        std::cout << "YESS" << std::endl;
+    
+    packet.clear();
+    std::cout << pos_st1.x << " " << pos_st1.y << std::endl << pos_st2.x << " " << pos_st2.y << std::endl << pos.x << " " << pos.y << std:: endl << score.x << " " << score.y << std::endl;
+    scoreboard.update(score);
     //std::cout << "PUCK CORD " << pos.x << " " << pos.y << std::endl;
     puck.set_coord(pos);
     /*if (aerohockey.number == 1) {
@@ -71,7 +77,7 @@ void Game::play(sf::RenderWindow& window)
     //std:: cout << "puck: " << pos.x << " " << pos.y << std::endl;
     pos = striker1.get_coord();
     //std:: cout << "striker1: " << pos.x << " " << pos.y << std::endl; 
-    pos = striker2.get_coord();
+    pos = striker2.get_coord();}
     //std:: cout << "striker2: " << pos.x << " " << pos.y << std::endl; 
     //std::cout << "Received from: " << server_addr << std::endl;
     //std::cout << "Port: " << server_port << std::endl;

@@ -11,6 +11,7 @@ private:
 
     ServerDynamicObject puck;
     ServerDynamicObject striker1, striker2;
+    sf::Vector2i score;
 
     unsigned short port = 0;
     sf::UdpSocket socket;
@@ -29,6 +30,7 @@ public:
     Server();
     ~Server();
     void run();
+    sf::Vector2i update_score(int side);
     // accept incoming connections in blocking mode
     void handle_connections(int client_number);
     void init_sockets();
@@ -39,7 +41,9 @@ public:
     // calculate all information that is going to be sent back to client
     void calculate_changes();
     void update_strikers(sf::Vector2f, sf::Vector2f);
+    
 };
+
 
 sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2f& pos);
 

@@ -5,6 +5,7 @@ Server::Server():
     striker1(static_cast<float>(STRIKER_MASS), static_cast<float>(STRIKER_RADIUS)),
     striker2(static_cast<float>(STRIKER_MASS), static_cast<float>(STRIKER_RADIUS))  {
     port = PORT;
+    score.x = 0, score.y = 0;
     if (socket.bind(PORT) != sf::UdpSocket::Done) {
         std::cerr << "Error binding server socket. " << std::endl;
     }
@@ -135,7 +136,6 @@ bool Server::send_updates(std::vector<sf::Packet>& data) // calculates new coori
             return false;
         }
     }
-
     return true;
 }
 
@@ -159,7 +159,7 @@ void Server::run() {
     while (1) {
         bool received = true;
         elapsed = clock.getElapsedTime();
-        if (elapsed > sf::milliseconds(PINGSERVER)) {
+        //if (elapsed > sf::milliseconds(PINGSERVER)) {
 
             received = get_updates(data);
 
@@ -175,7 +175,8 @@ void Server::run() {
                     //std::cout << "B striker position " << striker1.position.x << " " << striker1.position.y << " " << striker2.position.x << " " <<  striker2.position.y << std::endl;
                     update_strikers(pos1[0], pos1[1]);
                     //std::cout << "A striker position " << striker1.position.x << " " << striker1.position.y << " " << striker2.position.x << " " <<  striker2.position.y << std::endl;
-                    sf::Vector2f pos = puck.update(striker1, striker2);
+                    puck.update(striker1, striker2);
+                    sf::Vector2i score = update_score(puck.check_score());
                     // if (received) {
                     //     client_direction.x += 1.0f;
                     //     client_direction.y += 1.0f;
@@ -185,7 +186,8 @@ void Server::run() {
                     response[i].clear();
                     //int j = (i == 0) ? 1 : 0;
                     // data[i] << client_direction.x << client_direction.y;
-                    response[i] << pos1[0] << pos1[1] << pos;
+                    std::cout << pos1[0].x << " " << pos1[0].y << std::endl << pos1[1].x << " " << pos1[1].y << std::endl << puck.get_coord().x << " " << puck.get_coord().y << std:: endl << score.x << " " << score.y << std::endl;
+                    response[i] << pos1[0] << pos1[1] << puck.get_coord() << score;
                     //std::cout << "Client  " << i << " pos updated: " << pos1[i].x << " " \
                                                 //<< pos1[i].y << " pos: " << pos.x << " " << pos.y << std::endl;
                 }
@@ -193,10 +195,16 @@ void Server::run() {
            // }
 
             clock.restart();
-        }
+        //}
     }
 }
 
+sf::Vector2i Server::update_score(int side) {
+    if (side == 0)
+        return score;
+    (side == 2) ? score.x++ : score.y++;
+    return score;
+}
 
 sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2f& pos)
 {

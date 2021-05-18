@@ -1,5 +1,5 @@
 #include "../include/dynamic.h"
-
+#include "library.h"
 ClientDynamicObject::ClientDynamicObject(std::string imagepath, sf::Vector2f pos)
 {
     this->imagepath = imagepath;
@@ -66,6 +66,20 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
     //std::cout << "SPEED_STRIKERS " << sp1.x << " " << sp1.x << " " << sp2.x << " " << sp2.y << std::endl;
     //std::cout << "SPEED " << speed.x << " " << speed.y << std::endl;
     return position += (speed / static_cast<float> (50));
+}
+
+int ServerDynamicObject::check_score()
+{
+    std::cout << "CHECK SCORE" << std::endl;
+    if (position.x < GATE_POS_X_LEFT && position.y < GATE_POS_Y_UPPER && position.y > GATE_POS_Y_DOWNER) {
+        position.x = 600, position.y = 600, speed.x = 0, speed.y = 0;
+        return 1;
+    }
+    if (position.x > GATE_POS_X_RIGHT && position.y < GATE_POS_Y_UPPER && position.y > GATE_POS_Y_DOWNER) {
+        position.x = 600, position.y = 600, speed.x = 0, speed.y = 0;
+        return 2;
+    }
+    return 0;
 }
 
 sf::Vector2f DynamicObject::get_coord()
