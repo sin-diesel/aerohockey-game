@@ -61,22 +61,22 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
         speed.y = speed.y * -1;
     }
     if (position.x < MIN_POS_X || position.x > MAX_POS_X || position.y > MAX_POS_X || position.y < MIN_POS_Y)
-        position.x = 600, position.y = 600;
+        position.x = 925, position.y = 570;
     sf::Vector2f sp1 = striker1.calculate_speed(), sp2 = striker2.calculate_speed();
     //std::cout << "SPEED_STRIKERS " << sp1.x << " " << sp1.x << " " << sp2.x << " " << sp2.y << std::endl;
     //std::cout << "SPEED " << speed.x << " " << speed.y << std::endl;
-    return position += (speed / static_cast<float> (50));
+    return position += (speed / static_cast<float> (CYCLE_SPEED));
 }
 
 int ServerDynamicObject::check_score()
 {
     //std::cout << "CHECK SCORE" << std::endl;
     if (position.x < GATE_POS_X_LEFT && position.y < GATE_POS_Y_UPPER && position.y > GATE_POS_Y_DOWNER) {
-        position.x = 600, position.y = 600, speed.x = 0, speed.y = 0;
+        position.x = 925, position.y = 570, speed.x = 0, speed.y = 0;
         return 1;
     }
     if (position.x > GATE_POS_X_RIGHT && position.y < GATE_POS_Y_UPPER && position.y > GATE_POS_Y_DOWNER) {
-        position.x = 600, position.y = 600, speed.x = 0, speed.y = 0;
+        position.x = 925, position.y = 570, speed.x = 0, speed.y = 0;
         return 2;
     }
     return 0;

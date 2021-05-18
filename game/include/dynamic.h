@@ -14,12 +14,12 @@
 #define GATE_POS_X_RIGHT 1715
 #define GATE_POS_Y_UPPER 800
 #define GATE_POS_Y_DOWNER 200
+#define CYCLE_SPEED 15
 
 class DynamicObject {
     protected:
-    //POSITION
-    public:
     sf::Vector2f position;
+    public:
     void set_coord(sf::Vector2f new_pos);
     sf::Vector2f get_coord();
 
