@@ -1,6 +1,6 @@
 #pragma once
-#include "../include/library.h"
-#include "../include/dynamic.h"
+#include "library.h"
+#include "dynamic.h"
 
 #define CLIENT_1_PORT 54001
 #define CLIENT_2_PORT 54002

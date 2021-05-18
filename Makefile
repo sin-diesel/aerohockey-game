@@ -33,7 +33,7 @@ $(OBJ_PATH)/main.o: $(SRC_PATH)/main.cpp
 $(OBJ_PATH)/game.o: $(SRC_PATH)/game.cpp
 	$(CXX) $(CXXFLAGS) $^ -c -o $(OBJ_PATH)/game.o
 
-$(OBJ_PATH)/server.o: $(SRC_PATH)/server.cpp
+$(OBJ_PATH)/server.o: $(SRC_PATH)/server.cpp 
 	$(CXX) $(CXXFLAGS) $^ -c -o $(OBJ_PATH)/server.o
 
 $(OBJ_PATH)/dynamic.o: $(SRC_PATH)/dynamic.cpp
@@ -78,5 +78,5 @@ client: $(CLIENT_OBJ)
 
 .PHONY: clean
 clean:
-	-rm *.out
 	-rm $(OBJ_PATH)/*.o
+	-rm *.out

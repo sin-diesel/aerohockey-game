@@ -1,6 +1,9 @@
 #include "server.h"
-
-Server::Server() {
+#include "dynamic.h"
+Server::Server():     
+    puck(static_cast<float>(PUCK_MASS), static_cast<float>(PUCK_RADIUS)),
+    striker1(static_cast<float>(STRIKER_MASS), static_cast<float>(STRIKER_RADIUS)),
+    striker2(static_cast<float>(STRIKER_MASS), static_cast<float>(STRIKER_RADIUS))  {
     port = PORT;
     if (socket.bind(PORT) != sf::UdpSocket::Done) {
         std::cerr << "Error binding server socket. " << std::endl;
@@ -21,7 +24,6 @@ Server::Server() {
         client_selector.add(*(client_sockets[i]));
 
     }
-    //ServerDynamicObject puck, striker1, striker2;
     addr = sf::IpAddress::LocalHost;
 }
 
@@ -104,7 +106,7 @@ bool Server::get_updates(std::vector<sf::Packet>& data) //receives data about st
 
 void Server::update_strikers(sf::Vector2f pos1, sf::Vector2f pos2)
 {
-    if ((pos1.x-pos2.x)*(pos1.x-pos2.x)+(pos1.y-pos2.y)*(pos1.y-pos2.y) <= RADIUS * RADIUS) {
+    if ((pos1.x-pos2.x)*(pos1.x-pos2.x)+(pos1.y-pos2.y)*(pos1.y-pos2.y) <= STRIKER_RADIUS * STRIKER_RADIUS) {
         pos1 = striker1.get_coord(), pos2 = striker2.get_coord();
         //std::cout << "ASSERT" << std::endl;
     }
