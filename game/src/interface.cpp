@@ -1,4 +1,8 @@
 #include "../include/interface.h"
+#include <filesystem>
+#include <iostream>
+#include <unistd.h>
+#include <limits.h>
 
 Interface::Interface(unsigned int width_, unsigned int height_) : 
     window(sf::VideoMode(width_, height_), "aerohockey-game", sf::Style::Default),
@@ -6,7 +10,9 @@ Interface::Interface(unsigned int width_, unsigned int height_) :
     game_color(sf::Color(0, 49, 83, 0))
     {
         #ifdef __MACH__
-        path = "/Users/stassidelnikov/aerohockey-game";
+        char buf[PATH_MAX];
+        getcwd(buf, PATH_MAX);
+        path = std::string(buf); //"/Users/stassidelnikov/aerohockey-game";
         #else
         path = std::experimental::filesystem::current_path().string();
         #endif
