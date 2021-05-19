@@ -5,6 +5,7 @@ class Client {
 
         sf::IpAddress addr;
         unsigned short port;
+        const bool keyboard_control = false;
         sf::UdpSocket socket;
         sf::IpAddress server_addr;
         unsigned short server_port;
@@ -12,7 +13,7 @@ class Client {
 
     public:
         Client() = default;
-        Client(sf::IpAddress& address);
+        Client(sf::IpAddress& address, bool keyboard_control);
         ~Client();
         int get_number();
         void set_number(int num);

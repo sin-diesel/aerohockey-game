@@ -1,5 +1,5 @@
 #include "../include/interface.h"
-
+//#include <unistd.h>
 Interface::Interface(unsigned int width_, unsigned int height_) : 
     window(sf::VideoMode(width_, height_), "aerohockey-game", sf::Style::Default),
     menu_color(sf::Color(129, 181, 221)),
@@ -19,7 +19,7 @@ Interface::Interface(unsigned int width_, unsigned int height_) :
 bool Interface::start_game(sf::IpAddress server_addr, int choice)
 {
     //std::cout << "choice: " << choice << std::endl;
-    Game aerohockey(window.getSize(), server_addr, path);
+    Game aerohockey(window.getSize(), server_addr, path, choice);
     std::cout << "aerohockey number is " << aerohockey.get_number() << std::endl;
     sf::Clock clock;
     sf::Time elapsed;
@@ -42,8 +42,20 @@ bool Interface::start_game(sf::IpAddress server_addr, int choice)
                         isGame = false;
                     else if (event.key.code == sf::Keyboard::Q)
                         window.close();
-                    else if (event.key.code == sf::Keyboard::Space || event.key.code == sf::Keyboard::P) {
+                    else if (event.key.code == sf::Keyboard::Space || event.key.code == sf::Keyboard::P)
                         pause_flag = (pause_flag == 0) ? 1 : 0;
+                    else if (aerohockey.get_type_control()) {
+                        std::cout << "CONTROL KEYBOARD TRIGGERED" << std::endl;
+                        if (event.key.code == sf::Keyboard::W) {
+                            aerohockey.send_key(sf::Keyboard::W);
+                            //sleep(1);
+                        }
+                        else if (event.key.code == sf::Keyboard::A)
+                            aerohockey.send_key(sf::Keyboard::A);
+                        else if (event.key.code == sf::Keyboard::S)
+                            aerohockey.send_key(sf::Keyboard::S);
+                        else if (event.key.code == sf::Keyboard::D)
+                            aerohockey.send_key(sf::Keyboard::D);
                     }
                     break;
                 // case sf::Event::GainedFocus:
@@ -131,7 +143,9 @@ void Interface::settings_loop(sf::Text suggestion_ip, sf::Text fail, sf::Text su
                 choiceDone = true;
             }
         }
-
+        //if (choice == 2) {
+        //    std::cout << "KEYBOARD IS CHOSEN" << std::endl;
+        //}
         window.clear(menu_color);
         window.draw(suggestion_ip);
         textbox.draw(window);
