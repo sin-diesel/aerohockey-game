@@ -42,7 +42,8 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
             //speed += static_cast<float>(2) * striker1.calculate_speed(); //central with heavy striker
 
             float mult1 = (striker1.calculate_speed().x - speed.x) * diff1.x + (striker1.calculate_speed().y - speed.y) * diff1.y;
-            speed -= static_cast<float> (2) * diff1  * striker1.get_mass() * mult1 / (striker1.get_mass() + mass) / radius_sum / radius_sum;
+            if (dist1 > 0.0001)
+                speed += static_cast<float> (2) * diff1  * striker1.get_mass() * mult1 / (striker1.get_mass() + mass) / dist1 / dist1;
             //striker1.speed = ((striker1.calculate_speed()*(striker1.get_mass()-mass)+speed*static_cast<float> (2*mass))/(mass+striker1.get_mass())); //useless for striker
             std::cout << "ASPEED1 " << speed.x << " " << speed.y << std::endl;
         }
@@ -56,14 +57,15 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
     if (dist2 <= radius_sum) {
         if (!collision2) {
             collision2 = 1;
-            std::cout << "BSPEED2 " << speed.x << " " << speed.y << " " << striker2.calculate_speed().x << " " << striker2.calculate_speed().y << std::endl;
-            speed = (((mass-striker2.get_mass())*speed+striker2.calculate_speed()*static_cast<float> (2*striker2.get_mass()))/(mass+striker2.get_mass()));
+            std::cout << "BSPEED2 " << speed.x << " " << speed.y << std::endl;
+            //speed = (((mass-striker2.get_mass())*speed+striker2.calculate_speed()*static_cast<float> (2*striker2.get_mass()))/(mass+striker2.get_mass()));
             //speed += static_cast<float>(2) * striker2.calculate_speed();
 
             float mult2 = (striker2.calculate_speed().x - speed.x) * diff2.x + (striker2.calculate_speed().y - speed.y) * diff2.y;
-            speed -= static_cast<float> (2) * diff2  * striker2.get_mass() * mult2 / (striker2.get_mass() + mass) / radius_sum / radius_sum;
+            if (dist2 > 0.0001)
+                speed += static_cast<float> (2) * diff2  * striker2.get_mass() * mult2 / (striker2.get_mass() + mass) / dist2 / dist2;
             //striker2.speed = ((striker2.calculate_speed()*(striker2.get_mass()-mass)+speed*static_cast<float> (2*mass))/(mass+striker2.get_mass()));
-            std::cout << "ASPEED2 " << speed.x << " " << speed.y << " " << striker2.calculate_speed().x << " " << striker2.calculate_speed().y << std::endl;
+            std::cout << "ASPEED2 " << speed.x << " " << speed.y << std::endl;
         }
 
         if (dist2 >= 0.0001) 
@@ -82,6 +84,7 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
         position.x = 925, position.y = 570;
     sf::Vector2f sp1 = striker1.calculate_speed(), sp2 = striker2.calculate_speed();
     
+    speed *= static_cast<float>(0.999);
     float speed_val = sqrt(speed.x*speed.x + speed.y*speed.y);
     if (speed_val > MAX_SPEED)
         speed *= (MAX_SPEED / speed_val);
