@@ -15,6 +15,7 @@
 #define GATE_POS_Y_UPPER 690
 #define GATE_POS_Y_DOWNER 420
 #define CYCLE_SPEED 15
+const float MAX_SPEED=300;
 
 class DynamicObject {
     protected:
