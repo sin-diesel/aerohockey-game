@@ -12,7 +12,7 @@ private:
     ServerDynamicObject puck;
     ServerDynamicObject striker1, striker2;
     sf::Vector2i score;
-
+    std::vector <bool> keyboard_control = {false, false};
     unsigned short port = 0;
     sf::UdpSocket socket;
     sf::IpAddress addr;
@@ -40,6 +40,8 @@ public:
     bool send_updates(sf::Packet& data, int i);
     // calculate all information that is going to be sent back to client
     void calculate_changes();
+    void update_strikers_speed(int key, ServerDynamicObject& striker);
+    void update_strikers_position();
     void update_strikers(sf::Vector2f, sf::Vector2f);
     
 };

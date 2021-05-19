@@ -1,6 +1,6 @@
 
-CXX = g++
-CXXFLAGS = -std=c++11 -g -I $(INCLUDE)
+CXX = g++-9
+CXXFLAGS = -std=c++17 -g -I $(INCLUDE)
 SRC_PATH = game/src
 OBJ_PATH = game/obj
 INCLUDE = game/include
@@ -65,7 +65,7 @@ ifeq ($(OS), Darwin)
 # set variables for Darwin
 DLIB = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
 else
-DLIB = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network -lstdc++fs
+DLIB = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
 endif
 
 

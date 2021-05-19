@@ -44,15 +44,17 @@ class ServerDynamicObject : public DynamicObject {
     int collision1, collision2;
     const float radius;
     const float mass;
-
+    std::vector<bool> collision = {false, false, false, false};
     public:
-    ServerDynamicObject();
-    ServerDynamicObject(float rad);
-    ServerDynamicObject(float mass, float radius);
+    ServerDynamicObject() = default;
+    ServerDynamicObject(float mass, float radius, float pos1, float pos2);
     float get_mass();
+    void change_speed(int key);
+    void update_speed();
     float get_radius();
     int check_score();
+    sf::Vector2f get_speed();
+    void set_speed(sf::Vector2f speed_given);
     sf::Vector2f update(ServerDynamicObject&, ServerDynamicObject&);
     sf::Vector2f calculate_speed(sf::Vector2f);
-    sf::Vector2f calculate_speed();
 };

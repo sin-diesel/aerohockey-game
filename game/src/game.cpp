@@ -2,17 +2,19 @@
 
 //const char path[] = "/Users/stassidelnikov/aerohockey-game";
 
-Game::Game(sf::Vector2u windowsize_, sf::IpAddress& addr, std::string path_):
-    client(addr),
+Game::Game(sf::Vector2u windowsize_, sf::IpAddress& addr, std::string path_, int choice):
+    client(addr, keyboard_control),
     path(path_),
-    number(1) {
+    keyboard_control((choice == 2) ? true : false),
+    number(client.get_number() + 1) {
 
     struct utsname details;
     int ret = uname(&details);
     if (ret == 0){
         printf("Sysname: %s\n", details.sysname);
     }
-
+    if (keyboard_control)
+        std::cout << "GAMEKEYBOARDCONTROL IS TRUE" << std::endl;
     sf::Vector2f windowsize = sf::Vector2f(windowsize_);
     sf::Vector2f pos(925, 570);
     scoreboard = Scoreboard(path + "/game/images/scoreboard.png", {windowsize.x/2, 0}, path);  
@@ -22,7 +24,7 @@ Game::Game(sf::Vector2u windowsize_, sf::IpAddress& addr, std::string path_):
     pos.x += 200;
     puck = ClientDynamicObject(path + "/game/images/puck.png", pos);
 
-    number = client.get_number() + 1;
+    //number = client.get_number() + 1;
 
     field_image.loadFromFile(path + "/game/images/background.png");
     field_image.createMaskFromColor(sf::Color::White);
@@ -43,9 +45,22 @@ void Game::sending_mouse_pos(sf::Window& window)
     packet.clear();
 }
 
+void Game::send_key(int key)
+{
+    sf::Packet packet;
+    packet << key;
+    std::cout << key << " sended" << std::endl;
+    if (!client.send_updates(packet)) {
+        std::cerr << "Error sending updates to server. " << std::endl;
+        std::cerr << std::endl;
+    }
+    packet.clear();
+}
+
 void Game::play(sf::RenderWindow& window) 
 {
-    sending_mouse_pos(window);
+    if (!keyboard_control)
+        sending_mouse_pos(window);
     bool received = true;
     sf::IpAddress server_addr;
     unsigned short server_port;
@@ -82,6 +97,10 @@ int Game::get_number() {
 
 void Game::set_number(int num) {
     number = num;
+}
+
+bool Game::get_type_control() {
+    return keyboard_control;
 }
 
 sf::Time Game::get_update_time() {
