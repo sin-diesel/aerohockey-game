@@ -41,7 +41,7 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
             //speed = (((mass-striker1.get_mass())*speed+striker1.calculate_speed()*static_cast<float> (2*striker1.get_mass()))/(mass+striker1.get_mass())); //central
             //speed += static_cast<float>(2) * striker1.calculate_speed(); //central with heavy striker
 
-            float mult1 = (striker1.calculate_speed().x - speed.x) * diff1.x + (striker1.calculate_speed().y - speed.y) * diff1.y;
+            float mult1 = (striker1.get_speed().x - speed.x) * diff1.x + (striker1.get_speed().y - speed.y) * diff1.y;
             if (dist1 > 0.0001)
                 speed += static_cast<float> (2) * diff1  * striker1.get_mass() * mult1 / (striker1.get_mass() + mass) / dist1 / dist1;
             //striker1.speed = ((striker1.calculate_speed()*(striker1.get_mass()-mass)+speed*static_cast<float> (2*mass))/(mass+striker1.get_mass())); //useless for striker
@@ -61,7 +61,7 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
             //speed = (((mass-striker2.get_mass())*speed+striker2.calculate_speed()*static_cast<float> (2*striker2.get_mass()))/(mass+striker2.get_mass()));
             //speed += static_cast<float>(2) * striker2.calculate_speed();
 
-            float mult2 = (striker2.calculate_speed().x - speed.x) * diff2.x + (striker2.calculate_speed().y - speed.y) * diff2.y;
+            float mult2 = (striker2.get_speed().x - speed.x) * diff2.x + (striker2.get_speed().y - speed.y) * diff2.y;
             if (dist2 > 0.0001)
                 speed += static_cast<float> (2) * diff2  * striker2.get_mass() * mult2 / (striker2.get_mass() + mass) / dist2 / dist2;
             //striker2.speed = ((striker2.calculate_speed()*(striker2.get_mass()-mass)+speed*static_cast<float> (2*mass))/(mass+striker2.get_mass()));
@@ -82,7 +82,7 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
     }
     if (position.x < MIN_POS_X || position.x > MAX_POS_X || position.y > MAX_POS_X || position.y < MIN_POS_Y)
         position.x = 925, position.y = 570;
-    sf::Vector2f sp1 = striker1.calculate_speed(), sp2 = striker2.calculate_speed();
+    sf::Vector2f sp1 = striker1.get_speed(), sp2 = striker2.get_speed();
     
     speed *= static_cast<float>(0.999);
     float speed_val = sqrt(speed.x*speed.x + speed.y*speed.y);

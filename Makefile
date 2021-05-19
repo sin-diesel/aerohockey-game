@@ -1,6 +1,6 @@
 
 CXX = g++-9
-CXXFLAGS = -std=c++11 -g -I $(INCLUDE)
+CXXFLAGS = -std=c++17 -g -I $(INCLUDE)
 SRC_PATH = game/src
 OBJ_PATH = game/obj
 INCLUDE = game/include
