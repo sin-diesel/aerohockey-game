@@ -13,7 +13,7 @@ Interface::Interface(unsigned int width_, unsigned int height_) :
         getcwd(buf, PATH_MAX);
         path = std::string(buf); //"/Users/stassidelnikov/aerohockey-game";
         #else
-        path = std::experimental::filesystem::current_path().string();
+        path = std::filesystem::current_path();
         #endif
 
         std::string fontpath = path + "/game/images/arial.ttf";
