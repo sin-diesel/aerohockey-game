@@ -10,10 +10,10 @@
 #define STRIKER_RADIUS 30
 #define PUCK_MASS 10
 #define STRIKER_MASS 100
-#define GATE_POS_X_LEFT 140
-#define GATE_POS_X_RIGHT 1715
-#define GATE_POS_Y_UPPER 800
-#define GATE_POS_Y_DOWNER 200
+#define GATE_POS_X_LEFT 90
+#define GATE_POS_X_RIGHT 1765
+#define GATE_POS_Y_UPPER 690
+#define GATE_POS_Y_DOWNER 420
 #define CYCLE_SPEED 15
 
 class DynamicObject {
@@ -22,7 +22,6 @@ class DynamicObject {
     public:
     void set_coord(sf::Vector2f new_pos);
     sf::Vector2f get_coord();
-
 };
 
 class ClientDynamicObject : public DynamicObject {
