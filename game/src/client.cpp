@@ -1,6 +1,9 @@
 #include "../include/client.h"
 
-Client::Client(sf::IpAddress& address) {
+Client::Client(sf::IpAddress& address, bool keyboard_cont):
+    keyboard_control(keyboard_cont) {
+    if (keyboard_control)
+        std::cout << "CLIENTKEYBOARDCONTROL IS TRUE" << std::endl;
     addr = sf::IpAddress::Any;
     port = sf::Socket::AnyPort;
     number = 0;
@@ -44,6 +47,7 @@ bool Client::receive_updates(sf::Packet& packet, sf::IpAddress& server_addr, uns
 
 void Client::connect(sf::IpAddress server_addr) {
     sf::Packet connection_info;
+    connection_info << keyboard_control;
     if (socket.send(connection_info, server_addr, PORT) != sf::Socket::Done) {
         std::cerr << "Error establishing connection to server." << std::endl;
     }

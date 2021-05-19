@@ -1,16 +1,15 @@
 #include "server.h"
 #include "dynamic.h"
 Server::Server():     
-    puck(static_cast<float>(PUCK_MASS), static_cast<float>(PUCK_RADIUS)),
-    striker1(static_cast<float>(STRIKER_MASS), static_cast<float>(STRIKER_RADIUS)),
-    striker2(static_cast<float>(STRIKER_MASS), static_cast<float>(STRIKER_RADIUS))  {
+    puck(static_cast<float>(PUCK_MASS), static_cast<float>(PUCK_RADIUS), 925, 570),
+    striker1(static_cast<float>(STRIKER_MASS), static_cast<float>(STRIKER_RADIUS), 825, 570),
+    striker2(static_cast<float>(STRIKER_MASS), static_cast<float>(STRIKER_RADIUS), 1025, 570)  {
     port = PORT;
     score.x = 0, score.y = 0;
     if (socket.bind(PORT) != sf::UdpSocket::Done) {
         std::cerr << "Error binding server socket. " << std::endl;
     }
     socket.setBlocking(true);
-
     // create sockets for clients
     for (int i = 0; i < 2; ++i) { 
         //client_sockets.push_back(*client_socket);
@@ -50,7 +49,13 @@ void Server::handle_connections(int client_number) {
     
     adresses.push_back(client_addr); //save client's adress
     ports.push_back(client_port);    //save client's port
-
+    bool temp;
+    connection_info >> temp;
+    keyboard_control[client_number] = temp;
+    if (keyboard_control[client_number])
+        std::cout << "number " << client_number << " is true" << std::endl;
+    //sleep(10);
+    connection_info.clear();
     std::cout << "Packet from client received " << std::endl;
     std::cout << "Client addr: " << client_addr << std::endl;
     std::cout << "Client port: " << client_port << std::endl;
@@ -84,26 +89,8 @@ std::vector<bool> Server::get_updates(std::vector<sf::Packet>& data) //receives 
             }
         }
     }
-        // if (client_sockets[i]->receive(data[i], client_address, client_port) != sf::Socket::Done) {
-        //     std::cerr << "Error receiving packet from client. " << std::endl;
-        //     std::cerr << std::endl;
-        //     return false;
-        // }
-
-        // std::cout << "Received from: " << std::endl;
-        // std::cout << client_address << std::endl << client_port << std::endl;
-
     return received;
-//>>>>>>> client-server-comm
 }
-//<<<<<<< HEAD
-//     sf::Packet packet;
-//     sf::Vector2f pos1, pos2;
-//     client_sockets[0].receive(packet, adresses[0], ports[0]);
-//     client_sockets[1].receive(packet, adresses[1], ports[1]);
-//     packet >> pos1.x >> pos1.y >> pos2.x >> pos2.y;
-//     update_strikers(pos1, pos2);
-// }
 
 void Server::update_strikers(sf::Vector2f pos1, sf::Vector2f pos2)
 {
@@ -115,6 +102,13 @@ void Server::update_strikers(sf::Vector2f pos1, sf::Vector2f pos2)
     striker2.calculate_speed(pos2);
     striker1.set_coord(pos1);
     striker2.set_coord(pos2);
+}
+
+
+void Server::update_strikers_position()
+{
+    striker1.update_speed();
+    striker2.update_speed();
 }
 
 bool Server::send_updates(sf::Packet& data, int i) // calculates new cooridinates of puck and strikers and sends to clients
@@ -136,10 +130,11 @@ void Server::run() {
     for (int i = 0; i < 2; ++i) {
         data.push_back(sf::Packet());
     }
-    
+    if (keyboard_control[0])
+        std::cout << "KEYBOARD" << std::endl;
     sf::Packet response;
     sf::Vector2f pos1[2];
-
+    std::vector<int> key(2);
     while (1) {
         std::vector<bool> received;
         received.push_back(true), received.push_back(true);
@@ -148,19 +143,45 @@ void Server::run() {
             received = get_updates(data);
                 for (int i = 0; i < 2; ++i) {
                     if (received[i]) {
-                        data[i] >> pos1[i];
-                        update_strikers(pos1[0], pos1[1]);
-                        puck.update(striker1, striker2);
-                        sf::Vector2i score = update_score(puck.check_score());
-                        data[i].clear();
-                        response.clear();
-                        std::cout << "ST1: " << pos1[0].x << " " << pos1[0].y << std::endl << "ST2: " << pos1[1].x << " " << pos1[1].y << std::endl << "PUCK: " << puck.get_coord().x << " " << puck.get_coord().y << std:: endl << score.x << " " << score.y << std::endl;
-                        response << pos1[0] << pos1[1] << puck.get_coord() << score;
-                        send_updates(response, i);
-
+                        if (!keyboard_control[i]) {
+                            data[i] >> pos1[i];
+                            data[i].clear();
+                            //update_strikers(pos1[0], pos1[1]);
+                            if (i == 0) {
+                                striker1.calculate_speed(pos1[i]);
+                                striker1.set_coord(pos1[i]);
+                            }
+                            else {
+                                striker2.calculate_speed(pos1[i]);
+                                striker2.set_coord(pos1[i]);
+                            }
+                            puck.update(striker1, striker2);
+                            sf::Vector2i score = update_score(puck.check_score());
+                            std::cout << "ST1: " << striker1.get_coord().x << " " << striker1.get_coord().y << std::endl << "ST2: " << striker2.get_coord().x << " " << striker2.get_coord().y << std::endl << "PUCK: " << puck.get_coord().x << " " << puck.get_coord().y << std:: endl << score.x << " " << score.y << std::endl;
+                            response.clear();
+                            response << striker1.get_coord() << striker2.get_coord() << puck.get_coord() << score;
+                            send_updates(response, i);
+                        }
+                        else
+                        {
+                            data[i] >> key[i];
+                            data[i].clear();
+                            std::cout << key[i] << " RECEIVED" << std::endl;
+                            (i == 0) ? striker1.change_speed(key[i]) : striker2.change_speed(key[i]);
+                        }
                     }
+                    if(keyboard_control[i]) {
+                            update_strikers_position();
+                            puck.update(striker1, striker2);
+                            sf::Vector2i score = update_score(puck.check_score());
+                            std::cout << "ST1: " << striker1.get_coord().x << " " << striker1.get_coord().y << std::endl << "ST2: " << striker2.get_coord().x << " " << striker2.get_coord().y << std::endl << "PUCK: " << puck.get_coord().x << " " << puck.get_coord().y << std:: endl << score.x << " " << score.y << std::endl;
+                            response.clear();
+                            response << striker1.get_coord() << striker2.get_coord() << puck.get_coord() << score;
+                            send_updates(response, i);
+                    }
+
                 }
-            clock.restart();
+                clock.restart();
         //}
     }
 }

@@ -129,9 +129,43 @@ sf::Vector2f ServerDynamicObject::calculate_speed(sf::Vector2f pos)
     return speed;
 }
 
-sf::Vector2f ServerDynamicObject::calculate_speed() 
+sf::Vector2f ServerDynamicObject::get_speed() 
 {
     return speed;
+}
+
+void ServerDynamicObject::change_speed(int key)
+{
+    if (key == sf::Keyboard::W && (position.y - STRIKER_RADIUS > MIN_POS_Y))
+        speed.y += -1;
+    else if (key == sf::Keyboard::S && (position.y + STRIKER_RADIUS < MAX_POS_Y))
+        speed.y += 1;
+    else if (key == sf::Keyboard::D && (position.x + STRIKER_RADIUS < MAX_POS_X))
+        speed.x += 1;
+    else if (key == sf::Keyboard::A && (position.x - STRIKER_RADIUS > MIN_POS_X))
+        speed.x += -1;
+}
+
+void ServerDynamicObject::update_speed()
+{
+    if (position.y - STRIKER_RADIUS < MIN_POS_Y && speed.y < 0) {
+        speed.y = 0;
+    }
+    if (position.y + STRIKER_RADIUS > MAX_POS_Y && speed.y > 0) {
+        speed.y = 0;
+    }
+    if (position.x + STRIKER_RADIUS > MAX_POS_X && speed.x > 0) {
+        speed.x = 0;
+    }
+    if (position.x - STRIKER_RADIUS < MIN_POS_X && speed.x < 0) {
+        speed.x = 0;
+    }
+    position += speed / static_cast<float> (5);
+}
+
+void ServerDynamicObject::set_speed(sf::Vector2f speed_given)
+{
+    speed += speed_given;
 }
 
 float ServerDynamicObject::get_radius()
@@ -143,7 +177,4 @@ float ServerDynamicObject::get_mass()
 {
     return mass;
 }
-
-ServerDynamicObject::ServerDynamicObject(): mass(DEFAULT_MASS), radius(DEFAULT_RADIUS) {}
-ServerDynamicObject::ServerDynamicObject(float rad): mass(DEFAULT_MASS), radius(rad) {}
-ServerDynamicObject::ServerDynamicObject(float mass, float radius): mass(mass), radius(radius) {}
+ServerDynamicObject::ServerDynamicObject(float mass, float radius, float pos1, float pos2): mass(mass), radius(radius) {position.x = pos1, position.y = pos2;}

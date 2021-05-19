@@ -10,10 +10,10 @@
 #define STRIKER_RADIUS 30
 #define PUCK_MASS 10
 #define STRIKER_MASS 100
-#define GATE_POS_X_LEFT 140
-#define GATE_POS_X_RIGHT 1715
-#define GATE_POS_Y_UPPER 800
-#define GATE_POS_Y_DOWNER 200
+#define GATE_POS_X_LEFT 90
+#define GATE_POS_X_RIGHT 1765
+#define GATE_POS_Y_UPPER 690
+#define GATE_POS_Y_DOWNER 420
 #define CYCLE_SPEED 15
 const float MAX_SPEED=300;
 
@@ -23,7 +23,6 @@ class DynamicObject {
     public:
     void set_coord(sf::Vector2f new_pos);
     sf::Vector2f get_coord();
-
 };
 
 class ClientDynamicObject : public DynamicObject {
@@ -45,15 +44,17 @@ class ServerDynamicObject : public DynamicObject {
     int collision1, collision2;
     const float radius;
     const float mass;
-
+    std::vector<bool> collision = {false, false, false, false};
     public:
-    ServerDynamicObject();
-    ServerDynamicObject(float rad);
-    ServerDynamicObject(float mass, float radius);
+    ServerDynamicObject() = default;
+    ServerDynamicObject(float mass, float radius, float pos1, float pos2);
     float get_mass();
+    void change_speed(int key);
+    void update_speed();
     float get_radius();
     int check_score();
+    sf::Vector2f get_speed();
+    void set_speed(sf::Vector2f speed_given);
     sf::Vector2f update(ServerDynamicObject&, ServerDynamicObject&);
     sf::Vector2f calculate_speed(sf::Vector2f);
-    sf::Vector2f calculate_speed();
 };
