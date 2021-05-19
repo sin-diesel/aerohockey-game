@@ -109,6 +109,12 @@ void Interface::settings_loop(sf::Text suggestion_ip, sf::Text fail, sf::Text su
         }
         mouse_button.setColor(sf::Color::White);
         keyboard_button.setColor(sf::Color::White);
+
+        if (choiceDone)
+            switch(choice){
+                case 1: mouse_button.setColor(sf::Color::Green); break;
+                case 2: keyboard_button.setColor(sf::Color::Green); break;
+            }
         buttonnum = 0;
         if (mouse_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { mouse_button.setColor(sf::Color::Blue); buttonnum  = 1; }
         if (keyboard_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { keyboard_button.setColor(sf::Color::Blue); buttonnum  = 2; }
