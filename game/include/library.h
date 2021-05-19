@@ -8,6 +8,7 @@
 #include <vector>
 #include <stdio.h>
 #include <sys/utsname.h>
+#include <math.h>
 
 #define PORT 54000
 #define PING 10 //ms
