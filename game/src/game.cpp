@@ -18,6 +18,7 @@ Game::Game(sf::Vector2u windowsize_, sf::IpAddress& addr, std::string path_, int
     sf::Vector2f windowsize = sf::Vector2f(windowsize_);
     factorX = windowsize.x / DEFAULT_WIDTH;
     factorY = windowsize.y / DEFAULT_HEIGHT;
+    std::cout << factorY;
     sf::Vector2f pos(CENTER_X * factorX, CENTER_Y * factorY);
     scoreboard = Scoreboard(path + "/game/images/scoreboard.png", windowsize, path);  
     striker1 = ClientDynamicObject(path + "/game/images/striker.png", pos, windowsize);
@@ -30,8 +31,8 @@ Game::Game(sf::Vector2u windowsize_, sf::IpAddress& addr, std::string path_, int
     field_image.createMaskFromColor(sf::Color::White);
     field_texture.loadFromImage(field_image);
     field.setTexture(field_texture);
-    field.setOrigin(field_image.getSize().x / 2, 0);
-    field.setPosition(windowsize.x / 2, scoreboard.getSize().y * factorY);
+    field.setOrigin(field_image.getSize().x / 2, field_image.getSize().y / 2);
+    field.setPosition(windowsize.x / 2, windowsize.y / 2);
     field.setScale(factorX, factorY);
 }
 
@@ -39,9 +40,9 @@ void Game::sending_mouse_pos(sf::Window& window)
 {
     sf::Packet packet;
     sf::Vector2f mouse_pos = sf::Vector2f(sf::Mouse::getPosition(window));
+    std::cout << mouse_pos.y << std::endl;
     mouse_pos.x /= factorX; mouse_pos.y /= factorY;
     packet << mouse_pos;
-    std::cout << mouse_pos.x << std::endl;
     if (!client.send_updates(packet)) {
         std::cerr << "Error sending updates to server. " << std::endl;
         std::cerr << std::endl;
