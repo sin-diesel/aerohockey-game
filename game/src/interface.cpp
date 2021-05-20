@@ -16,6 +16,8 @@ Interface::Interface(unsigned int width_, unsigned int height_) :
         path = std::filesystem::current_path();
         #endif
 
+        factorX = static_cast<float>(width_) / DEFAULT_WIDTH;
+        factorY = static_cast<float>(height_) / DEFAULT_HEIGHT;
         std::string fontpath = path + "/game/images/arial.ttf";
         font.loadFromFile(fontpath);
     }
@@ -84,11 +86,11 @@ void Interface::settings_loop(SettingsObjects SO)
     sf::IpAddress server_addr;
     TextBox textbox(SO.suggestion_ip);
     bool isEnter = true, correctIP = true, choiceDone = false, correctChoice = true;
-    sf::FloatRect mouse_bounds = SO.mouse_button.getGlobalBounds();
-    sf::FloatRect keyboard_bounds = SO.keyboard_button.getGlobalBounds();
     int buttonnum = NOCHOICE, choice = NOCHOICE;
     while ((window.isOpen()) && isEnter)
     {
+        sf::FloatRect mouse_bounds = SO.mouse_button.getGlobalBounds();
+        sf::FloatRect keyboard_bounds = SO.keyboard_button.getGlobalBounds();
         sf::Event event;
         while (window.pollEvent(event)) {
             switch(event.type) {
@@ -194,10 +196,11 @@ SettingsObjects::SettingsObjects(sf::Font& font, unsigned int charsize, std::str
 bool Interface::enter_settings()
 {
     sf::Vector2f windowsize = sf::Vector2f(window.getSize());
-    SettingsObjects SO(font, 60, path + "/game/images/mouse_keyboard.png");
+    unsigned int charsize = static_cast<unsigned int>(60 * std::min(factorX, factorY));
+    SettingsObjects SO(font, charsize, path + "/game/images/mouse_keyboard.png");
 
     //text suggestion to enter ip
-    float v_padding  = SO.suggestion_ip.getLocalBounds().height * 3;
+    float v_padding  = SO.suggestion_ip.getLocalBounds().height * 3 * factorY;
     SO.suggestion_ip.setPosition(windowsize.x / 2, windowsize.y / 2 - v_padding);
  
     //text fail if invalid ip
@@ -206,13 +209,15 @@ bool Interface::enter_settings()
     //text suggestion to make a choice of mode playing
     SO.suggestion_mode.setPosition(windowsize.x / 2, SO.fail_ip.getPosition().y + SO.fail_ip.getLocalBounds().height * 2);
 
-    int buttons_count = 2; //buttons of making mode choice
-    float h_padding = 0.6 * SO.mouse_button.getLocalBounds().width; 
-    SO.mouse_button.setPosition({SO.suggestion_mode.getPosition().x - h_padding, SO.suggestion_mode.getPosition().y + SO.suggestion_mode.getLocalBounds().height});
-    SO.keyboard_button.setPosition({SO.suggestion_mode.getPosition().x + h_padding, SO.suggestion_mode.getPosition().y + SO.suggestion_mode.getLocalBounds().height});
+    //buttons of making mode choice
+    SO.mouse_button.setScale(factorX, factorY); SO.keyboard_button.setScale(factorX, factorY);
+    float h_padding = 0.6 * SO.mouse_button.getLocalBounds().width * factorX;
+    float buttons_y = SO.suggestion_mode.getPosition().y + static_cast<float>(1.2) * SO.suggestion_mode.getLocalBounds().height;
+    SO.mouse_button.setPosition({SO.suggestion_mode.getPosition().x - h_padding, buttons_y});
+    SO.keyboard_button.setPosition({SO.suggestion_mode.getPosition().x + h_padding, buttons_y});
 
     //text fail if choice hadn't made
-    SO.fail_choice.setPosition(SO.keyboard_button.getGlobalBounds().left + SO.keyboard_button.getGlobalBounds().width, SO.suggestion_mode.getPosition().y + SO.suggestion_mode.getLocalBounds().height);
+    SO.fail_choice.setPosition(SO.keyboard_button.getGlobalBounds().left + SO.keyboard_button.getGlobalBounds().width, buttons_y);
 
     settings_loop(SO);
     
@@ -221,12 +226,12 @@ bool Interface::enter_settings()
 
 void Interface::menu_loop(sf::Sprite menubutton, sf::Sprite exitbutton)
 {
-    sf::FloatRect menubutton_bounds = menubutton.getGlobalBounds();
-    sf::FloatRect exitbutton_bounds = exitbutton.getGlobalBounds();
     bool isMenu = true;
     int menuNum = NOCHOICE;
 	while ((isMenu) && (window.isOpen()))
 	{
+        sf::FloatRect menubutton_bounds = menubutton.getGlobalBounds();
+        sf::FloatRect exitbutton_bounds = exitbutton.getGlobalBounds();
         sf::Event event;
         while (window.pollEvent(event)) {
 
@@ -265,9 +270,8 @@ void Interface::menu_loop(sf::Sprite menubutton, sf::Sprite exitbutton)
 bool Interface::start_menu()
 {
     sf::Vector2f windowsize = sf::Vector2f(window.getSize());
-
     int buttons_count = 2;
-    float padding = 100;
+    float padding = 100 * factorY;
     sf::Image buttonImage;
     buttonImage.loadFromFile(path + "/game/images/buttons.png");
     buttonImage.createMaskFromColor(sf::Color::White);
@@ -279,10 +283,12 @@ bool Interface::start_menu()
     int width = buttonTexture.getSize().x;
     menubutton.setTextureRect({0, 0, width, height});
     menubutton.setOrigin(width / 2, height / 2);
+    menubutton.setScale(factorX, factorY);
     menubutton.setPosition({windowsize.x / 2, windowsize.y / 2 - padding});
     exitbutton.setTextureRect({0, height * 1, width, height});
     exitbutton.setOrigin(width / 2, height / 2);
     exitbutton.setPosition({windowsize.x / 2, windowsize.y / 2 + padding});
+    exitbutton.setScale(factorX, factorY);
 
     menu_loop(menubutton, exitbutton);
     return true;

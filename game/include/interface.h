@@ -12,10 +12,15 @@ enum {
     QUIT = 4
 };
 
+enum {
+    DEFAULT_WIDTH = 1920,
+    DEFAULT_HEIGHT = 1080
+};
+
 class SettingsObjects {
     private: 
     sf::Image buttonImage;
-    sf::Texture buttonTexture; 
+    sf::Texture buttonTexture;
 
     public:
     SettingsObjects() = default;
@@ -41,6 +46,8 @@ class Interface {
     bool enter_settings();
     void settings_loop(SettingsObjects SO);
     void menu_loop(sf::Sprite menubutton, sf::Sprite exitbutton);
+    float factorX;
+    float factorY; 
 
     public:
     Interface() = default;
