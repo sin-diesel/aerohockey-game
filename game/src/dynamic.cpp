@@ -83,11 +83,11 @@ int ServerDynamicObject::check_score()
 {
     //std::cout << "CHECK SCORE" << std::endl;
     if (position.x < GATE_POS_X_LEFT && position.y < GATE_POS_Y_UPPER && position.y > GATE_POS_Y_DOWNER) {
-        position.x = 925, position.y = 570, speed.x = 0, speed.y = 0;
+        position.x = CENTER_X, position.y = CENTER_Y, speed.x = 0, speed.y = 0;
         return 1;
     }
     if (position.x > GATE_POS_X_RIGHT && position.y < GATE_POS_Y_UPPER && position.y > GATE_POS_Y_DOWNER) {
-        position.x = 925, position.y = 570, speed.x = 0, speed.y = 0;
+        position.x = CENTER_X, position.y = CENTER_Y, speed.x = 0, speed.y = 0;
         return 2;
     }
     return 0;

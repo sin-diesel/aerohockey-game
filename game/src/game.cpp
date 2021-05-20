@@ -16,12 +16,12 @@ Game::Game(sf::Vector2u windowsize_, sf::IpAddress& addr, std::string path_, int
     if (keyboard_control)
         std::cout << "GAMEKEYBOARDCONTROL IS TRUE" << std::endl;
     sf::Vector2f windowsize = sf::Vector2f(windowsize_);
-    sf::Vector2f pos(925, 570);
+    sf::Vector2f pos(CENTER_X, CENTER_Y);
     scoreboard = Scoreboard(path + "/game/images/scoreboard.png", {windowsize.x/2, 0}, path);  
     striker1 = ClientDynamicObject(path + "/game/images/striker.png", pos);
-    pos.x -= 100;
+    pos.x -= 200;
     striker2 = ClientDynamicObject(path + "/game/images/striker.png", pos);
-    pos.x += 200;
+    pos.x += 400;
     puck = ClientDynamicObject(path + "/game/images/puck.png", pos);
 
     //number = client.get_number() + 1;

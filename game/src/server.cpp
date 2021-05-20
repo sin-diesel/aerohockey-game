@@ -1,11 +1,11 @@
 #include "server.h"
 #include "dynamic.h"
 Server::Server():     
-    puck(static_cast<float>(PUCK_MASS), static_cast<float>(PUCK_RADIUS), 925, 570),
-    striker1(static_cast<float>(STRIKER_MASS), static_cast<float>(STRIKER_RADIUS), 825, 570),
-    striker2(static_cast<float>(STRIKER_MASS), static_cast<float>(STRIKER_RADIUS), 1025, 570)  {
-    port = PORT;
-    score.x = 0, score.y = 0;
+    puck(static_cast<float>(PUCK_MASS), static_cast<float>(PUCK_RADIUS), CENTER_X, CENTER_Y),
+    striker1(static_cast<float>(STRIKER_MASS), static_cast<float>(STRIKER_RADIUS), CENTER_X - 200, CENTER_Y),
+    striker2(static_cast<float>(STRIKER_MASS), static_cast<float>(STRIKER_RADIUS), CENTER_X + 200, CENTER_Y),
+    port(PORT),
+    addr(sf::IpAddress::LocalHost)  {
     if (socket.bind(PORT) != sf::UdpSocket::Done) {
         std::cerr << "Error binding server socket. " << std::endl;
     }
@@ -20,20 +20,15 @@ Server::Server():
 
         client_sockets[i]->setBlocking(true);
         client_selector.add(*(client_sockets[i]));
-
     }
-    addr = sf::IpAddress::LocalHost;
 }
 
 Server::~Server() {
     socket.unbind();
-    for (int i = 0; i < client_sockets.size(); ++i) {
+    for (int i = 0; i < client_sockets.size(); ++i)
         client_sockets[i]->unbind();
-    }
-
-    for (int i = 0; i < 2; ++i) {
+    for (int i = 0; i < 2; ++i)
         delete client_sockets[i];
-    }
 }
 
 void Server::handle_connections(int client_number) {
@@ -50,9 +45,6 @@ void Server::handle_connections(int client_number) {
     bool temp;
     connection_info >> temp;
     keyboard_control[client_number] = temp;
-    if (keyboard_control[client_number])
-        std::cout << "number " << client_number << " is true" << std::endl;
-    //sleep(10);
     connection_info.clear();
     std::cout << "Packet from client received " << std::endl;
     std::cout << "Client addr: " << client_addr << std::endl;
@@ -64,6 +56,7 @@ void Server::handle_connections(int client_number) {
     sf::Packet response;
     response << new_port << client_number;
     socket.send(response, client_addr, client_port);
+    response.clear();
 }
 
 std::vector<bool> Server::get_updates(std::vector<sf::Packet>& data) //receives data about strikers moving from clients
@@ -72,8 +65,6 @@ std::vector<bool> Server::get_updates(std::vector<sf::Packet>& data) //receives 
     unsigned short client_port;
     std::vector<bool> received(2);
     received[0] = false, received[1] = false;
-    // here we receive not from the main server socket, but instead from client socket
-    //client_selector.wait()
     if (client_selector.wait(sf::milliseconds(PINGSERVER))) {
         for (int i = 0; i < 2; ++i) {
             if (client_selector.isReady(*(client_sockets[i]))) {
@@ -90,7 +81,7 @@ std::vector<bool> Server::get_updates(std::vector<sf::Packet>& data) //receives 
     return received;
 }
 
-bool Server::send_updates(sf::Packet& data, int i) // calculates new cooridinates of puck and strikers and sends to clients
+bool Server::send_updates(sf::Packet& data, int i)
 {
     if (client_sockets[i]->send(data, adresses[i], ports[i]) != sf::Socket::Done) {
         std::cerr << "Error sending data to client. " << std::endl;
