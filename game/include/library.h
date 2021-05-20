@@ -13,3 +13,13 @@
 #define PORT 54000
 #define PING 10 //ms
 #define PINGSERVER 10
+
+#define DEFAULT_WIDTH 1920
+#define DEFAULT_HEIGHT 1080
+
+#define NOCHOICE 0
+#define MOUSE 1
+#define KEYBOARD 2
+#define PLAY 3
+#define QUIT 4
+

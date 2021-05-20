@@ -39,7 +39,7 @@ class ClientDynamicObject : public DynamicObject {
 
     public:
     ClientDynamicObject() = default;
-    ClientDynamicObject(std::string imagepath, sf::Vector2f);
+    ClientDynamicObject(std::string imagepath, sf::Vector2f pos, sf::Vector2f windowsize);
     void draw(sf::RenderWindow& window);
 };
 

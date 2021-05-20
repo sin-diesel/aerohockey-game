@@ -5,7 +5,7 @@
 Game::Game(sf::Vector2u windowsize_, sf::IpAddress& addr, std::string path_, int choice):
     client(addr, keyboard_control),
     path(path_),
-    keyboard_control((choice == 2) ? true : false)
+    keyboard_control((choice == KEYBOARD) ? true : false)
     {
     number = client.get_number() + 1;
     struct utsname details;
@@ -16,13 +16,15 @@ Game::Game(sf::Vector2u windowsize_, sf::IpAddress& addr, std::string path_, int
     if (keyboard_control)
         std::cout << "GAMEKEYBOARDCONTROL IS TRUE" << std::endl;
     sf::Vector2f windowsize = sf::Vector2f(windowsize_);
-    sf::Vector2f pos(CENTER_X, CENTER_Y);
-    scoreboard = Scoreboard(path + "/game/images/scoreboard.png", {windowsize.x/2, 0}, path);  
-    striker1 = ClientDynamicObject(path + "/game/images/striker.png", pos);
-    pos.x -= 200;
-    striker2 = ClientDynamicObject(path + "/game/images/striker.png", pos);
-    pos.x += 400;
-    puck = ClientDynamicObject(path + "/game/images/puck.png", pos);
+    float factorX = windowsize.x / DEFAULT_WIDTH;
+    float factorY = windowsize.y / DEFAULT_HEIGHT;
+    sf::Vector2f pos(CENTER_X * factorX, CENTER_Y * factorY);
+    scoreboard = Scoreboard(path + "/game/images/scoreboard.png", windowsize, path);  
+    striker1 = ClientDynamicObject(path + "/game/images/striker.png", pos, windowsize);
+    pos.x -= 200 * factorX;
+    striker2 = ClientDynamicObject(path + "/game/images/striker.png", pos, windowsize);
+    pos.x += 400 * factorX;
+    puck = ClientDynamicObject(path + "/game/images/puck.png", pos, windowsize);
 
     //number = client.get_number() + 1;
 
@@ -31,7 +33,8 @@ Game::Game(sf::Vector2u windowsize_, sf::IpAddress& addr, std::string path_, int
     field_texture.loadFromImage(field_image);
     field.setTexture(field_texture);
     field.setOrigin(field_image.getSize().x / 2, 0);
-    field.setPosition(windowsize.x / 2, scoreboard.getSize().y);
+    field.setPosition(windowsize.x / 2, scoreboard.getSize().y * factorY);
+    field.setScale(factorX, factorY);
 }
 
 void Game::sending_mouse_pos(sf::Window& window)

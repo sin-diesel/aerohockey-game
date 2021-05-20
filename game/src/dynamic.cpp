@@ -1,13 +1,16 @@
 #include "../include/dynamic.h"
 #include "../include/library.h"
-ClientDynamicObject::ClientDynamicObject(std::string imagepath, sf::Vector2f pos)
+ClientDynamicObject::ClientDynamicObject(std::string imagepath, sf::Vector2f pos, sf::Vector2f windowsize)
 {
+    float factorX = windowsize.x / DEFAULT_WIDTH;
+    float factorY = windowsize.y / DEFAULT_HEIGHT;
     this->imagepath = imagepath;
     position = pos;
     image.loadFromFile(imagepath);
     image.createMaskFromColor(sf::Color::White);
     texture.loadFromImage(image);
     sprite.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
+    sprite.setScale(factorX, factorY);
 }
 
 void ClientDynamicObject::draw(sf::RenderWindow& window)
