@@ -10,9 +10,7 @@ Server::Server():
         std::cerr << "Error binding server socket. " << std::endl;
     }
     socket.setBlocking(true);
-    // create sockets for clients
     for (int i = 0; i < 2; ++i) { 
-        //client_sockets.push_back(*client_socket);
         sf::UdpSocket* client_socket = new sf::UdpSocket();
         client_sockets.push_back(client_socket);
 
@@ -84,31 +82,12 @@ std::vector<bool> Server::get_updates(std::vector<sf::Packet>& data) //receives 
                 std::cout << client_address << std::endl << client_port << std::endl;
                 received[i] = true;
             } else {
-                //!!!!! std::cerr << "Error receiving packet from client. " << std::endl;
+                std::cerr << "Error receiving packet from client. " << std::endl;
                 std::cerr << std::endl;
             }
         }
     }
     return received;
-}
-
-void Server::update_strikers(sf::Vector2f pos1, sf::Vector2f pos2)
-{
-    if ((pos1.x-pos2.x)*(pos1.x-pos2.x)+(pos1.y-pos2.y)*(pos1.y-pos2.y) <= STRIKER_RADIUS * STRIKER_RADIUS) {
-        pos1 = striker1.get_coord(), pos2 = striker2.get_coord();
-        //std::cout << "ASSERT" << std::endl;
-    }
-    striker1.calculate_speed(pos1);
-    striker2.calculate_speed(pos2);
-    striker1.set_coord(pos1);
-    striker2.set_coord(pos2);
-}
-
-
-void Server::update_strikers_position()
-{
-    striker1.update_speed();
-    striker2.update_speed();
 }
 
 bool Server::send_updates(sf::Packet& data, int i) // calculates new cooridinates of puck and strikers and sends to clients
@@ -121,69 +100,34 @@ bool Server::send_updates(sf::Packet& data, int i) // calculates new cooridinate
     return true;
 }
 
-void Server::run() {
-    //sf::Time network_update_time = sf::milliseconds(PING);
-    sf::Clock clock;
-    sf::Time elapsed;
-
-    std::vector<sf::Packet> data;
-    for (int i = 0; i < 2; ++i) {
-        data.push_back(sf::Packet());
+void Server::mouse_update_strikers(sf::Vector2f pos, int i)
+{
+    //if ((pos1.x-pos2.x)*(pos1.x-pos2.x)+(pos1.y-pos2.y)*(pos1.y-pos2.y) <= STRIKER_RADIUS * STRIKER_RADIUS) {
+        //pos1 = striker1.get_coord(), pos2 = striker2.get_coord();
+        //std::cout << "ASSERT" << std::endl;
+    //}
+    if (i == 0) {
+        striker1.calculate_speed(pos);
+        striker1.set_coord(pos);
+    } else {
+        striker2.calculate_speed(pos);
+        striker2.set_coord(pos);
     }
-    if (keyboard_control[0])
-        std::cout << "KEYBOARD" << std::endl;
-    sf::Packet response;
-    sf::Vector2f pos1[2];
-    std::vector<int> key(2);
-    while (1) {
-        std::vector<bool> received;
-        received.push_back(true), received.push_back(true);
-        elapsed = clock.getElapsedTime();
-        //if (elapsed > sf::milliseconds(PINGSERVER)) {
-            received = get_updates(data);
-                for (int i = 0; i < 2; ++i) {
-                    if (received[i]) {
-                        if (!keyboard_control[i]) {
-                            data[i] >> pos1[i];
-                            data[i].clear();
-                            //update_strikers(pos1[0], pos1[1]);
-                            if (i == 0) {
-                                striker1.calculate_speed(pos1[i]);
-                                striker1.set_coord(pos1[i]);
-                            }
-                            else {
-                                striker2.calculate_speed(pos1[i]);
-                                striker2.set_coord(pos1[i]);
-                            }
-                            puck.update(striker1, striker2);
-                            sf::Vector2i score = update_score(puck.check_score());
-                            std::cout << "ST1: " << striker1.get_coord().x << " " << striker1.get_coord().y << std::endl << "ST2: " << striker2.get_coord().x << " " << striker2.get_coord().y << std::endl << "PUCK: " << puck.get_coord().x << " " << puck.get_coord().y << std:: endl << score.x << " " << score.y << std::endl;
-                            response.clear();
-                            response << striker1.get_coord() << striker2.get_coord() << puck.get_coord() << score;
-                            send_updates(response, i);
-                        }
-                        else
-                        {
-                            data[i] >> key[i];
-                            data[i].clear();
-                            std::cout << key[i] << " RECEIVED" << std::endl;
-                            (i == 0) ? striker1.change_speed(key[i]) : striker2.change_speed(key[i]);
-                        }
-                    }
-                    if(keyboard_control[i]) {
-                            update_strikers_position();
-                            puck.update(striker1, striker2);
-                            sf::Vector2i score = update_score(puck.check_score());
-                            std::cout << "ST1: " << striker1.get_coord().x << " " << striker1.get_coord().y << std::endl << "ST2: " << striker2.get_coord().x << " " << striker2.get_coord().y << std::endl << "PUCK: " << puck.get_coord().x << " " << puck.get_coord().y << std:: endl << score.x << " " << score.y << std::endl;
-                            response.clear();
-                            response << striker1.get_coord() << striker2.get_coord() << puck.get_coord() << score;
-                            send_updates(response, i);
-                    }
+}
 
-                }
-                clock.restart();
-        //}
+void Server::keyboard_update_strikers_speed(int key, int i)
+{
+    if (i == 0) {
+        striker1.keyboard_change_speed(key);
+    } else {
+        striker2.keyboard_change_speed(key);
     }
+}
+
+void Server::keyboard_update_strikers_position()
+{
+    striker1.keyboard_update_speed();
+    striker2.keyboard_update_speed();
 }
 
 sf::Vector2i Server::update_score(int side) {
@@ -193,22 +137,56 @@ sf::Vector2i Server::update_score(int side) {
     return score;
 }
 
-sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2f& pos)
+void Server::update_and_send(int i)
 {
+    puck.update(striker1, striker2);
+    sf::Vector2i score = update_score(puck.check_score());
+    std::cout << "ST1: " << striker1.get_coord().x << " " << striker1.get_coord().y << std::endl << "ST2: " << striker2.get_coord().x << " " << striker2.get_coord().y << std::endl << "PUCK: " << puck.get_coord().x << " " << puck.get_coord().y << std:: endl << score.x << " " << score.y << std::endl;
+    sf::Packet response;
+    response << striker1.get_coord() << striker2.get_coord() << puck.get_coord() << score;
+    send_updates(response, i);
+}
+
+void Server::run() {
+    std::vector<sf::Packet> data = {sf::Packet(), sf::Packet()};
+    std::vector<int> key(2);
+    sf::Vector2f pos1[2];
+    while (1) {
+        std::vector<bool> received = {true, true};
+        received = get_updates(data);
+        for (int i = 0; i < 2; ++i) {
+            if (received[i]) {
+                if (!keyboard_control[i]) {
+                    data[i] >> pos1[i];
+                    mouse_update_strikers(pos1[i], i);
+                    update_and_send(i);
+                } else {
+                    data[i] >> key[i];
+                    keyboard_update_strikers_speed(key[i], i);
+                }
+            }
+            data[i].clear();
+            if(keyboard_control[i]) {
+                keyboard_update_strikers_position();
+                update_and_send(i);
+            }
+        }
+    }
+}
+
+
+sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2f& pos) {
     return packet << pos.x << pos.y;
 }
 
-sf::Packet& operator >>(sf::Packet& packet, sf::Vector2f& pos)
-{
+sf::Packet& operator >>(sf::Packet& packet, sf::Vector2f& pos) {
     return packet >> pos.x >> pos.y;
 }
 
-sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2i& pos)
-{
+sf::Packet& operator <<(sf::Packet& packet, const sf::Vector2i& pos) {
     return packet << pos.x << pos.y;
 }
 
-sf::Packet& operator >>(sf::Packet& packet, sf::Vector2i& pos)
-{
+sf::Packet& operator >>(sf::Packet& packet, sf::Vector2i& pos) {
     return packet >> pos.x >> pos.y;
 }

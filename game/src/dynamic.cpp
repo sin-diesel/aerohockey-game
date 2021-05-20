@@ -121,7 +121,7 @@ sf::Vector2f ServerDynamicObject::get_speed()
     return speed;
 }
 
-void ServerDynamicObject::change_speed(int key)
+void ServerDynamicObject::keyboard_change_speed(int key)
 {
     if (key == sf::Keyboard::W && (position.y - STRIKER_RADIUS > MIN_POS_Y))
         speed.y += -1;
@@ -133,7 +133,7 @@ void ServerDynamicObject::change_speed(int key)
         speed.x += -1;
 }
 
-void ServerDynamicObject::update_speed()
+void ServerDynamicObject::keyboard_update_speed()
 {
     if (position.y - STRIKER_RADIUS < MIN_POS_Y && speed.y < 0) {
         speed.y = 0;

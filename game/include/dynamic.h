@@ -49,8 +49,8 @@ class ServerDynamicObject : public DynamicObject {
     ServerDynamicObject() = default;
     ServerDynamicObject(float mass, float radius, float pos1, float pos2);
     float get_mass();
-    void change_speed(int key);
-    void update_speed();
+    void keyboard_change_speed(int key);
+    void keyboard_update_speed();
     float get_radius();
     int check_score();
     sf::Vector2f get_speed();
