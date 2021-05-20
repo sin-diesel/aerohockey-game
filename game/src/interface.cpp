@@ -30,10 +30,13 @@ bool Interface::start_game(sf::IpAddress server_addr, int choice)
     sf::Time elapsed;
     int pause_flag = 0;
     bool isGame = true;
+    std::vector<int> emptykey(4,-1);
+    std::vector<int> key(4, -1);
     while (isGame) {
         sf::Event event;
+        sf::Packet packet;
+        key = emptykey;
         while (window.pollEvent(event)) {
-
             switch(event.type) {
 
                 case sf::Event::Closed:
@@ -42,7 +45,6 @@ bool Interface::start_game(sf::IpAddress server_addr, int choice)
                     break;
 
                 case sf::Event::KeyPressed:
-                    std::cout << "Key pressed." << std::endl;
                     if (event.key.code == sf::Keyboard::Escape)
                         isGame = false;
                     else if (event.key.code == sf::Keyboard::Q)
@@ -50,17 +52,14 @@ bool Interface::start_game(sf::IpAddress server_addr, int choice)
                     else if (event.key.code == sf::Keyboard::Space || event.key.code == sf::Keyboard::P)
                         pause_flag = (pause_flag == 0) ? 1 : 0;
                     else if (aerohockey.get_type_control()) {
-                        std::cout << "CONTROL KEYBOARD TRIGGERED" << std::endl;
-                        if (event.key.code == sf::Keyboard::W) {
-                            aerohockey.send_key(sf::Keyboard::W);
-                            //sleep(1);
-                        }
+                        if (event.key.code == sf::Keyboard::W)
+                            key[0] = sf::Keyboard::W;
                         else if (event.key.code == sf::Keyboard::A)
-                            aerohockey.send_key(sf::Keyboard::A);
+                            key[1] = sf::Keyboard::A;
                         else if (event.key.code == sf::Keyboard::S)
-                            aerohockey.send_key(sf::Keyboard::S);
+                            key[2] = sf::Keyboard::S;
                         else if (event.key.code == sf::Keyboard::D)
-                            aerohockey.send_key(sf::Keyboard::D);
+                            key[3] = sf::Keyboard::D;
                     }
                     break;
                 // case sf::Event::GainedFocus:
@@ -68,9 +67,12 @@ bool Interface::start_game(sf::IpAddress server_addr, int choice)
                 //     break;
             }
         }
+        if (aerohockey.get_type_control() && key != emptykey) {
+            packet << key[0] << key[1] << key[2] << key[3];
+            aerohockey.send_key(packet);
+        }
 
-        elapsed = clock.getElapsedTime();
-        if ((elapsed > aerohockey.get_update_time()) && (!pause_flag)){
+        if (!pause_flag){
             clock.restart();
             aerohockey.play(window);
             window.clear(game_color);
@@ -135,22 +137,9 @@ void Interface::settings_loop(sf::Text suggestion_ip, sf::Text fail, sf::Text su
         buttonnum = 0;
         if (mouse_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { mouse_button.setColor(sf::Color::Blue); buttonnum  = 1; }
         if (keyboard_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { keyboard_button.setColor(sf::Color::Blue); buttonnum  = 2; }
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && (buttonnum == 1 || buttonnum == 2))
+            choice = buttonnum, choiceDone = true;
 
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-		{
-            //std::cout << "button pressed " << buttonnum << std::endl;
-			if (buttonnum == 1) { 
-                choice = 1;
-                choiceDone = true;
-            } 
-			if (buttonnum == 2)  { 
-                choice = 2;
-                choiceDone = true;
-            }
-        }
-        //if (choice == 2) {
-        //    std::cout << "KEYBOARD IS CHOSEN" << std::endl;
-        //}
         window.clear(menu_color);
         window.draw(suggestion_ip);
         textbox.draw(window);

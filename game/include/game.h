@@ -20,12 +20,13 @@ class Game {
         Game() = default;
         Game(sf::Vector2u windowsize, sf::IpAddress& server_addr, std::string path_0, int choise);
         void sending_mouse_pos(sf::Window& window);
-        void send_key(int key);
+        void send_key(sf::Packet& packet);
         int get_number();
         bool get_type_control();
         void set_number(int num);
         void play(sf::RenderWindow& window);
         void draw_objects(sf::RenderWindow& window);
+        void time_out();
         sf::Time get_update_time();
 };
 
