@@ -1,16 +1,16 @@
 #include "../include/game.h"
-#include <unistd.h>
+//#include <unistd.h>
 //const char path[] = "/Users/stassidelnikov/aerohockey-game";
 
 Game::Game(sf::Vector2u windowsize_, sf::IpAddress& addr, std::string path_, int choice):
     client(addr, keyboard_control),
     path(path_),
-    keyboard_control((choice == 2) ? true : false),
-    number(client.get_number() + 1) {
-
+    keyboard_control((choice == 2) ? true : false)
+    {
+    number = client.get_number() + 1;
     struct utsname details;
     int ret = uname(&details);
-    if (ret == 0){
+    if (ret == 0) {
         printf("Sysname: %s\n", details.sysname);
     }
     if (keyboard_control)
@@ -82,10 +82,10 @@ void Game::play(sf::RenderWindow& window)
     }
 }
 
-void Game::time_out() 
+/*void Game::time_out() 
 {
     sleep(3);
-}
+}*/
 
 void Game::draw_objects(sf::RenderWindow& window) {
     window.draw(field);

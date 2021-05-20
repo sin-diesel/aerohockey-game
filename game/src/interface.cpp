@@ -25,8 +25,6 @@ bool Interface::start_game(sf::IpAddress server_addr, int choice)
     //std::cout << "choice: " << choice << std::endl;
     Game aerohockey(window.getSize(), server_addr, path, choice);
     std::cout << "aerohockey number is " << aerohockey.get_number() << std::endl;
-    sf::Clock clock;
-    sf::Time elapsed;
     int pause_flag = 0;
     bool isGame = true;
     std::vector<int> emptykey(4,-1);
@@ -72,7 +70,6 @@ bool Interface::start_game(sf::IpAddress server_addr, int choice)
         }
 
         if (!pause_flag){
-            clock.restart();
             aerohockey.play(window);
             window.clear(game_color);
             aerohockey.draw_objects(window);

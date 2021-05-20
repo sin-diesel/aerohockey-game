@@ -73,8 +73,8 @@ std::vector<bool> Server::get_updates(std::vector<sf::Packet>& data) //receives 
                 //std::cout << client_address << std::endl << client_port << std::endl;
                 received[i] = true;
             } else {
-                std::cerr << "Error receiving packet from client. " << std::endl;
-                std::cerr << std::endl;
+                //std::cerr << "Error receiving packet from client. " << std::endl;
+                //std::cerr << std::endl;
             }
         }
     }
@@ -88,6 +88,7 @@ bool Server::send_updates(sf::Packet& data, int i)
         std::cerr << std::endl;
         return false;
     }
+    std::cout << "SEND TO " << i << " " << adresses[i] << " " << ports[i] << std::endl;
     return true;
 }
 
@@ -133,13 +134,13 @@ void Server::update_and_send(int i)
     puck.update(striker1, striker2);
     int side = puck.check_score();
     sf::Vector2i score = update_score(side);
-    std::cout << "ST1: " << striker1.get_coord().x << " " << striker1.get_coord().y << std::endl << "ST2: " << striker2.get_coord().x << " " << striker2.get_coord().y << std::endl << "PUCK: " << puck.get_coord().x << " " << puck.get_coord().y << std:: endl << score.x << " " << score.y << std::endl;
+    //std::cout << "ST1: " << striker1.get_coord().x << " " << striker1.get_coord().y << std::endl << "ST2: " << striker2.get_coord().x << " " << striker2.get_coord().y << std::endl << "PUCK: " << puck.get_coord().x << " " << puck.get_coord().y << std:: endl << score.x << " " << score.y << std::endl;
     sf::Packet response;
     response << striker1.get_coord() << striker2.get_coord() << puck.get_coord() << score << false;
     send_updates(response, i);
     response.clear();
-    if (side != 0)
-        time_out();
+    //if (side != 0)
+        //time_out();
 }
 
 void Server::time_out()
