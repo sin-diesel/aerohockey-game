@@ -74,10 +74,10 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
     if (speed_val > MAX_SPEED)
         speed *= (MAX_SPEED / speed_val);
     position += (speed / static_cast<float> (CYCLE_SPEED));
-    position.x = (position.x < MIN_POS_X) ? MIN_POS_X : position.x;
-    position.y = (position.y < MIN_POS_Y) ? MIN_POS_Y : position.y;
-    position.x = (position.x > MAX_POS_X) ? MAX_POS_X : position.x;
-    position.y = (position.y > MAX_POS_Y) ? MAX_POS_Y : position.y;
+    position.x = (position.x < MIN_POS_X + PUCK_RADIUS) ? MIN_POS_X + PUCK_RADIUS : position.x;
+    position.y = (position.y < MIN_POS_Y + PUCK_RADIUS) ? MIN_POS_Y + PUCK_RADIUS : position.y;
+    position.x = (position.x > MAX_POS_X - PUCK_RADIUS) ? MAX_POS_X - PUCK_RADIUS : position.x;
+    position.y = (position.y > MAX_POS_Y - PUCK_RADIUS) ? MAX_POS_Y - PUCK_RADIUS : position.y;
     return position;
 }
 
