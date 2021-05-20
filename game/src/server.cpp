@@ -88,32 +88,23 @@ bool Server::send_updates(sf::Packet& data, int i)
         std::cerr << std::endl;
         return false;
     }
-    std::cout << "SEND TO " << i << " " << adresses[i] << " " << ports[i] << std::endl;
+    //std::cout << "SEND TO " << i << " " << adresses[i] << " " << ports[i] << std::endl;
     return true;
 }
 
 void Server::mouse_update_strikers(sf::Vector2f pos, int i)
 {
-    //if ((pos1.x-pos2.x)*(pos1.x-pos2.x)+(pos1.y-pos2.y)*(pos1.y-pos2.y) <= STRIKER_RADIUS * STRIKER_RADIUS) {
-        //pos1 = striker1.get_coord(), pos2 = striker2.get_coord();
-        //std::cout << "ASSERT" << std::endl;
-    //}
-    if (i == 0) {
-        striker1.calculate_speed(pos);
-        striker1.set_coord(pos);
-    } else {
-        striker2.calculate_speed(pos);
-        striker2.set_coord(pos);
-    }
-}
-
-void Server::keyboard_update_strikers_speed(std::vector<int>& key, int i)
-{
-    if (i == 0) {
-        striker1.keyboard_change_speed(key);
-    } else {
-        striker2.keyboard_change_speed(key);
-    }
+    ServerDynamicObject& striker = ((i == 0) ? striker1 : striker2);
+    if (pos.x + STRIKER_RADIUS > ((striker.get_number() == 2) ? MAX_POS_X : CENTER_X))
+        pos.x = ((striker.get_number() == 2) ? MAX_POS_X : CENTER_X) - STRIKER_RADIUS;
+    if (pos.x - STRIKER_RADIUS < ((striker.get_number() == 1) ? MIN_POS_X : CENTER_X))
+        pos.x = ((striker.get_number() == 1) ? MIN_POS_X : CENTER_X) + STRIKER_RADIUS;
+    if (pos.y + STRIKER_RADIUS > MAX_POS_Y)
+        pos.y = MAX_POS_Y - STRIKER_RADIUS;
+    if (pos.y - STRIKER_RADIUS < MIN_POS_Y)
+        pos.y = MIN_POS_Y + STRIKER_RADIUS;
+    striker.calculate_speed(pos);
+    striker.set_coord(pos);
 }
 
 void Server::keyboard_update_strikers_position()
@@ -173,7 +164,7 @@ void Server::run() {
                 } else {
                     data[i] >> key[i][0] >> key[i][1] >> key[i][2] >> key[i][3];
                     //std::cout << "RECEIVED " << key[i][0] << " " << key[i][1] << " " << key[i][2] << " " << key[i][3] << std::endl;
-                    keyboard_update_strikers_speed(key[i], i);
+                    (i == 0) ? striker1.keyboard_change_speed(key[i]) : striker2.keyboard_change_speed(key[i]);
                 }
             }
             data[i].clear();
