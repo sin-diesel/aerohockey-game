@@ -1,21 +1,21 @@
 #pragma once
 #include "library.h"
 #define MAX_POS_X 1817
-#define MAX_POS_Y 795
+#define MAX_POS_Y 970
 #define MIN_POS_X 103
-#define MIN_POS_Y 94
+#define MIN_POS_Y 115
 #define DEFAULT_MASS 10
 #define DEFAULT_RADIUS 50
 #define PUCK_RADIUS 15
 #define STRIKER_RADIUS 30
 #define PUCK_MASS 10
 #define STRIKER_MASS 100
-#define GATE_POS_X_LEFT 90
-#define GATE_POS_X_RIGHT 1765
+#define GATE_POS_X_LEFT 123
+#define GATE_POS_X_RIGHT 1797
 #define GATE_POS_Y_UPPER 690
 #define GATE_POS_Y_DOWNER 420
 #define CENTER_X 960
-#define CENTER_Y 468
+#define CENTER_Y 540
 #define CYCLE_SPEED 15
 #define SPEED_LIMIT 15
 #define EPSILON 0.0001

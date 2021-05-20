@@ -13,12 +13,12 @@ Game::Game(sf::Vector2u windowsize_, sf::IpAddress& addr, std::string path_, int
     if (ret == 0) {
         printf("Sysname: %s\n", details.sysname);
     }
-    if (keyboard_control)
-        std::cout << "GAMEKEYBOARDCONTROL IS TRUE" << std::endl;
+    //if (keyboard_control)
+    //    std::cout << "GAMEKEYBOARDCONTROL IS TRUE" << std::endl;
     sf::Vector2f windowsize = sf::Vector2f(windowsize_);
     factorX = windowsize.x / DEFAULT_WIDTH;
     factorY = windowsize.y / DEFAULT_HEIGHT;
-    std::cout << factorY;
+    //std::cout << factorY;
     sf::Vector2f pos(CENTER_X * factorX, CENTER_Y * factorY);
     scoreboard = Scoreboard(path + "/game/images/scoreboard.png", windowsize, path);  
     striker1 = ClientDynamicObject(path + "/game/images/striker.png", pos, windowsize);
@@ -40,7 +40,7 @@ void Game::sending_mouse_pos(sf::Window& window)
 {
     sf::Packet packet;
     sf::Vector2f mouse_pos = sf::Vector2f(sf::Mouse::getPosition(window));
-    std::cout << mouse_pos.y << std::endl;
+    //std::cout << mouse_pos.y << std::endl;
     mouse_pos.x /= factorX; mouse_pos.y /= factorY;
     packet << mouse_pos;
     if (!client.send_updates(packet)) {
@@ -80,7 +80,7 @@ void Game::play(sf::RenderWindow& window)
         pos_st1.x *= factorX; pos_st1.y *= factorY;
         pos_st2.x *= factorX; pos_st2.y *= factorY;
         pos.x *= factorX; pos.y *= factorY;
-        std::cout << "ST1: " << pos_st1.x << " " << pos_st1.y << std::endl << "ST2: " << pos_st2.x << " " << pos_st2.y << std::endl << "PUCK: " << pos.x << " " << pos.y << std:: endl << score.x << " " << score.y << std::endl;
+        //std::cout << "ST1: " << pos_st1.x << " " << pos_st1.y << std::endl << "ST2: " << pos_st2.x << " " << pos_st2.y << std::endl << "PUCK: " << pos.x << " " << pos.y << std:: endl << score.x << " " << score.y << std::endl;
         scoreboard.update(score);
         puck.set_coord(pos);
         striker1.set_coord(pos_st1);
