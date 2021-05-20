@@ -30,33 +30,27 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
     float dist2 = sqrt((diff2.x)*(diff2.x)+(diff2.y)*(diff2.y));
     float radius_sum = PUCK_RADIUS + STRIKER_RADIUS;
 
-    if (dist1 <= radius_sum) {
-        if (!collision.first) {
-            collision.first = true;
-            std::cout << "BSPEED1 " << speed.x << " " << speed.y << std::endl;
-            float mult1 = (striker1.get_speed().x - speed.x) * diff1.x + (striker1.get_speed().y - speed.y) * diff1.y;
-            if (dist1 > 0.0001)
-                speed += static_cast<float> (2) * diff1  * striker1.get_mass() * mult1 / (striker1.get_mass() + mass) / dist1 / dist1;
-            std::cout << "ASPEED1 " << speed.x << " " << speed.y << std::endl;
-        }
+    if (dist1 < radius_sum * 0.96) {
         std::cout << "Collision" << std::endl;
-        if (dist1 >= 0.0001) 
-            position = striker1.position + (position - striker1.position) * (radius_sum / dist1); 
+        std::cout << "BSPEED1 " << speed.x << " " << speed.y << std::endl;
+        float mult1 = (striker1.get_speed().x - speed.x) * diff1.x + (striker1.get_speed().y - speed.y) * diff1.y;
+        if (dist1 > EPSILON) {
+                speed += static_cast<float> (2) * diff1  * striker1.get_mass() * mult1 / (striker1.get_mass() + mass) / dist1 / dist1;
+                position = striker1.position + (position - striker1.position) * (radius_sum / dist1); 
+        }
+        std::cout << "ASPEED1 " << speed.x << " " << speed.y << std::endl;
     }
-    else {
-        collision.first = false;
-    }
-    if (dist2 <= radius_sum) {
+    if (dist2 <radius_sum) {
         if (!collision.second) {
             collision.second = true;
             std::cout << "BSPEED2 " << speed.x << " " << speed.y << std::endl;
             float mult2 = (striker2.get_speed().x - speed.x) * diff2.x + (striker2.get_speed().y - speed.y) * diff2.y;
-            if (dist2 > 0.0001)
+            if (dist2 > EPSILON)
                 speed += static_cast<float> (2) * diff2  * striker2.get_mass() * mult2 / (striker2.get_mass() + mass) / dist2 / dist2;
             std::cout << "ASPEED2 " << speed.x << " " << speed.y << std::endl;
         }
 
-        if (dist2 >= 0.0001) 
+        if (dist2 >= EPSILON) 
             position = striker2.position + (position - striker2.position) * (radius_sum / dist2); 
     }
     else {
@@ -74,8 +68,11 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
     if (speed_val > MAX_SPEED)
         speed *= (MAX_SPEED / speed_val);
     position += (speed / static_cast<float> (CYCLE_SPEED));
-    position.x = (position.x < MIN_POS_X) ? MIN_POS_X : position.x;
-    position.y = (position.y < MIN_POS_Y) ? MIN_POS_Y : position.y;
+    position.x = (position.x < MIN_POS_X + PUCK_RADIUS) ? MIN_POS_X + PUCK_RADIUS : position.x;
+    position.y = (position.y < MIN_POS_Y + PUCK_RADIUS) ? MIN_POS_Y + PUCK_RADIUS : position.y;
+    position.x = (position.x > MAX_POS_X - PUCK_RADIUS) ? MAX_POS_X - PUCK_RADIUS : position.x;
+    position.y = (position.y > MAX_POS_Y - PUCK_RADIUS) ? MAX_POS_Y - PUCK_RADIUS : position.y;
+    std::cout << "Puck speed: " << speed.x << " " << speed.y << std::endl;
     return position;
 }
 
