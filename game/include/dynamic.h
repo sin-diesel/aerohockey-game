@@ -17,6 +17,7 @@
 #define CENTER_X 925
 #define CENTER_Y 570
 #define CYCLE_SPEED 15
+#define EPSILON 0.0001
 
 const float MAX_SPEED = 300;
 
