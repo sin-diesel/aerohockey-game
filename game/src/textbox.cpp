@@ -40,7 +40,7 @@ std::string TextBox::get_text()
 void TextBox::update(sf::Event& event)
 {
     switch ( event.text.unicode ) {
-        case 0x8://Backspace
+        case BACKSPACE:
         if ( !text_s.isEmpty() )
             text_s.erase(text_s.getSize()-1) ;
         break ;

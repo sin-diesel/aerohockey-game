@@ -1,5 +1,6 @@
 #pragma once
 #include "library.h"
+#define BACKSPACE 0x8
 
 class TextBox{
 

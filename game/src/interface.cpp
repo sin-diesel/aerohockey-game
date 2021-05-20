@@ -20,7 +20,6 @@ Interface::Interface(unsigned int width_, unsigned int height_) :
         font.loadFromFile(fontpath);
     }
 
-
 bool Interface::start_game(sf::IpAddress server_addr, int choice)
 {
     //std::cout << "choice: " << choice << std::endl;
@@ -51,10 +50,8 @@ bool Interface::start_game(sf::IpAddress server_addr, int choice)
                         pause_flag = (pause_flag == 0) ? 1 : 0;
                     else if (aerohockey.get_type_control()) {
                         std::cout << "CONTROL KEYBOARD TRIGGERED" << std::endl;
-                        if (event.key.code == sf::Keyboard::W) {
+                        if (event.key.code == sf::Keyboard::W)
                             aerohockey.send_key(sf::Keyboard::W);
-                            //sleep(1);
-                        }
                         else if (event.key.code == sf::Keyboard::A)
                             aerohockey.send_key(sf::Keyboard::A);
                         else if (event.key.code == sf::Keyboard::S)
@@ -81,14 +78,14 @@ bool Interface::start_game(sf::IpAddress server_addr, int choice)
     return true;
 }
 
-void Interface::settings_loop(sf::Text suggestion_ip, sf::Text fail, sf::Text suggestion_mode, sf::Sprite mouse_button, sf::Sprite keyboard_button, sf::Text fail_choice)
+void Interface::settings_loop(SettingsObjects SO)
 {
     sf::IpAddress server_addr;
-    TextBox textbox(suggestion_ip);
+    TextBox textbox(SO.suggestion_ip);
     bool isEnter = true, correctIP = true, choiceDone = false, correctChoice = true;
-    sf::FloatRect mouse_bounds = mouse_button.getGlobalBounds();
-    sf::FloatRect keyboard_bounds = keyboard_button.getGlobalBounds();
-    int buttonnum = 0, choice = 0;
+    sf::FloatRect mouse_bounds = SO.mouse_button.getGlobalBounds();
+    sf::FloatRect keyboard_bounds = SO.keyboard_button.getGlobalBounds();
+    int buttonnum = NOCHOICE, choice = NOCHOICE;
     while ((window.isOpen()) && isEnter)
     {
         sf::Event event;
@@ -104,7 +101,7 @@ void Interface::settings_loop(sf::Text suggestion_ip, sf::Text fail, sf::Text su
                     break;
                 case sf::Event::TextEntered:
                     switch ( event.text.unicode ) {
-                        case 0xD: //Return
+                        case ENTER:
                         if ((server_addr = sf::IpAddress(textbox.get_text())) == sf::IpAddress::None) {
                             std::cerr << "Error converting to valid IP address" << std::endl;
                             correctIP = false;
@@ -124,105 +121,99 @@ void Interface::settings_loop(sf::Text suggestion_ip, sf::Text fail, sf::Text su
                     
             } 
         }
-        mouse_button.setColor(sf::Color::White);
-        keyboard_button.setColor(sf::Color::White);
-
+        SO.mouse_button.setColor(sf::Color::White);
+        SO.keyboard_button.setColor(sf::Color::White);
         if (choiceDone)
             switch(choice){
-                case 1: mouse_button.setColor(sf::Color::Green); break;
-                case 2: keyboard_button.setColor(sf::Color::Green); break;
+                case MOUSE: SO.mouse_button.setColor(sf::Color::Green); break;
+                case KEYBOARD: SO.keyboard_button.setColor(sf::Color::Green); break;
             }
-        buttonnum = 0;
-        if (mouse_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { mouse_button.setColor(sf::Color::Blue); buttonnum  = 1; }
-        if (keyboard_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { keyboard_button.setColor(sf::Color::Blue); buttonnum  = 2; }
-
+        buttonnum = NOCHOICE;
+        if (mouse_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { SO.mouse_button.setColor(sf::Color::Blue); buttonnum  = MOUSE; }
+        if (keyboard_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { SO.keyboard_button.setColor(sf::Color::Blue); buttonnum  = KEYBOARD; }
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-		{
-            //std::cout << "button pressed " << buttonnum << std::endl;
-			if (buttonnum == 1) { 
-                choice = 1;
-                choiceDone = true;
-            } 
-			if (buttonnum == 2)  { 
-                choice = 2;
-                choiceDone = true;
+            switch (buttonnum) {
+                case MOUSE: choice = MOUSE; choiceDone = true; break;
+                case KEYBOARD: choice = KEYBOARD; choiceDone = true; break;
             }
-        }
-        //if (choice == 2) {
-        //    std::cout << "KEYBOARD IS CHOSEN" << std::endl;
-        //}
+
         window.clear(menu_color);
-        window.draw(suggestion_ip);
+        window.draw(SO.suggestion_ip);
         textbox.draw(window);
         if (!correctIP)
-            window.draw(fail);
-        window.draw(suggestion_mode);
+            window.draw(SO.fail_ip);
+        window.draw(SO.suggestion_mode);
         if (!correctChoice && !choiceDone)
-            window.draw(fail_choice);
-        window.draw(mouse_button);
-        window.draw(keyboard_button);
+            window.draw(SO.fail_choice);
+        window.draw(SO.mouse_button);
+        window.draw(SO.keyboard_button);
 		window.display();
     }
+}
+
+SettingsObjects::SettingsObjects(sf::Font& font, unsigned int charsize, std::string imgbuttonpath)
+{
+    suggestion_ip.setFont(font);
+    suggestion_ip.setFillColor(sf::Color::Black);
+    suggestion_ip.setStyle(sf::Text::Bold);
+    suggestion_ip.setCharacterSize(charsize);
+    suggestion_ip.setString("Enter server ip");
+    suggestion_ip.setOrigin(suggestion_ip.getLocalBounds().width / 2, suggestion_ip.getLocalBounds().height);
+
+    fail_ip.setFont(font);
+    fail_ip.setFillColor(sf::Color::Black);
+    fail_ip.setStyle(sf::Text::Bold);
+    fail_ip.setCharacterSize(charsize);
+    fail_ip.setString("Error: Invalid IP");
+    fail_ip.setOrigin(0, fail_ip.getLocalBounds().height);
+
+    suggestion_mode.setFont(font);
+    suggestion_mode.setFillColor(sf::Color::Black);
+    suggestion_mode.setStyle(sf::Text::Bold);
+    suggestion_mode.setCharacterSize(charsize);
+    suggestion_mode.setString("Gaming mode");
+    suggestion_mode.setOrigin(suggestion_mode.getLocalBounds().width / 2, suggestion_mode.getLocalBounds().height);
+
+    buttonImage.loadFromFile(imgbuttonpath); buttonImage.createMaskFromColor(sf::Color::White);
+    buttonTexture.loadFromImage(buttonImage);
+    mouse_button.setTexture(buttonTexture); keyboard_button.setTexture(buttonTexture);
+    int height = static_cast<unsigned int>(buttonTexture.getSize().y / 2);
+    int width = buttonTexture.getSize().x;
+    mouse_button.setTextureRect({0, height * 0, width, height}); keyboard_button.setTextureRect({0, height * 1, width, height});
+    mouse_button.setOrigin(width / 2, height / 2); keyboard_button.setOrigin(width / 2, height / 2);
+
+    fail_choice.setFont(font);
+    fail_choice.setFillColor(sf::Color::Black);
+    fail_choice.setStyle(sf::Text::Bold);
+    fail_choice.setCharacterSize(charsize);
+    fail_choice.setString("Error: make a choice");
+    fail_choice.setOrigin(0, fail_choice.getLocalBounds().height);
 }
 
 bool Interface::enter_settings()
 {
     sf::Vector2f windowsize = sf::Vector2f(window.getSize());
-    sf::Text suggestion_ip;
-    suggestion_ip.setFont(font);
-    suggestion_ip.setFillColor(sf::Color::Black);
-    suggestion_ip.setStyle(sf::Text::Bold);
-    suggestion_ip.setCharacterSize(60);
-    suggestion_ip.setString("Enter server ip");
-    suggestion_ip.setOrigin(suggestion_ip.getLocalBounds().width / 2, suggestion_ip.getLocalBounds().height);
-    float v_padding  = suggestion_ip.getLocalBounds().height * 3;
-    suggestion_ip.setPosition(windowsize.x / 2, windowsize.y / 2 - v_padding);
+    SettingsObjects SO(font, 60, path + "/game/images/mouse_keyboard.png");
+
+    //text suggestion to enter ip
+    float v_padding  = SO.suggestion_ip.getLocalBounds().height * 3;
+    SO.suggestion_ip.setPosition(windowsize.x / 2, windowsize.y / 2 - v_padding);
  
-    sf::Text fail;
-    fail.setFont(font);
-    fail.setFillColor(sf::Color::Black);
-    fail.setStyle(sf::Text::Bold);
-    fail.setCharacterSize(60);
-    fail.setString("Error: Invalid IP");
-    fail.setOrigin(0, fail.getLocalBounds().height);
-    fail.setPosition(suggestion_ip.getGlobalBounds().left + suggestion_ip.getGlobalBounds().width, suggestion_ip.getPosition().y + suggestion_ip.getLocalBounds().height);
+    //text fail if invalid ip
+    SO.fail_ip.setPosition(SO.suggestion_ip.getGlobalBounds().left + SO.suggestion_ip.getGlobalBounds().width, SO.suggestion_ip.getPosition().y + SO.suggestion_ip.getLocalBounds().height);
 
-    sf::Text suggestion_mode;
-    suggestion_mode.setFont(font);
-    suggestion_mode.setFillColor(sf::Color::Black);
-    suggestion_mode.setStyle(sf::Text::Bold);
-    suggestion_mode.setCharacterSize(60);
-    suggestion_mode.setString("Gaming mode");
-    suggestion_mode.setOrigin(suggestion_mode.getLocalBounds().width / 2, suggestion_mode.getLocalBounds().height);
-    suggestion_mode.setPosition(windowsize.x / 2, fail.getPosition().y + fail.getLocalBounds().height * 2);
+    //text suggestion to make a choice of mode playing
+    SO.suggestion_mode.setPosition(windowsize.x / 2, SO.fail_ip.getPosition().y + SO.fail_ip.getLocalBounds().height * 2);
 
-    int buttons_count = 2;
-    sf::Image buttonImage;
-    buttonImage.loadFromFile(path + "/game/images/mouse_keyboard.png");
-    buttonImage.createMaskFromColor(sf::Color::White);
-    sf::Texture buttonTexture;
-    buttonTexture.loadFromImage(buttonImage);
-    sf::Sprite mouse_button(buttonTexture), keyboard_button(buttonTexture);
-    int height = static_cast<unsigned int>(buttonTexture.getSize().y / buttons_count);
-    int width = buttonTexture.getSize().x;
-    float h_padding = 1.2 * (width / 2); 
-    mouse_button.setTextureRect({0, 0, width, height});
-    mouse_button.setOrigin(width / 2, height / 2);
-    mouse_button.setPosition({suggestion_mode.getPosition().x - h_padding, suggestion_mode.getPosition().y + suggestion_mode.getLocalBounds().height});
-    keyboard_button.setTextureRect({0, height * 1, width, height});
-    keyboard_button.setOrigin(width / 2, height / 2);
-    keyboard_button.setPosition({suggestion_mode.getPosition().x + h_padding, suggestion_mode.getPosition().y + suggestion_mode.getLocalBounds().height});
+    int buttons_count = 2; //buttons of making mode choice
+    float h_padding = 0.6 * SO.mouse_button.getLocalBounds().width; 
+    SO.mouse_button.setPosition({SO.suggestion_mode.getPosition().x - h_padding, SO.suggestion_mode.getPosition().y + SO.suggestion_mode.getLocalBounds().height});
+    SO.keyboard_button.setPosition({SO.suggestion_mode.getPosition().x + h_padding, SO.suggestion_mode.getPosition().y + SO.suggestion_mode.getLocalBounds().height});
 
-    sf::Text fail_choice;
-    fail_choice.setFont(font);
-    fail_choice.setFillColor(sf::Color::Black);
-    fail_choice.setStyle(sf::Text::Bold);
-    fail_choice.setCharacterSize(60);
-    fail_choice.setString("Error: make a choice");
-    fail_choice.setOrigin(0, fail_choice.getLocalBounds().height);
-    fail_choice.setPosition(keyboard_button.getGlobalBounds().left + keyboard_button.getGlobalBounds().width, suggestion_mode.getPosition().y + suggestion_mode.getLocalBounds().height);
+    //text fail if choice hadn't made
+    SO.fail_choice.setPosition(SO.keyboard_button.getGlobalBounds().left + SO.keyboard_button.getGlobalBounds().width, SO.suggestion_mode.getPosition().y + SO.suggestion_mode.getLocalBounds().height);
 
-    settings_loop(suggestion_ip, fail, suggestion_mode, mouse_button, keyboard_button, fail_choice);
+    settings_loop(SO);
     
     return true;
 }
@@ -232,7 +223,7 @@ void Interface::menu_loop(sf::Sprite menubutton, sf::Sprite exitbutton)
     sf::FloatRect menubutton_bounds = menubutton.getGlobalBounds();
     sf::FloatRect exitbutton_bounds = exitbutton.getGlobalBounds();
     bool isMenu = true;
-    int menuNum = 0;
+    int menuNum = NOCHOICE;
 	while ((isMenu) && (window.isOpen()))
 	{
         sf::Event event;
@@ -254,23 +245,14 @@ void Interface::menu_loop(sf::Sprite menubutton, sf::Sprite exitbutton)
 
         menubutton.setColor(sf::Color::White);
         exitbutton.setColor(sf::Color::White);
-		
-		menuNum = 0;
-		if (menubutton_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { menubutton.setColor(sf::Color::Blue); menuNum = 1; }
-        if (exitbutton_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { exitbutton.setColor(sf::Color::Blue); menuNum = 2; }
- 
+		menuNum = NOCHOICE;
+		if (menubutton_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { menubutton.setColor(sf::Color::Blue); menuNum = PLAY; }
+        if (exitbutton_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { exitbutton.setColor(sf::Color::Blue); menuNum = QUIT; }
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-		{
-            std::cout << "button pressed " << menuNum << std::endl;
-			if (menuNum == 1) { 
-                enter_settings();
-            } 
-			if (menuNum == 2)  { 
-                isMenu = false; 
-                std::cout << "Closing menu" << std::endl;
-            }
- 
-		}
+            switch (menuNum) {
+                case PLAY: enter_settings(); break;
+                case QUIT: isMenu = false; break;
+		    }
         
         window.clear(menu_color);
 		window.draw(menubutton);
