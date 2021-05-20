@@ -1,5 +1,5 @@
 #include "../include/game.h"
-
+#include <unistd.h>
 //const char path[] = "/Users/stassidelnikov/aerohockey-game";
 
 Game::Game(sf::Vector2u windowsize_, sf::IpAddress& addr, std::string path_, int choice):
@@ -45,11 +45,8 @@ void Game::sending_mouse_pos(sf::Window& window)
     packet.clear();
 }
 
-void Game::send_key(int key)
+void Game::send_key(sf::Packet& packet)
 {
-    sf::Packet packet;
-    packet << key;
-    std::cout << key << " sended" << std::endl;
     if (!client.send_updates(packet)) {
         std::cerr << "Error sending updates to server. " << std::endl;
         std::cerr << std::endl;
@@ -61,7 +58,7 @@ void Game::play(sf::RenderWindow& window)
 {
     if (!keyboard_control)
         sending_mouse_pos(window);
-    bool received = true;
+    bool received = true, timeout = false;
     sf::IpAddress server_addr;
     unsigned short server_port;
     sf::Packet packet;
@@ -73,14 +70,21 @@ void Game::play(sf::RenderWindow& window)
     if (received) {
         sf::Vector2f pos, pos_st1, pos_st2;
         sf::Vector2i score;
-        packet >> pos_st1 >> pos_st2 >> pos >> score;
+        packet >> pos_st1 >> pos_st2 >> pos >> score >> timeout;
         packet.clear();
         std::cout << "ST1: " << pos_st1.x << " " << pos_st1.y << std::endl << "ST2: " << pos_st2.x << " " << pos_st2.y << std::endl << "PUCK: " << pos.x << " " << pos.y << std:: endl << score.x << " " << score.y << std::endl;
         scoreboard.update(score);
         puck.set_coord(pos);
         striker1.set_coord(pos_st1);
         striker2.set_coord(pos_st2);
+        //if (timeout)
+            //time_out();
     }
+}
+
+void Game::time_out() 
+{
+    sleep(3);
 }
 
 void Game::draw_objects(sf::RenderWindow& window) {

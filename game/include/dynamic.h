@@ -17,6 +17,7 @@
 #define CENTER_X 925
 #define CENTER_Y 570
 #define CYCLE_SPEED 15
+#define SPEED_LIMIT 15
 #define EPSILON 0.0001
 
 const float MAX_SPEED = 300;
@@ -45,17 +46,18 @@ class ClientDynamicObject : public DynamicObject {
 class ServerDynamicObject : public DynamicObject {
     private:
     sf::Vector2f speed;
+    const int number;
     const float radius;
     const float mass;
     std::pair<bool, bool> collision = {false, false};
     public:
     ServerDynamicObject() = default;
-    ServerDynamicObject(float mass, float radius, float pos1, float pos2);
+    ServerDynamicObject(float mass, float radius, float pos1, float pos2, int num);
     float get_mass();
     float get_radius();
     sf::Vector2f get_speed();
     void set_speed(sf::Vector2f speed_given);
-    void keyboard_change_speed(int key);
+    void keyboard_change_speed(std::vector<int>& key);
     void keyboard_update_speed();
     int check_score();
     sf::Vector2f update(ServerDynamicObject&, ServerDynamicObject&);

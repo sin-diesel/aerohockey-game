@@ -77,7 +77,6 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
 
 int ServerDynamicObject::check_score()
 {
-    //std::cout << "CHECK SCORE" << std::endl;
     if (position.x < GATE_POS_X_LEFT && position.y < GATE_POS_Y_UPPER && position.y > GATE_POS_Y_DOWNER) {
         position.x = CENTER_X, position.y = CENTER_Y, speed.x = 0, speed.y = 0;
         return 1;
@@ -97,7 +96,6 @@ sf::Vector2f DynamicObject::get_coord()
 sf::Vector2f ServerDynamicObject::calculate_speed(sf::Vector2f pos) 
 {
     speed = pos - position;
-    //std::cout << "SPED1 " << speed.x << " " << speed.y << std::endl;
     if (position.x >= MAX_POS_X - STRIKER_RADIUS && speed.x > 0)
         speed.x = 0;
     if (position.y >= MAX_POS_Y - STRIKER_RADIUS && speed.y > 0)
@@ -108,7 +106,6 @@ sf::Vector2f ServerDynamicObject::calculate_speed(sf::Vector2f pos)
         speed.y = 0;
     pos.x = (speed.x == 0) ? 0 : pos.x, pos.y = (speed.y == 0) ? 0 : pos.y;
     set_coord(pos);
-    //std::cout << "SPED2 " << speed.x << " " << speed.y << std::endl;
     return speed;
 }
 
@@ -117,16 +114,22 @@ sf::Vector2f ServerDynamicObject::get_speed()
     return speed;
 }
 
-void ServerDynamicObject::keyboard_change_speed(int key)
+void ServerDynamicObject::keyboard_change_speed(std::vector<int>& key)
 {
-    if (key == sf::Keyboard::W && (position.y - STRIKER_RADIUS > MIN_POS_Y))
-        speed.y += -1;
-    else if (key == sf::Keyboard::S && (position.y + STRIKER_RADIUS < MAX_POS_Y))
-        speed.y += 1;
-    else if (key == sf::Keyboard::D && (position.x + STRIKER_RADIUS < MAX_POS_X))
-        speed.x += 1;
-    else if (key == sf::Keyboard::A && (position.x - STRIKER_RADIUS > MIN_POS_X))
-        speed.x += -1;
+    for (int i = 0; i < 4; ++i) {
+        if (key[i] == sf::Keyboard::W && (position.y - STRIKER_RADIUS > MIN_POS_Y) && speed.y > SPEED_LIMIT * (-1))
+            speed.y += -7.5;
+            //speed.y = (speed.y > 0) ? (-3) : (speed.y - 3);
+        else if (key[i] == sf::Keyboard::S && (position.y + STRIKER_RADIUS < MAX_POS_Y) && speed.y < SPEED_LIMIT)
+            speed.y += 7.5;
+            //speed.y = (speed.y < 0) ? (3) : (speed.y + 3);
+        else if (key[i] == sf::Keyboard::D && (position.x + STRIKER_RADIUS < MAX_POS_X) && speed.x < SPEED_LIMIT)
+            speed.x += 7.5;
+            //speed.x = (speed.x < 0) ? (3) : (speed.x + 3);
+        else if (key[i] == sf::Keyboard::A && (position.x - STRIKER_RADIUS > MIN_POS_X) && speed.x > SPEED_LIMIT * (-1))
+            speed.x += -7.5;
+            //speed.x = (speed.x > 0) ? (-3) : (speed.x - 3);
+    }
 }
 
 void ServerDynamicObject::keyboard_update_speed()
@@ -137,12 +140,13 @@ void ServerDynamicObject::keyboard_update_speed()
     if (position.y + STRIKER_RADIUS > MAX_POS_Y && speed.y > 0) {
         speed.y = 0;
     }
-    if (position.x + STRIKER_RADIUS > MAX_POS_X && speed.x > 0) {
+    if (position.x + STRIKER_RADIUS > ((number == 2) ? MAX_POS_X : CENTER_X) && speed.x > 0) {
         speed.x = 0;
     }
-    if (position.x - STRIKER_RADIUS < MIN_POS_X && speed.x < 0) {
+    if (position.x - STRIKER_RADIUS < ((number == 1) ? MIN_POS_X : CENTER_X)&& speed.x < 0) {
         speed.x = 0;
     }
+    //speed *= static_cast<float> (0.99);
     position += speed / static_cast<float> (5);
 }
 
@@ -160,4 +164,4 @@ float ServerDynamicObject::get_mass()
 {
     return mass;
 }
-ServerDynamicObject::ServerDynamicObject(float mass, float radius, float pos1, float pos2): mass(mass), radius(radius) {position.x = pos1, position.y = pos2;}
+ServerDynamicObject::ServerDynamicObject(float mass, float radius, float pos1, float pos2, int num): mass(mass), radius(radius), number(num) {position.x = pos1, position.y = pos2;}

@@ -39,12 +39,13 @@ public:
     // send updated info for rendering to all clients
     bool send_updates(sf::Packet& data, int i);
     // calculate all information that is going to be sent back to client
-    void keyboard_update_strikers_speed(int key, int i);
+    void keyboard_update_strikers_speed(std::vector<int>& key, int i);
     void keyboard_update_strikers_position();
-    void keyboard_update_strikers(int key, int i);
+    void keyboard_update_strikers(std::vector<int>& key, int i);
     void update_and_send(int i);
     void mouse_update_strikers(sf::Vector2f pos, int i);
     void update_strikers(sf::Vector2f pos, int i);
+    void time_out();
     
 };
 
