@@ -31,8 +31,8 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
     float radius_sum = PUCK_RADIUS + STRIKER_RADIUS;
 
     if (dist1 <= radius_sum) {
-        if (!collision1) {
-            collision1 = 1;
+        if (!collision.first) {
+            collision.first = true;
             std::cout << "BSPEED1 " << speed.x << " " << speed.y << std::endl;
             float mult1 = (striker1.get_speed().x - speed.x) * diff1.x + (striker1.get_speed().y - speed.y) * diff1.y;
             if (dist1 > 0.0001)
@@ -44,11 +44,11 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
             position = striker1.position + (position - striker1.position) * (radius_sum / dist1); 
     }
     else {
-        collision1 = 0;
+        collision.first = false;
     }
     if (dist2 <= radius_sum) {
-        if (!collision2) {
-            collision2 = 1;
+        if (!collision.second) {
+            collision.second = true;
             std::cout << "BSPEED2 " << speed.x << " " << speed.y << std::endl;
             float mult2 = (striker2.get_speed().x - speed.x) * diff2.x + (striker2.get_speed().y - speed.y) * diff2.y;
             if (dist2 > 0.0001)
@@ -60,7 +60,7 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
             position = striker2.position + (position - striker2.position) * (radius_sum / dist2); 
     }
     else {
-        collision2 = 0;
+        collision.second = false;
     }
     if (position.x >= MAX_POS_X - PUCK_RADIUS || position.x <= MIN_POS_X + PUCK_RADIUS) {
         speed.x = speed.x * -1;
