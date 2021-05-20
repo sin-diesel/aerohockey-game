@@ -20,11 +20,6 @@ void ClientDynamicObject::draw(sf::RenderWindow& window)
     window.draw(sprite);
 }
 
-void DynamicObject::set_coord(sf::Vector2f new_pos)
-{
-    position = new_pos;
-}
-
 sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDynamicObject& striker2)
 {
     speed *= static_cast<float>(0.999);
@@ -35,36 +30,26 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
     float radius_sum = PUCK_RADIUS + STRIKER_RADIUS;
 
     if (dist1 < radius_sum * 0.97) {
-        //std::cout << "Collision" << std::endl;
-        //std::cout << "STRIKERSPEED1 " << striker1.get_speed().x << " " << striker1.get_speed().y << std::endl;
-        //std::cout << "BSPEED1 " << speed.x << " " << speed.y << std::endl;
         float mult1 = (striker1.get_speed().x - speed.x) * diff1.x + (striker1.get_speed().y - speed.y) * diff1.y;
         if (dist1 > EPSILON) {
                 position = striker1.position + (position - striker1.position) * (radius_sum / dist1);
                 if (mult1 > EPSILON)
                     speed += static_cast<float> (2) * diff1  * striker1.get_mass() * mult1 / (striker1.get_mass() + mass) / dist1 / dist1;
         }
-        //std::cout << "ASPEED1 " << speed.x << " " << speed.y << std::endl;
     }
-    if (dist2 <radius_sum * 0.97) {
-        //std::cout << "Collision" << std::endl;
-        //std::cout << "STRIKERSPEED2 " << striker2.get_speed().x << " " << striker2.get_speed().y << std::endl;
-        //std::cout << "BSPEED2 " << speed.x << " " << speed.y << std::endl;
+    if (dist2 < radius_sum * 0.97) {
         float mult2 = (striker2.get_speed().x - speed.x) * diff2.x + (striker2.get_speed().y - speed.y) * diff2.y;
         if (dist2 > EPSILON){
             position = striker2.position + (position - striker2.position) * (radius_sum / dist2);
             if (mult2 > EPSILON)
                 speed += static_cast<float> (2) * diff2  * striker2.get_mass() * mult2 / (striker2.get_mass() + mass) / dist2 / dist2;
         }         
-        //std::cout << "ASPEED2 " << speed.x << " " << speed.y << std::endl;
     }
 
-    if (position.x >= MAX_POS_X - PUCK_RADIUS || position.x <= MIN_POS_X + PUCK_RADIUS) {
+    if (position.x >= MAX_POS_X - PUCK_RADIUS || position.x <= MIN_POS_X + PUCK_RADIUS)
         speed.x = speed.x * -1;
-    }
-    if (position.y >= MAX_POS_Y - PUCK_RADIUS || position.y <= MIN_POS_Y + PUCK_RADIUS) {
+    if (position.y >= MAX_POS_Y - PUCK_RADIUS || position.y <= MIN_POS_Y + PUCK_RADIUS)
         speed.y = speed.y * -1;
-    }
     
     float speed_val = sqrt(speed.x*speed.x + speed.y*speed.y);
     if (speed_val > MAX_SPEED)
@@ -74,7 +59,6 @@ sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDy
     position.y = (position.y < MIN_POS_Y + PUCK_RADIUS) ? MIN_POS_Y + PUCK_RADIUS : position.y;
     position.x = (position.x > MAX_POS_X - PUCK_RADIUS) ? MAX_POS_X - PUCK_RADIUS : position.x;
     position.y = (position.y > MAX_POS_Y - PUCK_RADIUS) ? MAX_POS_Y - PUCK_RADIUS : position.y;
-    //std::cout << "Puck speed: " << speed.x << " " << speed.y << std::endl;
     return position;
 }
 
@@ -91,11 +75,6 @@ int ServerDynamicObject::check_score()
     return 0;
 }
 
-sf::Vector2f DynamicObject::get_coord()
-{
-    return position;
-}
-
 sf::Vector2f ServerDynamicObject::calculate_speed(sf::Vector2f pos) 
 {
     speed = pos - position;
@@ -109,11 +88,6 @@ sf::Vector2f ServerDynamicObject::calculate_speed(sf::Vector2f pos)
         speed.y = 0;
     pos.x = (speed.x == 0) ? 0 : pos.x, pos.y = (speed.y == 0) ? 0 : pos.y;
     set_coord(pos);
-    return speed;
-}
-
-sf::Vector2f ServerDynamicObject::get_speed() 
-{
     return speed;
 }
 
@@ -153,6 +127,26 @@ void ServerDynamicObject::keyboard_update_speed()
     position += speed / static_cast<float> (5);
 }
 
+sf::Vector2f DynamicObject::get_coord()
+{
+    return position;
+}
+
+void DynamicObject::set_coord(sf::Vector2f new_pos)
+{
+    position = new_pos;
+}
+
+int ServerDynamicObject::get_number()
+{
+    return number;
+}
+
+sf::Vector2f ServerDynamicObject::get_speed() 
+{
+    return speed;
+}
+
 void ServerDynamicObject::set_speed(sf::Vector2f speed_given)
 {
     speed += speed_given;
@@ -167,4 +161,5 @@ float ServerDynamicObject::get_mass()
 {
     return mass;
 }
+
 ServerDynamicObject::ServerDynamicObject(float mass, float radius, float pos1, float pos2, int num): mass(mass), radius(radius), number(num) {position.x = pos1, position.y = pos2;}

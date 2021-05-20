@@ -1,3 +1,2 @@
-game.out
-server.out
-client.out
+*.out
+*.o
