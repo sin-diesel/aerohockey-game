@@ -101,7 +101,7 @@ void Interface::settings_loop(SettingsObjects SO)
                     break;
                 case sf::Event::TextEntered:
                     switch ( event.text.unicode ) {
-                        case 0xD: //Return
+                        case ENTER:
                         if ((server_addr = sf::IpAddress(textbox.get_text())) == sf::IpAddress::None) {
                             std::cerr << "Error converting to valid IP address" << std::endl;
                             correctIP = false;
@@ -123,7 +123,6 @@ void Interface::settings_loop(SettingsObjects SO)
         }
         SO.mouse_button.setColor(sf::Color::White);
         SO.keyboard_button.setColor(sf::Color::White);
-
         if (choiceDone)
             switch(choice){
                 case MOUSE: SO.mouse_button.setColor(sf::Color::Green); break;
@@ -132,7 +131,6 @@ void Interface::settings_loop(SettingsObjects SO)
         buttonnum = NOCHOICE;
         if (mouse_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { SO.mouse_button.setColor(sf::Color::Blue); buttonnum  = MOUSE; }
         if (keyboard_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { SO.keyboard_button.setColor(sf::Color::Blue); buttonnum  = KEYBOARD; }
-
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
             switch (buttonnum) {
                 case MOUSE: choice = MOUSE; choiceDone = true; break;
@@ -225,7 +223,7 @@ void Interface::menu_loop(sf::Sprite menubutton, sf::Sprite exitbutton)
     sf::FloatRect menubutton_bounds = menubutton.getGlobalBounds();
     sf::FloatRect exitbutton_bounds = exitbutton.getGlobalBounds();
     bool isMenu = true;
-    int menuNum = 0;
+    int menuNum = NOCHOICE;
 	while ((isMenu) && (window.isOpen()))
 	{
         sf::Event event;
@@ -247,23 +245,14 @@ void Interface::menu_loop(sf::Sprite menubutton, sf::Sprite exitbutton)
 
         menubutton.setColor(sf::Color::White);
         exitbutton.setColor(sf::Color::White);
-		
-		menuNum = 0;
-		if (menubutton_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { menubutton.setColor(sf::Color::Blue); menuNum = 1; }
-        if (exitbutton_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { exitbutton.setColor(sf::Color::Blue); menuNum = 2; }
- 
+		menuNum = NOCHOICE;
+		if (menubutton_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { menubutton.setColor(sf::Color::Blue); menuNum = PLAY; }
+        if (exitbutton_bounds.contains(sf::Vector2f(sf::Mouse::getPosition(window)))) { exitbutton.setColor(sf::Color::Blue); menuNum = QUIT; }
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-		{
-            std::cout << "button pressed " << menuNum << std::endl;
-			if (menuNum == 1) { 
-                enter_settings();
-            } 
-			if (menuNum == 2)  { 
-                isMenu = false; 
-                std::cout << "Closing menu" << std::endl;
-            }
- 
-		}
+            switch (menuNum) {
+                case PLAY: enter_settings(); break;
+                case QUIT: isMenu = false; break;
+		    }
         
         window.clear(menu_color);
 		window.draw(menubutton);

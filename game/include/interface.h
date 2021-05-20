@@ -7,14 +7,16 @@
 enum {
     NOCHOICE = 0,
     MOUSE = 1,
-    KEYBOARD = 2
+    KEYBOARD = 2,
+    PLAY = 3, 
+    QUIT = 4
 };
 
 class SettingsObjects {
     private: 
     sf::Image buttonImage;
     sf::Texture buttonTexture; 
-     
+
     public:
     SettingsObjects() = default;
     SettingsObjects(sf::Font& font, unsigned int charsize, std::string imgbuttonpath);
