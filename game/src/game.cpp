@@ -16,8 +16,8 @@ Game::Game(sf::Vector2u windowsize_, sf::IpAddress& addr, std::string path_, int
     if (keyboard_control)
         std::cout << "GAMEKEYBOARDCONTROL IS TRUE" << std::endl;
     sf::Vector2f windowsize = sf::Vector2f(windowsize_);
-    float factorX = windowsize.x / DEFAULT_WIDTH;
-    float factorY = windowsize.y / DEFAULT_HEIGHT;
+    factorX = windowsize.x / DEFAULT_WIDTH;
+    factorY = windowsize.y / DEFAULT_HEIGHT;
     sf::Vector2f pos(CENTER_X * factorX, CENTER_Y * factorY);
     scoreboard = Scoreboard(path + "/game/images/scoreboard.png", windowsize, path);  
     striker1 = ClientDynamicObject(path + "/game/images/striker.png", pos, windowsize);
@@ -25,8 +25,6 @@ Game::Game(sf::Vector2u windowsize_, sf::IpAddress& addr, std::string path_, int
     striker2 = ClientDynamicObject(path + "/game/images/striker.png", pos, windowsize);
     pos.x += 400 * factorX;
     puck = ClientDynamicObject(path + "/game/images/puck.png", pos, windowsize);
-
-    //number = client.get_number() + 1;
 
     field_image.loadFromFile(path + "/game/images/background.png");
     field_image.createMaskFromColor(sf::Color::White);
@@ -40,7 +38,10 @@ Game::Game(sf::Vector2u windowsize_, sf::IpAddress& addr, std::string path_, int
 void Game::sending_mouse_pos(sf::Window& window)
 {
     sf::Packet packet;
-    packet << sf::Vector2f(sf::Mouse::getPosition(window));
+    sf::Vector2f mouse_pos = sf::Vector2f(sf::Mouse::getPosition(window));
+    mouse_pos.x /= factorX; mouse_pos.y /= factorY;
+    packet << mouse_pos;
+    std::cout << mouse_pos.x << std::endl;
     if (!client.send_updates(packet)) {
         std::cerr << "Error sending updates to server. " << std::endl;
         std::cerr << std::endl;
@@ -75,6 +76,9 @@ void Game::play(sf::RenderWindow& window)
         sf::Vector2i score;
         packet >> pos_st1 >> pos_st2 >> pos >> score >> timeout;
         packet.clear();
+        pos_st1.x *= factorX; pos_st1.y *= factorY;
+        pos_st2.x *= factorX; pos_st2.y *= factorY;
+        pos.x *= factorX; pos.y *= factorY;
         std::cout << "ST1: " << pos_st1.x << " " << pos_st1.y << std::endl << "ST2: " << pos_st2.x << " " << pos_st2.y << std::endl << "PUCK: " << pos.x << " " << pos.y << std:: endl << score.x << " " << score.y << std::endl;
         scoreboard.update(score);
         puck.set_coord(pos);

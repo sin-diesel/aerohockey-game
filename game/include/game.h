@@ -16,6 +16,8 @@ class Game {
         sf::Image field_image;
         sf::Texture field_texture;
         sf::Sprite field;
+        float factorX;
+        float factorY;
     public:
         Game() = default;
         Game(sf::Vector2u windowsize, sf::IpAddress& server_addr, std::string path_0, int choise);

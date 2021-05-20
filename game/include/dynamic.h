@@ -1,9 +1,9 @@
 #pragma once
 #include "library.h"
-#define MAX_POS_X 1785
-#define MAX_POS_Y 1000
-#define MIN_POS_X 70
-#define MIN_POS_Y 145
+#define MAX_POS_X 1817
+#define MAX_POS_Y 816
+#define MIN_POS_X 103
+#define MIN_POS_Y 120
 #define DEFAULT_MASS 10
 #define DEFAULT_RADIUS 50
 #define PUCK_RADIUS 15
