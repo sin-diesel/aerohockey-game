@@ -153,8 +153,7 @@ void Server::run() {
     sf::Vector2f pos1[2];
     int side;
     while (1) {
-        std::vector<bool> received = {true, true};
-        received = get_updates(data);
+        std::vector<bool> received = get_updates(data);
         for (int i = 0; i < 2; ++i) {
             if (received[i]) {
                 if (!keyboard_control[i]) {

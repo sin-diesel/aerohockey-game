@@ -17,11 +17,6 @@ void ClientDynamicObject::draw(sf::RenderWindow& window)
     window.draw(sprite);
 }
 
-void DynamicObject::set_coord(sf::Vector2f new_pos)
-{
-    position = new_pos;
-}
-
 sf::Vector2f ServerDynamicObject::update(ServerDynamicObject& striker1, ServerDynamicObject& striker2)
 {
     speed *= static_cast<float>(0.999);
@@ -77,16 +72,6 @@ int ServerDynamicObject::check_score()
     return 0;
 }
 
-sf::Vector2f DynamicObject::get_coord()
-{
-    return position;
-}
-
-int ServerDynamicObject::get_number()
-{
-    return number;
-}
-
 sf::Vector2f ServerDynamicObject::calculate_speed(sf::Vector2f pos) 
 {
     speed = pos - position;
@@ -100,11 +85,6 @@ sf::Vector2f ServerDynamicObject::calculate_speed(sf::Vector2f pos)
         speed.y = 0;
     pos.x = (speed.x == 0) ? 0 : pos.x, pos.y = (speed.y == 0) ? 0 : pos.y;
     set_coord(pos);
-    return speed;
-}
-
-sf::Vector2f ServerDynamicObject::get_speed() 
-{
     return speed;
 }
 
@@ -144,6 +124,26 @@ void ServerDynamicObject::keyboard_update_speed()
     position += speed / static_cast<float> (5);
 }
 
+sf::Vector2f DynamicObject::get_coord()
+{
+    return position;
+}
+
+void DynamicObject::set_coord(sf::Vector2f new_pos)
+{
+    position = new_pos;
+}
+
+int ServerDynamicObject::get_number()
+{
+    return number;
+}
+
+sf::Vector2f ServerDynamicObject::get_speed() 
+{
+    return speed;
+}
+
 void ServerDynamicObject::set_speed(sf::Vector2f speed_given)
 {
     speed += speed_given;
@@ -158,4 +158,5 @@ float ServerDynamicObject::get_mass()
 {
     return mass;
 }
+
 ServerDynamicObject::ServerDynamicObject(float mass, float radius, float pos1, float pos2, int num): mass(mass), radius(radius), number(num) {position.x = pos1, position.y = pos2;}

@@ -2,8 +2,6 @@
 
 Client::Client(sf::IpAddress& address, bool keyboard_cont):
     keyboard_control(keyboard_cont) {
-    if (keyboard_control)
-        std::cout << "CLIENTKEYBOARDCONTROL IS TRUE" << std::endl;
     addr = sf::IpAddress::Any;
     port = sf::Socket::AnyPort;
     number = 0;
@@ -70,25 +68,6 @@ unsigned short Client::get_port() {
         //socket.setBlocking(false);
         return port;
     }
-}
-
-
-sf::Packet Client::process_input() {
-
-    // test version for processing input
-    // NetworkPacket data;
-
-    float pos1_x = 1.0f;
-    float pos1_y = 1.0f;
-    // data.pos2_x = 2.0f;
-    // data.pos2_y = 2.0f;
-    // data.puck_x = 3.0f;
-    // data.puck_y = 3.0f;
-
-    sf::Packet packet;
-    packet << pos1_x << pos1_y;
-
-    return packet;
 }
 
 int Client::get_number() {
