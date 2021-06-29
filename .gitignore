@@ -1,2 +1,8 @@
-*.out
-*.o
+game/obj/
+CMakeCache.txt
+CMakeFiles/
+*o
+*out
+cmake_install.cmake
+*a
+Makefile
