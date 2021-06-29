@@ -1,4 +1,4 @@
-#include "../include/textbox.h"
+#include "textbox.h"
 
 TextBox::TextBox(sf::Text& suggestion)
 {

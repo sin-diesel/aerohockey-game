@@ -1,4 +1,4 @@
-#include "../include/interface.h"
+#include "interface.h"
 
 int main() {
     Interface interface(1920, 1080);

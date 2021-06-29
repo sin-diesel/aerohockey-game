@@ -1,4 +1,4 @@
-#include "../include/scoreboard.h"
+#include "scoreboard.h"
 
 Scoreboard::Scoreboard(std::string imagepath, sf::Vector2f& windowsize, const std::string path)
 {

@@ -1,4 +1,4 @@
-#include "../include/client.h"
+#include "client.h"
 
 Client::Client(sf::IpAddress& address, bool keyboard_cont):
     keyboard_control(keyboard_cont) {

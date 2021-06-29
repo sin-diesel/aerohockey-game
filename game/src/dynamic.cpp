@@ -1,5 +1,5 @@
-#include "../include/dynamic.h"
-#include "../include/library.h"
+#include "dynamic.h"
+#include "library.h"
 ClientDynamicObject::ClientDynamicObject(std::string imagepath, sf::Vector2f pos, sf::Vector2f windowsize)
 {
     float factorX = windowsize.x / DEFAULT_WIDTH;

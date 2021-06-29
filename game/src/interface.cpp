@@ -1,4 +1,4 @@
-#include "../include/interface.h"
+#include "interface.h"
 #include <filesystem>
 #include <iostream>
 #include <limits.h>
